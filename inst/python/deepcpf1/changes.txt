@@ -1,0 +1,3 @@
+We cloned the code from https://github.com/shendurelab/LindelDeepCRISPR.info/DeepCpf1.
+The core code remains the same.
+We have created the script ./getDeepCpf1.py for convenience.

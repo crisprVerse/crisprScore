@@ -1,0 +1,5 @@
+* Azimuth comes from https://github.com/MicrosoftResearch/Azimuth
+* DeepCpf1 comes from https://github.com/MyungjaeSong/Paired-Library/tree/DeepCRISPR.info/DeepCpf1
+* Lindel comes from https://github.com/shendurelab/Lindel
+* DeepHF comes from https://github.com/izhangcd/DeepHF
+* EnPAMGB comes from https://github.com/PeterDeWeirdt/sgrna_modeler

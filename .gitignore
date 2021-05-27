@@ -1,0 +1,6 @@
+.DS_Store
+inst/python/deepcpf1/deepcpf1/deepcpf1.pyc
+inst/python//deepcpf1/old/
+__pycache__
+*.pyc
+vignettes/crisprScore.html

@@ -1,0 +1,3 @@
+We cloned the code from https://github.com/MicrosoftResearch/Azimuth.
+The core code remains the same. We only changed function names / syntax to allow
+the code to be compatible with python packages available at the moment.

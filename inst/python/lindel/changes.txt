@@ -1,0 +1,2 @@
+We cloned the code from https://github.com/MyungjaeSong/Paired-Library/tree/DeepCRISPR.info/DeepCpf1.
+No changes were made to the code.

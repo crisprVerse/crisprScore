@@ -1,0 +1,3 @@
+vignettes/figures/resave.sh
+vignettes/figures/*.pptx
+^\.BBSoptions$

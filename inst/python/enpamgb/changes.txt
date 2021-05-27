@@ -1,0 +1,3 @@
+We cloned the code from https://github.com/PeterDeWeirdt/sgrna_modeler.
+No changes were made to the code code.
+We've created the convenience script getEnPAMGB.py.

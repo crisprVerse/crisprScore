@@ -1,0 +1,8 @@
+method	nuclease	left	right	type
+azimuth	Cas9	-24	5	On-target
+deephf	Cas9	-20	2	On-target
+lindel	Cas9	-33	31	On-target
+mit	Cas9	-20	2	Off-target
+cfd	Cas9	-20 2	Off-target
+deepcpf1	Cas12a	-4	29	On-target
+enpamgb	Cas12a	-4	29	On-target

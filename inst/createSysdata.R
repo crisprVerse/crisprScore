@@ -1,0 +1,10 @@
+library(devtools)
+load("mit/mit.weights.rda")
+load("cfd_cas9/cfd.mm.weights.cas9.rda")
+load("cfd_cas9/cfd.pam.weights.cas9.rda")
+use_data(mit.weights, 
+	cfd.mm.weights.cas9,
+	cfd.pam.weights.cas9,
+	internal=TRUE,
+	overwrite=TRUE
+)
