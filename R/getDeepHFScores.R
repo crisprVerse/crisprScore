@@ -75,7 +75,7 @@ getDeepHFScores <- function(sequences,
         model_type <- "hf"
         model_file <- "hf_rnn_model.hdf5"
     } 
-    model_dir <- "/Users/fortinj2/crisprScoreData/inst/scripts/out"
+    model_dir <- "/Users/fortinj2/crisprScoreData/inst/scripts/out/DeepHF"
     model_file <- file.path(model_dir, model_file)
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=23){
