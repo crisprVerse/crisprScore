@@ -60,6 +60,8 @@ getLindelScores <- function(sequences, fork=FALSE){
                            package="crisprScore",
                            mustWork=TRUE)
 
+    weights_dir <- "/Users/fortinj2/crisprScoreData/inst/scripts/out"
+    weights_file <- file.path(weights_dir, "Model_weights.pkl")
     df <- data.frame(sequence=sequences,
                      score=NA_real_,
                      stringsAsFactors=FALSE)
@@ -72,7 +74,10 @@ getLindelScores <- function(sequences, fork=FALSE){
             file <- basename(tempfile())
             file.full <- file.path(dir, file)
             seq <- sequences.valid[i]
-            cmd <- paste0("python ",program, " ",seq, " ", file.full)
+            cmd <- paste0("python ", program, " ",
+                          seq, " ",
+                          weights_file, " ",
+                          file.full)
             system(cmd, ignore.stdout=TRUE, ignore.stderr=FALSE)
             outputs <- list.files(dir)
             outputs <- outputs[grepl(file, outputs)]

@@ -13,10 +13,12 @@ from Lindel.Predictor import *
 import pickle as pkl
 import gzip
 
-weights = pkl.load(gzip.open(os.path.join(Lindel.__path__[0], "Model_weights.pkl.gz"),'rb'))
-prerequesites = pkl.load(gzip.open(os.path.join(Lindel.__path__[0],'model_prereq.pkl.gz'),'rb'))
+
 seq = sys.argv[1].upper() #input your sequence here
-filename = sys.argv[2]
+weights_file = sys.argv[2] #file for the pretrained model weights
+filename = sys.argv[3] #output filename
+prerequesites = pkl.load(open(os.path.join(Lindel.__path__[0],'model_prereq.pkl'),'rb'))
+weights = pkl.load(open(weights_file,'rb')) 
 try:
     y_hat, fs = gen_prediction(seq,weights,prerequesites)
     filename += '_fs=' + str(round(fs,3))+'.txt'
