@@ -6,8 +6,8 @@ from deephf.training_util import *
 from deephf.prediction_util import *
 
 #enzyme choices: 'wt_u6', 'wt_t7', 'esp' or 'hf'
-def getDeepHF(sequences, enzyme='wt_u6'):
-	results = get_scores(sequences, enzyme)
+def getDeepHF(sequences, enzyme='wt_u6', model_file=''):
+	results = get_scores(sequences, enzyme, model_file)
 	return results
 
 #sequences = np.array(["ACGTGTGACTACCGGCGGCGCGG",

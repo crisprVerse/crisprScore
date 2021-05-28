@@ -15,19 +15,19 @@ from deephf.feature_util import *
 #load models for eSpCas9(1.1) and SpCas9-HF1
 dir_path = os.path.dirname( os.path.realpath( __file__ ) )
 
-wt_u6_model_file_path = os.path.join( dir_path, 'models/DeepWt_U6.hd5' )
-wt_t7_model_file_path = os.path.join( dir_path, 'models/DeepWt_T7.hd5' )
+#wt_u6_model_file_path = os.path.join( dir_path, 'models/DeepWt_U6.hd5' )
+#wt_t7_model_file_path = os.path.join( dir_path, 'models/DeepWt_T7.hd5' )
 
-esp_model_file_path = os.path.join( dir_path, 'models/esp_rnn_model.hd5' )
-hf_model_file_path = os.path.join( dir_path, 'models/hf_rnn_model.hd5' )
+#esp_model_file_path = os.path.join( dir_path, 'models/esp_rnn_model.hd5' )
+#hf_model_file_path = os.path.join( dir_path, 'models/hf_rnn_model.hd5' )
 
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    model_wt_u6 = load_model( wt_u6_model_file_path )
-    model_wt_t7 = load_model( wt_t7_model_file_path )
+#with warnings.catch_warnings():
+    #warnings.simplefilter("ignore")
+    #model_wt_u6 = load_model( wt_u6_model_file_path )
+    #model_wt_t7 = load_model( wt_t7_model_file_path )
 
-    model_hf = load_model( hf_model_file_path )
-    model_esp = load_model( esp_model_file_path )
+    #model_hf = load_model( hf_model_file_path )
+    #model_esp = load_model( esp_model_file_path )
 
 
 
@@ -81,21 +81,22 @@ def output_prediction_old(inputs, df, model_type='esp'):
     df.reset_index( inplace=True )
     return df.sort_values( by='Efficiency', ascending=False ).to_dict( orient='records' )
 
-def output_prediction(inputs, df, model_type='esp'):
+def output_prediction(inputs, df, model_type='esp', model_file=''):
     import os
     from sklearn.externals import joblib
     from sklearn.linear_model import LinearRegression
     #dir_path = os.path.dirname( os.path.realpath( __file__ ) )
     #model_file = model_type + '_rnn.hd5'
     #model_file_path = os.path.join( dir_path, model_file )
-    if model_type == 'esp':
-        model = model_esp
-    elif model_type == 'wt_u6':
-        model = model_wt_u6
-    elif model_type == 'wt_t7':
-        model = model_wt_t7
-    elif model_type == 'hf':
-        model = model_hf
+    #if model_type == 'esp':
+    #    model = model_esp
+    #elif model_type == 'wt_u6':
+    #    model = model_wt_u6
+    #elif model_type == 'wt_t7':
+    #    model = model_wt_t7
+    #elif model_type == 'hf':
+    #    model = model_hf
+    model = load_model(model_file)
     Efficiency = model.predict( inputs )
     df['gRNA_Seq'] = df['21mer'].apply( lambda x: x[:-1] )
     df['Efficiency'] = np.clip( Efficiency, 0, 1 )
@@ -138,7 +139,7 @@ def effciency_predict(sequence, model_type='esp'):
     X,X_biofeat = get_embedding_data(df,feature_options)
     return output_prediction( [X,X_biofeat], df, model_type )
 
-def get_scores(sequences, model_type='wt_u6'):
+def get_scores(sequences, model_type='wt_u6', model_file=''):
     n = np.ma.size(sequences)
 
     gRNA = [x[0:21] for x in sequences]
@@ -152,4 +153,4 @@ def get_scores(sequences, model_type='wt_u6'):
                             '21mer': gRNA,
                             'PAM': PAM}, columns=['Strand', 'Cut_Pos', '21mer', 'PAM'] )
     X,X_biofeat = get_embedding_data(df,feature_options)
-    return output_prediction( [X,X_biofeat], df, model_type )
+    return output_prediction( [X,X_biofeat], df, model_type, model_file)

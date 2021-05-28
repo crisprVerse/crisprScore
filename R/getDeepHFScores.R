@@ -64,13 +64,19 @@ getDeepHFScores <- function(sequences,
     promoter <- match.arg(promoter)
     if (enzyme=="WT" & promoter=="U6"){
         model_type <- "wt_u6"
+        model_file <- "DeepWt_U6.hdf5"
     } else if (enzyme=="WT" & promoter=="T7"){
         model_type <- "wt_t7"
+        model_file <- "DeepWt_T7.hdf5"
     } else if (enzyme=="ESP"){
         model_type <- "esp"
+        model_file <- "esp_rnn_model.hdf5"
     } else if (enzyme=="HF"){
         model_type <- "hf"
+        model_file <- "hf_rnn_model.hdf5"
     } 
+    model_dir <- "/Users/fortinj2/crisprScoreData/inst/scripts/out"
+    model_file <- file.path(model_dir, model_file)
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=23){
         stop("Provided sequences must have length 23nt (20nt-spacer + PAM)")
@@ -86,13 +92,16 @@ getDeepHFScores <- function(sequences,
                            fork=fork,
                            fun=.deephf_python, 
                            sequences=sequences,
-                           model_type=model_type)
+                           model_type=model_type,
+                           model_file=model_file)
     return(results)
 }
 
 
 #' @importFrom reticulate import_from_path np_array
-.deephf_python <- function(sequences, model_type) { 
+.deephf_python <- function(sequences,
+                           model_type,
+                           model_file){ 
 
     dir <- system.file("python",
                        "deephf",
@@ -106,7 +115,9 @@ getDeepHFScores <- function(sequences,
     good <- !grepl("N", sequences)
     sequences.valid <- sequences[good]
     if (length(sequences.valid)>0){
-        scores <- deephf$getDeepHF(np_array(sequences.valid), model_type)
+        scores <- deephf$getDeepHF(np_array(sequences.valid),
+                                   model_type,
+                                   model_file)
         scores <- scores[,c(1,4,5,6),drop=FALSE]
         scores$index <- scores$index+1
         scores <- scores[order(scores$index),,drop=FALSE]
