@@ -12,7 +12,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = ['biopython>=1.74', 'joblib>=0.13.2', 'numpy>=1.16.4', 'pandas>=0.24.2',
-                'scikit-learn==0.21.2', 'scipy>=1.3.0', 'tensorflow>=1.14.0',]
+                'scikit-learn==0.21.2', 'scipy>=1.3.0', 'tensorflow>=1.14.0']
 
 setup_requirements = ['pytest-runner', ]
 
