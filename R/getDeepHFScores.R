@@ -56,6 +56,7 @@
 #' @inheritParams getAzimuthScores
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
+#' @import crisprScoreData
 getDeepHFScores <- function(sequences,
                             enzyme=c("WT", "ESP", "HF"),
                             promoter=c("U6", "T7"),
@@ -64,19 +65,17 @@ getDeepHFScores <- function(sequences,
     promoter <- match.arg(promoter)
     if (enzyme=="WT" & promoter=="U6"){
         model_type <- "wt_u6"
-        model_file <- "DeepWt_U6.hdf5"
+        model_file <- crisprScoreData::DeepWt_U6.hdf5()
     } else if (enzyme=="WT" & promoter=="T7"){
         model_type <- "wt_t7"
-        model_file <- "DeepWt_T7.hdf5"
+        model_file <- crisprScoreData::DeepWt_T7.hdf5()
     } else if (enzyme=="ESP"){
         model_type <- "esp"
-        model_file <- "esp_rnn_model.hdf5"
+        model_file <- crisprScoreData::esp_rnn_model.hdf5()
     } else if (enzyme=="HF"){
         model_type <- "hf"
-        model_file <- "hf_rnn_model.hdf5"
+        model_file <- crisprScoreData::hf_rnn_model.hdf5()
     } 
-    model_dir <- "/Users/fortinj2/crisprScoreData/inst/scripts/out/DeepHF"
-    model_file <- file.path(model_dir, model_file)
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=23){
         stop("Provided sequences must have length 23nt (20nt-spacer + PAM)")

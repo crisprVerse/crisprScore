@@ -6,7 +6,8 @@ Authors@R: c(
     person("Jean-Philippe", "Fortin", email = "fortin946@gmail.com", role = c("aut", "cre", "cph")),
     person("Aaron", "Lun", email = "infinite.monkeys.with.keyboards@gmail.com", role = c("aut")),
     person("Luke", "Hoberecht", email = "lukehob3@gmail.com", role = c("ctb")))
-Depends: R (>= 4.0.0)
+Depends: R (>= 4.0.0),
+    crisprScoreData
 Imports:
     basilisk (>= 1.3.5),
     Biostrings,
@@ -17,7 +18,6 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
-    shape,
     testthat
 biocViews:
     CRISPR,

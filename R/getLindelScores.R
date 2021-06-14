@@ -57,16 +57,14 @@ getLindelScores <- function(sequences, fork=FALSE){
 
 
 #' @importFrom stringr str_extract
+#' @import crisprScoreData
 .lindel_python <- function(sequences){
     program <- system.file("python",
                            "lindel",
                            "Lindel_prediction.py",
                            package="crisprScore",
                            mustWork=TRUE)
-
-    #weights_dir <- "/Users/fortinj2/crisprScoreData/inst/scripts/out/Lindel"
-    weights_dir  <- system.file(package="crisprScoreData", "scripts/out/Lindel")
-    weights_file <- file.path(weights_dir, "Model_weights.pkl")
+    weights_file <- crisprScoreData::Model_weights.pkl()
     df <- data.frame(sequence=sequences,
                      score=NA_real_,
                      stringsAsFactors=FALSE)
