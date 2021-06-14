@@ -289,5 +289,9 @@ input <- paste0(flank5, spacer, pam, flank3)
 results <- getLindelScores(input)
 ```
 
+```{r}
+sessionInfo()
+```
+
 # References
 
