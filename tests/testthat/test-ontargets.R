@@ -32,6 +32,7 @@ test_that('Lindel scores', {
 })
 
 test_that('DeepHF scores', {
+  skip_on_os("windows")
   expect_equal(round(getDeepHFScores(deephf_sequences, enzyme="WT")$score,3), deephf_scores_u6)
   expect_equal(round(getDeepHFScores(deephf_sequences, enzyme="ESP")$score,3), deephf_scores_esp)
   expect_equal(round(getDeepHFScores(deephf_sequences, enzyme="HF")$score,3), deephf_scores_hf)
