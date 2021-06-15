@@ -156,11 +156,15 @@ env_azimuth <- BasiliskEnvironment(envname="azimuth_basilisk",
                                    packages=azimuth_dependencies,
                                    channels = c("bioconda", "conda-forge"))
 
-env_deephf <- BasiliskEnvironment(envname="deephf_basilisk",
-                                  pkgname="crisprScore",
-                                  paths="python/deephf",
-                                  packages=deephf_dependencies,
-                                  channels=c("conda-forge", "bioconda"))
+if (.Platform$OS.type=="windows"){
+    env_deephf <- BasiliskEnvironment(envname="deephf_basilisk",
+                                      pkgname="crisprScore",
+                                      paths="python/deephf",
+                                      packages=deephf_dependencies,
+                                      channels=c("conda-forge", "bioconda"))
+} else {
+    env_deephf <- NULL
+}
 
 env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
                                     pkgname="crisprScore",

@@ -3,7 +3,8 @@
 #'     CRISPR/Cas9-induced knockout using the DeepHF scoring method. Both U6
 #'     and T7 promoters are supported. Three different versions of the SpCas9
 #'     nuclease are supported: wildtype (WT-SpCas9), high-fidelity Cas9
-#'     (SpCas9-HF1) and enhanced Cas9 (eSpCas9).  
+#'     (SpCas9-HF1) and enhanced Cas9 (eSpCas9). Currently not supported
+#'     on Windows machines.
 #'     
 #' @param sequences Character vector of 23bp protospacer sequences.
 #' @param enzyme Character string specifying the Cas9 variant.
@@ -61,6 +62,10 @@ getDeepHFScores <- function(sequences,
                             enzyme=c("WT", "ESP", "HF"),
                             promoter=c("U6", "T7"),
                             fork=FALSE){
+	if (.Platform$OS.type=="windows"){
+		message("DeepHF is not available for Windows at the moment.")
+		return(NULL)
+	}
     enzyme   <- match.arg(enzyme)
     promoter <- match.arg(promoter)
     if (enzyme=="WT" & promoter=="U6"){
