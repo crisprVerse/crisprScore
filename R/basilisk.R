@@ -1,11 +1,11 @@
 azimuth_dependencies <- c("python==2.7",
-                          "biopython==1.68",
+                          "biopython==1.74",
                           "certifi==2019.11.28",
                           "cycler==0.10.0",
                           "futures==3.3.0",
                           "kiwisolver==1.1.0",
                           "matplotlib==2.2.3",
-                          "mmtf-python==1.0.2",
+                          "mmtf-python==1.1.2",
                           "nose==1.3.7",
                           "numpy==1.11.3",
                           "olefile==0.46",
@@ -16,13 +16,14 @@ azimuth_dependencies <- c("python==2.7",
                           "python-dateutil==2.8.1",
                           "pytz==2020.1",
                           "reportlab==3.5.42",
-                          "scikit-learn==0.17.1",
                           "scipy==1.2.1",
                           "setuptools==44.0.0",
                           "six==1.15.0",
                           "subprocess32==3.5.4",
                           "tornado==5.1.1",
                           "wheel==0.36.2")
+
+azimuth_dependencies_pip <- c("scikit-learn==0.17.1")
 
 deephf_dependencies <- c("python==3.6",
                          "viennarna>=2.4.5",
@@ -154,7 +155,8 @@ env_azimuth <- BasiliskEnvironment(envname="azimuth_basilisk",
                                    pkgname="crisprScore",
                                    paths="python/azimuth",
                                    packages=azimuth_dependencies,
-                                   channels = c("bioconda", "conda-forge"))
+                                   channels = c("bioconda", "conda-forge"),
+                                   pip=azimuth_dependencies_pip)
 
 if (.Platform$OS.type=="windows"){
     env_deephf <- BasiliskEnvironment(envname="deephf_basilisk",
