@@ -1,6 +1,7 @@
 #' @title Calculate on-target sgRNA activity scores for enCas12a using enPAM+GB
 #' @description Calculate on-target sgRNA activity scores for
 #'     CRISPR/Cas12a-induced knockout using the enPAM+GB scoring method.
+#'     Currently not supported on Windows machines.
 #' 
 #' @param sequences Character vector of 34bp sequences needed for enPAM+GB
 #'     scoring, see details below.
@@ -35,6 +36,9 @@
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getEnPAMGBScores <- function(sequences, fork=FALSE){
+    if (.Platform$OS.type=="windows"){
+        stop("EnPAMGB is not available for Windows at the moment.")
+    }
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=34){
         stop("Provided sequences must have length 34nt",

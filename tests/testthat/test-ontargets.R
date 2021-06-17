@@ -24,6 +24,7 @@ test_that('DeepCpf1 scores', {
 })
 
 test_that('enPAM+GB scores', {
+  skip_on_os("windows")
   expect_equal(round(getEnPAMGBScores(enpamgb_sequences)$score,3), enpamgb_scores)
 })
 

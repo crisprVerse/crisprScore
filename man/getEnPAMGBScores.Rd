@@ -20,6 +20,7 @@ configuration within the session.}
 \description{
 Calculate on-target sgRNA activity scores for
     CRISPR/Cas12a-induced knockout using the enPAM+GB scoring method.
+    Currently not supported on Windows machines.
 }
 \details{
 The input sequences for enPAM+GB scoring require 4 nucleotides

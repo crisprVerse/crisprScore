@@ -63,8 +63,7 @@ getDeepHFScores <- function(sequences,
                             promoter=c("U6", "T7"),
                             fork=FALSE){
 	if (.Platform$OS.type=="windows"){
-		message("DeepHF is not available for Windows at the moment.")
-		return(NULL)
+		stop("DeepHF is not available for Windows at the moment.")
 	}
     enzyme   <- match.arg(enzyme)
     promoter <- match.arg(promoter)
@@ -131,6 +130,3 @@ getDeepHFScores <- function(sequences,
     }
     return(df)
 }
-
-
-

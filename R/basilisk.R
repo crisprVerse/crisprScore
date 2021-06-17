@@ -168,18 +168,25 @@ if (.Platform$OS.type!="windows"){
     env_deephf <- NULL
 }
 
+
 env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
                                     pkgname="crisprScore",
                                     paths="python/deepcpf1",
                                     packages=deepcpf1_dependencies,
                                     channels=c("conda-forge", "bioconda"))
 
-env_enpamgb <- BasiliskEnvironment(envname="enpamgb_basilisk",
-                                   pkgname="crisprScore",
-                                   paths="python/enpamgb",
-                                   packages=enpamgb_dependencies,
-                                   channels=c("conda-forge", "bioconda"),
-                                   pip=enpamgb_dependencies_pip)
+
+if (.Platform$OS.type!="windows"){
+    env_enpamgb <- BasiliskEnvironment(envname="enpamgb_basilisk",
+                                       pkgname="crisprScore",
+                                       paths="python/enpamgb",
+                                       packages=enpamgb_dependencies,
+                                       channels=c("conda-forge", "bioconda"),
+                                       pip=enpamgb_dependencies_pip)
+} else {
+    env_enpamgb <- NULL
+}
+
 
 env_lindel <- BasiliskEnvironment(envname="lindel_basilisk",
                                   pkgname="crisprScore",

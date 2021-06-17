@@ -34,7 +34,8 @@ Calculate on-target sgRNA activity scores for
     CRISPR/Cas9-induced knockout using the DeepHF scoring method. Both U6
     and T7 promoters are supported. Three different versions of the SpCas9
     nuclease are supported: wildtype (WT-SpCas9), high-fidelity Cas9
-    (SpCas9-HF1) and enhanced Cas9 (eSpCas9).
+    (SpCas9-HF1) and enhanced Cas9 (eSpCas9). Currently not supported
+    on Windows machines.
 }
 \details{
 Input sequences for DeepHF scoring must be 23bpprotospacer
