@@ -95,6 +95,31 @@ deepcpf1_dependencies <- c("python==2.7",
                            "unittest2==1.1.0",
                            "wheel==0.36.2")
 
+deepcpf1_dependencies_win <- c("python==2.7",
+                           "funcsigs==1.0.2",
+                           "h5py==2.10.0",
+                           "Keras==2.1.5",
+                           "linecache2==1.0.0",
+                           "Mako==1.1.4",
+                           "MarkupSafe==1.1.1",
+                           "mock==3.0.5",
+                           "numpy==1.16.5",
+                           "pip==20.1.1",
+                           "protobuf==3.11.4",
+                           "pygpu==0.7.6",
+                           "PyYAML==5.3.1",
+                           "scipy==1.2.1",
+                           "setuptools==44.0.0",
+                           "six==1.15.0",
+                           "tensorflow==1.0.0",
+                           "Theano==1.0.1",
+                           "traceback2==1.4.0",
+                           "unittest2==1.1.0",
+                           "wheel==0.36.2",
+                           "certifi==2019.11.28")
+
+
+
 
 enpamgb_dependencies <- c("python==3.6",
                           "absl-py==0.12.0",
@@ -168,12 +193,19 @@ if (.Platform$OS.type!="windows"){
     env_deephf <- NULL
 }
 
-
-env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
-                                    pkgname="crisprScore",
-                                    paths="python/deepcpf1",
-                                    packages=deepcpf1_dependencies,
-                                    channels=c("conda-forge", "bioconda"))
+if (.Platform$OS.type!="windows"){
+    env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
+                                        pkgname="crisprScore",
+                                        paths="python/deepcpf1",
+                                        packages=deepcpf1_dependencies,
+                                        channels=c("conda-forge", "bioconda"))
+} else {
+    env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
+                                        pkgname="crisprScore",
+                                        paths="python/deepcpf1",
+                                        packages=deepcpf1_dependencies_win,
+                                        channels=c("conda-forge", "bioconda"))
+}
 
 
 if (.Platform$OS.type!="windows"){
