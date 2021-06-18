@@ -22,7 +22,6 @@ azimuth_dependencies <- c("python==2.7",
                           "subprocess32==3.5.4",
                           "tornado==5.1.1",
                           "wheel==0.36.2")
-
 azimuth_dependencies_pip <- c("scikit-learn==0.17.1")
 
 deephf_dependencies <- c("python==3.6",
@@ -95,30 +94,6 @@ deepcpf1_dependencies <- c("python==2.7",
                            "unittest2==1.1.0",
                            "wheel==0.36.2")
 
-deepcpf1_dependencies_win <- c("python==2.7",
-                           "funcsigs==1.0.2",
-                           "h5py==2.10.0",
-                           "Keras==2.1.5",
-                           "linecache2==1.0.0",
-                           "Mako==1.1.4",
-                           "MarkupSafe==1.1.1",
-                           "mock==3.0.5",
-                           "numpy==1.16.5",
-                           "pip==20.1.1",
-                           "protobuf==3.11.4",
-                           "pygpu==0.7.6",
-                           "PyYAML==5.3.1",
-                           "scipy==1.2.1",
-                           "setuptools==44.0.0",
-                           "six==1.15.0",
-                           "tensorflow==1.0.0",
-                           "Theano==1.0.1",
-                           "traceback2==1.4.0",
-                           "unittest2==1.1.0",
-                           "wheel==0.36.2",
-                           "certifi==2019.11.28")
-
-
 
 
 enpamgb_dependencies <- c("python==3.6",
@@ -163,8 +138,8 @@ enpamgb_dependencies <- c("python==3.6",
                           "wheel==0.36.2",
                           "wrapt==1.12.1",
                           "zipp==3.4.1")
-
 enpamgb_dependencies_pip <- c("tensorflow==2.4.1")
+
 
 lindel_dependencies <- c("python==3.6",
                          "certifi==2020.12.5",
@@ -183,46 +158,42 @@ env_azimuth <- BasiliskEnvironment(envname="azimuth_basilisk",
                                    channels = c("bioconda", "conda-forge"),
                                    pip=azimuth_dependencies_pip)
 
+env_lindel <- BasiliskEnvironment(envname="lindel_basilisk",
+                                  pkgname="crisprScore",
+                                  paths="python/lindel",
+                                  packages=lindel_dependencies,
+                                  channels=c("conda-forge", "bioconda"))
+
+
+
 if (.Platform$OS.type!="windows"){
     env_deephf <- BasiliskEnvironment(envname="deephf_basilisk",
                                       pkgname="crisprScore",
                                       paths="python/deephf",
                                       packages=deephf_dependencies,
                                       channels=c("conda-forge", "bioconda"))
-} else {
-    env_deephf <- NULL
-}
-
-if (.Platform$OS.type!="windows"){
-    env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
-                                        pkgname="crisprScore",
-                                        paths="python/deepcpf1",
-                                        packages=deepcpf1_dependencies,
-                                        channels=c("conda-forge", "bioconda"))
-} else {
-    env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
-                                        pkgname="crisprScore",
-                                        paths="python/deepcpf1",
-                                        packages=deepcpf1_dependencies_win,
-                                        channels=c("conda-forge", "bioconda"))
-}
 
 
-if (.Platform$OS.type!="windows"){
+
     env_enpamgb <- BasiliskEnvironment(envname="enpamgb_basilisk",
                                        pkgname="crisprScore",
                                        paths="python/enpamgb",
                                        packages=enpamgb_dependencies,
                                        channels=c("conda-forge", "bioconda"),
                                        pip=enpamgb_dependencies_pip)
+
+    env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
+                                        pkgname="crisprScore",
+                                        paths="python/deepcpf1",
+                                        packages=deepcpf1_dependencies,
+                                        channels=c("conda-forge", "bioconda"))
+
 } else {
-    env_enpamgb <- NULL
+    env_deephf   <- NULL
+    env_enpamgb  <- NULL
+    env_deepcpf1 <- NULL
 }
 
 
-env_lindel <- BasiliskEnvironment(envname="lindel_basilisk",
-                                  pkgname="crisprScore",
-                                  paths="python/lindel",
-                                  packages=lindel_dependencies,
-                                  channels=c("conda-forge", "bioconda"))
+
 

@@ -1,6 +1,7 @@
 #' @title Calculate on-target sgRNA activity scores for Cas12a using DeepCpf1
 #' @description Calculate on-target sgRNA activity scores for
 #'     CRISPR/Cas12a-induced knockout using the DeepCpf1 scoring method.
+#'     Currently not supported on Windows machines.
 #' 
 #' @param sequences Character vector of 34bp sequences needed for DeepCpf1
 #'     scoring, see details below.
@@ -41,6 +42,9 @@
 getDeepCpf1Scores <- function(sequences,
                               convertPAM=TRUE,
                               fork=FALSE){
+    if (.Platform$OS.type=="windows"){
+        stop("DeepCpf1 is not available for Windows at the moment.")
+    }
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=34){
         stop("Provided sequences must have length 34nt",

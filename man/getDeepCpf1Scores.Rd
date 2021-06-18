@@ -24,6 +24,7 @@ configuration within the session.}
 \description{
 Calculate on-target sgRNA activity scores for
     CRISPR/Cas12a-induced knockout using the DeepCpf1 scoring method.
+    Currently not supported on Windows machines.
 }
 \details{
 The input sequences for DeepCpf1 scoring require 4 nucleotides

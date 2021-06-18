@@ -1,3 +1,4 @@
 vignettes/figures/resave.sh
 vignettes/figures/*.pptx
 ^\.BBSoptions$
+inst/python/azimuth/azimuth/azure_models/*
