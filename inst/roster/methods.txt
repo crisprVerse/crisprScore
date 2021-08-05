@@ -1,8 +1,8 @@
 method	nuclease	left	right	type
-azimuth	Cas9	-24	5	On-target
-deephf	Cas9	-20	2	On-target
-lindel	Cas9	-33	31	On-target
-mit	Cas9	-20	2	Off-target
-cfd	Cas9	-20 2	Off-target
-deepcpf1	Cas12a	-4	29	On-target
-enpamgb	Cas12a	-4	29	On-target
+azimuth	SpCas9	-24	5	On-target
+deephf	SpCas9	-20	2	On-target
+lindel	SpCas9	-33	31	On-target
+mit	SpCas9	-20	2	Off-target
+cfd	SpCas9	-20 2	Off-target
+deepcpf1	AsCas12a	-4	29	On-target
+enpamgb	enAsCas12a	-4	29	On-target
