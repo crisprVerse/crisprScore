@@ -30,7 +30,7 @@ Description:
     Both the CFD and MIT scoring methods are available for off-target specificity prediction. 
     The package also provides a Lindel-derived score to predict the probability of a gRNA to produce 
     indels inducing a frameshift for the Cas9 nuclease. 
-License: CC BY-NC-ND 4.0 + file LICENSE
+License: MIT + file LICENSE
 Encoding: UTF-8
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
