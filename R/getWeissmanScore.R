@@ -15,7 +15,7 @@ library(reticulate)
 # setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/")
 # setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore3/inst/python/crisprai")
 
-# basilisk::configureBasiliskEnv(src = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/R/basilisk.R")
+basilisk::configureBasiliskEnv(src = "basilisk.R")
 
 ##
 
