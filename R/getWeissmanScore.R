@@ -19,8 +19,19 @@ library(reticulate)
 
 ##
 
-input_file_tss  <- "example_input_for_R/tssTable.txt"
-input_file_grna <- "example_input_for_R/sgrnaInfoTable.txt"
+example_data_path <- system.file("python",
+                                 "crisprai",
+                                 "example_input_for_R",
+                                 package="crisprScore",
+                                 mustWork=TRUE)
+
+# input_file_tss  <- "example_input_for_R/tssTable.txt"
+# input_file_grna <- "example_input_for_R/sgrnaInfoTable.txt"
+
+input_file_tss  <- paste0(example_data_path, "/tssTable.txt")
+input_file_grna <- paste0(example_data_path, "/sgrnaInfoTable.txt")
+
+
 
 tssTable <- read.table(input_file_tss,
                        head=TRUE,
