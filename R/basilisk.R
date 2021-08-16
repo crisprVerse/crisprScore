@@ -149,7 +149,7 @@ lindel_dependencies <- c("python==3.6",
                          "setuptools==49.6.0",
                          "wheel==0.36.2")
 
-weissman_dependencies <- c("python=2.7.15",
+crisprai_dependencies <- c("python=2.7.15",
                            "numpy==1.11.3",
                            "scipy==0.18.1",
                            "biopython==1.68",
@@ -159,7 +159,7 @@ weissman_dependencies <- c("python=2.7.15",
                            "bx-python==0.7.3",
                            "notebook==5.7.8")
 
-weissman_dependencies_pip <- c("pandas==0.15.0")
+crisprai_dependencies_pip <- c("pandas==0.15.0")
 
 #' @importFrom basilisk BasiliskEnvironment
 env_azimuth <- BasiliskEnvironment(envname="azimuth_basilisk",
@@ -175,11 +175,11 @@ env_lindel <- BasiliskEnvironment(envname="lindel_basilisk",
                                   packages=lindel_dependencies,
                                   channels=c("conda-forge", "bioconda"))
 
-env_weissman <- BasiliskEnvironment(envname="weissman_basilisk",
+env_crisprai <- BasiliskEnvironment(envname="crisprai_basilisk",
                                     pkgname="crisprScore",
                                     paths="python/crisprai",
-                                    packages=weissman_dependencies,
-                                    pip=weissman_dependencies_pip)
+                                    packages=crisprai_dependencies,
+                                    pip=crisprai_dependencies_pip)
 
 if (.Platform$OS.type!="windows"){
     env_deephf <- BasiliskEnvironment(envname="deephf_basilisk",

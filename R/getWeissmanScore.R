@@ -8,10 +8,10 @@
 
 library(reticulate)
 
-use_condaenv(condaenv="weissman", required=TRUE)
+# use_condaenv(condaenv="weissman", required=TRUE)
 
 # setwd("/gstore/data/omni/crispr/piru/CRISPRai/")
-setwd("/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai")
+# setwd("/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai")
 # setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/")
 # setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore3/inst/python/crisprai")
 
@@ -32,6 +32,7 @@ tss_df <- tssTable
 sgrnaInfo_df <- sgrnaInfoTable <- grnaTable
 
 
+#' @export 
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getWeissmanScore <- function(tss_df,
                              sgrnaInfo_df,
@@ -63,27 +64,26 @@ getWeissmanScore <- function(tss_df,
     #                        verbose=verbose)
     
     
-    # results <- basilisk::basiliskRun(env=env_weissman,
-    #                                  shared=FALSE,
-    #                                  fork=fork,
-    #                                  fun=.pyPredictWeissmanScore,
-    #                                  modality=modality,
-    #                                  tssTable=inputList[["tssTable"]],
-    #                                  p1p2Table=inputList[["p1p2Table"]],
-    #                                  sgrnaTable=inputList[["sgrnaTable"]],
-    #                                  libraryTable=inputList[["libraryTable"]],
-    #                                  verbose=verbose)
+    results <- basilisk::basiliskRun(env=env_crisprai,
+                                     shared=FALSE,
+                                     fork=fork,
+                                     fun=.pyPredictWeissmanScore,
+                                     modality=modality,
+                                     tssTable=inputList[["tssTable"]],
+                                     p1p2Table=inputList[["p1p2Table"]],
+                                     sgrnaTable=inputList[["sgrnaTable"]],
+                                     libraryTable=inputList[["libraryTable"]],
+                                     verbose=verbose)
     
-    results <- .pyPredictWeissmanScore(modality=modality,
-                                       tssTable=inputList[["tssTable"]],
-                                       p1p2Table=inputList[["p1p2Table"]],
-                                       sgrnaTable=inputList[["sgrnaTable"]],
-                                       libraryTable=inputList[["libraryTable"]],
-                                       verbose=verbose)
+    # results <- .pyPredictWeissmanScore(modality=modality,
+    #                                    tssTable=inputList[["tssTable"]],
+    #                                    p1p2Table=inputList[["p1p2Table"]],
+    #                                    sgrnaTable=inputList[["sgrnaTable"]],
+    #                                    libraryTable=inputList[["libraryTable"]],
+    #                                    verbose=verbose)
 
     
     return(results)
-    # return(inputList)
 }
 
 
@@ -110,12 +110,18 @@ getWeissmanScore <- function(tss_df,
     sgrnaTable <- r_to_py(sgrnaTable)
     libraryTable <- r_to_py(libraryTable)
     # newdf <- testthat::expect_is(converted,class = "pandas.core.frame.DataFrame")
-  
+    
+    dir <- system.file("python",
+                       "crisprai",
+                       package="crisprScore",
+                       mustWork=TRUE)
   
     # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/python/"
-    path = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai"
+    # path = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai"
     # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/"
-    pyWeissmanScore <- import_from_path("predictWeissmanScore", path = path)  
+    # pyWeissmanScore <- import_from_path("predictWeissmanScore", path = path)
+    
+    pyWeissmanScore <- import_from_path("predictWeissmanScore.py", path=dir)
     
     scores <- py_suppress_warnings(pyWeissmanScore$predictWeissmanScore(tssTable=tssTable,
                                                                         p1p2Table=p1p2Table,
