@@ -97,15 +97,15 @@ getWeissmanScore <- function(tss_df,
     libraryTable <- r_to_py(libraryTable)
     # newdf <- testthat::expect_is(converted,class = "pandas.core.frame.DataFrame")
     
-    dir <- system.file("python",
-                       "crisprai",
-                       package="crisprScore",
-                       mustWork=TRUE)
+    # dir <- system.file("python",
+    #                    "crisprai",
+    #                    package="crisprScore",
+    #                    mustWork=TRUE)
+    
+    dir = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/inst/python/crisprai"
   
     # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/python/"
-    # path = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai"
     # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/"
-    # pyWeissmanScore <- import_from_path("predictWeissmanScore", path = path)
     
     pyWeissmanScore <- import_from_path("predictWeissmanScore.py", path=dir)
     
