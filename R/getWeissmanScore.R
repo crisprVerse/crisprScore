@@ -8,7 +8,7 @@
 
 library(reticulate)
 
-use_condaenv(condaenv="crisprai", required=TRUE)
+use_condaenv(condaenv="crisprai2", required=TRUE)
 # use_python_version(version="2.7", required = FALSE)
 
 # basilisk::configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk_min.R")
