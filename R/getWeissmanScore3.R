@@ -10,11 +10,6 @@ library(reticulate)
 
 use_condaenv(condaenv="weissman", required=TRUE)
 
-setwd("/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai")
-# setwd("/gstore/data/omni/crispr/piru/crisprScore3/")
-# setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/")
-# setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai")
-
 # basilisk::configureBasiliskEnv(src = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/R/basilisk.R")
 
 ##
@@ -110,12 +105,13 @@ getWeissmanScore <- function(tss_df,
     sgrnaTable <- r_to_py(sgrnaTable)
     libraryTable <- r_to_py(libraryTable)
     # newdf <- testthat::expect_is(converted,class = "pandas.core.frame.DataFrame")
-  
-  
-    # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/python/"
-    path = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/"
-    # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/"
-    pyWeissmanScore <- import_from_path("predictWeissmanScore", path = path)
+    
+    dir <- system.file("python",
+                       "crisprai",
+                       package="crisprScore",
+                       mustWork=TRUE)
+ 
+    pyWeissmanScore <- import_from_path("predictWeissmanScore", path = dir)
     
     scores <- py_suppress_warnings(pyWeissmanScore$predictWeissmanScore(tssTable=tssTable,
                                                                         p1p2Table=p1p2Table,
