@@ -102,7 +102,7 @@ getWeissmanScore <- function(tss_df,
     #                    package="crisprScore",
     #                    mustWork=TRUE)
     
-    dir = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/inst/python/crisprai"
+    dir = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai"
   
     # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/python/"
     # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/"
