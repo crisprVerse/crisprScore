@@ -47,16 +47,16 @@ getWeissmanScore <- function(tss_df,
                                    sgrnaInfo_df,
                                    verbose=verbose)
 
-    results <- basilisk::basiliskRun(env=env_crisprai,
-                                     shared=FALSE,
-                                     fork=fork,
-                                     fun=.pyPredictWeissmanScore,
-                                     modality=modality,
-                                     tssTable=inputList[["tssTable"]],
-                                     p1p2Table=inputList[["p1p2Table"]],
-                                     sgrnaTable=inputList[["sgrnaTable"]],
-                                     libraryTable=inputList[["libraryTable"]],
-                                     verbose=verbose)
+    results <- basiliskRun(env=env_crisprai,
+                           shared=FALSE,
+                           fork=fork,
+                           fun=.pyPredictWeissmanScore,
+                           modality=modality,
+                           tssTable=inputList[["tssTable"]],
+                           p1p2Table=inputList[["p1p2Table"]],
+                           sgrnaTable=inputList[["sgrnaTable"]],
+                           libraryTable=inputList[["libraryTable"]],
+                           verbose=verbose)
     
     # results <- .pyPredictWeissmanScore(modality=modality,
     #                                    tssTable=inputList[["tssTable"]],
@@ -104,7 +104,7 @@ getWeissmanScore <- function(tss_df,
     # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/python/"
     # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/"
     
-    pyWeissmanScore <- import_from_path("predictWeissmanScore.py", path=dir)
+    pyWeissmanScore <- import_from_path("predictWeissmanScore", path=dir)
     
     scores <- py_suppress_warnings(pyWeissmanScore$predictWeissmanScore(tssTable=tssTable,
                                                                         p1p2Table=p1p2Table,
