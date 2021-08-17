@@ -8,8 +8,7 @@ crisprai_dependencies <- c("python==2.7.15",
                            "pysam=0.15.3",
                            "viennarna=2.4.18",
                            "scikit-learn==0.17.1",
-                           "bx-python==0.7.3",
-                           "notebook==5.7.8")
+                           "bx-python==0.7.3")
 
 crisprai_dependencies_pip <- c("pandas==0.15.0")
 
