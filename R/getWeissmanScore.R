@@ -2,7 +2,7 @@
 # 
 # converts data to correct format before calling python module
 
-# crisprai package
+# crisprai package using basilisk
 
 ##
 
@@ -10,12 +10,16 @@ library(reticulate)
 library(basilisk)
 
 configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk_min.R")
+# configureBasiliskEnv(src = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/R/basilisk_min.R")
 
 # input_file_tss  <- "example_input_for_R/tssTable.txt"
 # input_file_grna <- "example_input_for_R/sgrnaInfoTable.txt"
 
 input_file_tss  <- "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/example_input_for_R/tssTable.txt"
 input_file_grna <- "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/example_input_for_R/sgrnaInfoTable.txt"
+
+# input_file_tss  <- "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/example_input_for_R/tssTable.txt"
+# input_file_grna <- "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/example_input_for_R/sgrnaInfoTable.txt"
 
 
 
@@ -42,16 +46,16 @@ getWeissmanScore <- function(tss_df,
                                    sgrnaInfo_df,
                                    verbose=verbose)
 
-    results <- basiliskRun(env=env_crisprai,
-                           shared=FALSE,
-                           fork=fork,
-                           fun=.pyPredictWeissmanScore,
-                           modality=modality,
-                           tssTable=inputList[["tssTable"]],
-                           p1p2Table=inputList[["p1p2Table"]],
-                           sgrnaTable=inputList[["sgrnaTable"]],
-                           libraryTable=inputList[["libraryTable"]],
-                           verbose=verbose)
+    results <- basilisk::basiliskRun(env=env_crisprai,
+                                     shared=FALSE,
+                                     fork=fork,
+                                     fun=.pyPredictWeissmanScore,
+                                     modality=modality,
+                                     tssTable=inputList[["tssTable"]],
+                                     p1p2Table=inputList[["p1p2Table"]],
+                                     sgrnaTable=inputList[["sgrnaTable"]],
+                                     libraryTable=inputList[["libraryTable"]],
+                                     verbose=verbose)
 
     return(results)
 }
@@ -78,16 +82,14 @@ getWeissmanScore <- function(tss_df,
     sgrnaTable <- r_to_py(sgrnaTable)
     libraryTable <- r_to_py(libraryTable)
     
-    # dir <- system.file("python",
-    #                    "crisprai",
-    #                    package="crisprScore",
-    #                    mustWork=TRUE)
+    dir <- system.file("python",
+                       "crisprai",
+                       package="crisprScore",
+                       mustWork=TRUE)
     
-    dir = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/"
-  
-    # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/python/"
-    # path = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/"
-    
+    # dir = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/"
+    # dir = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/"
+
     pyWeissmanScore <- import_from_path("predictWeissmanScore", path=dir)
     
     scores <- py_suppress_warnings(pyWeissmanScore$predictWeissmanScore(tssTable=tssTable,
