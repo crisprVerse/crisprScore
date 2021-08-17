@@ -9,8 +9,7 @@
 library(reticulate)
 library(basilisk)
 
-configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk_min.R")
-# configureBasiliskEnv(src = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/R/basilisk_min.R")
+# configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk_min.R")
 
 # input_file_tss  <- "example_input_for_R/tssTable.txt"
 # input_file_grna <- "example_input_for_R/sgrnaInfoTable.txt"
@@ -82,9 +81,6 @@ getWeissmanScore <- function(tss_df,
                        "crisprai",
                        package="crisprScore",
                        mustWork=TRUE)
-    
-    # dir = "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/"
-    # dir = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/"
 
     pyWeissmanScore <- import_from_path("predictWeissmanScore", path=dir)
     
