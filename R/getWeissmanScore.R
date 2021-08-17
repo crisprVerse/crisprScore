@@ -8,14 +8,14 @@
 
 library(reticulate)
 
-# use_condaenv(condaenv="weissman", required=TRUE)
+use_condaenv(condaenv="weissman", required=TRUE)
 
 # setwd("/gstore/data/omni/crispr/piru/CRISPRai/")
 # setwd("/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai")
 # setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/")
 # setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore3/inst/python/crisprai")
 
-basilisk::configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk_min.R")
+# basilisk::configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk_min.R")
 
 ##
 
@@ -49,43 +49,24 @@ getWeissmanScore <- function(tss_df,
     inputList <- .prepareInputData(tss_df,
                                    sgrnaInfo_df,
                                    verbose=verbose)
+
+    # results <- basilisk::basiliskRun(env=env_crisprai,
+    #                                  shared=FALSE,
+    #                                  fork=fork,
+    #                                  fun=.pyPredictWeissmanScore,
+    #                                  modality=modality,
+    #                                  tssTable=inputList[["tssTable"]],
+    #                                  p1p2Table=inputList[["p1p2Table"]],
+    #                                  sgrnaTable=inputList[["sgrnaTable"]],
+    #                                  libraryTable=inputList[["libraryTable"]],
+    #                                  verbose=verbose)
     
-  
-    ## workaround for basilisk
-    # tmploc <- file.path(tempdir(), "env_weissman")
-    # cl <- basiliskStart(tmploc)
-    ##
-    
-    
-    # results <- basiliskRun(proc=cl,
-    #                        shared=FALSE,
-    #                        fork=FALSE,
-    #                        fun=.pyPredictWeissmanScore,
-    #                        modality=modality,
-    #                        tssTable=inputList[["tssTable"]],
-    #                        p1p2Table=inputList[["p1p2Table"]],
-    #                        sgrnaTable=inputList[["sgrnaTable"]],
-    #                        libraryTable=inputList[["libraryTable"]],
-    #                        verbose=verbose)
-    
-    
-    results <- basilisk::basiliskRun(env=env_crisprai,
-                                     shared=FALSE,
-                                     fork=fork,
-                                     fun=.pyPredictWeissmanScore,
-                                     modality=modality,
-                                     tssTable=inputList[["tssTable"]],
-                                     p1p2Table=inputList[["p1p2Table"]],
-                                     sgrnaTable=inputList[["sgrnaTable"]],
-                                     libraryTable=inputList[["libraryTable"]],
-                                     verbose=verbose)
-    
-    # results <- .pyPredictWeissmanScore(modality=modality,
-    #                                    tssTable=inputList[["tssTable"]],
-    #                                    p1p2Table=inputList[["p1p2Table"]],
-    #                                    sgrnaTable=inputList[["sgrnaTable"]],
-    #                                    libraryTable=inputList[["libraryTable"]],
-    #                                    verbose=verbose)
+    results <- .pyPredictWeissmanScore(modality=modality,
+                                       tssTable=inputList[["tssTable"]],
+                                       p1p2Table=inputList[["p1p2Table"]],
+                                       sgrnaTable=inputList[["sgrnaTable"]],
+                                       libraryTable=inputList[["libraryTable"]],
+                                       verbose=verbose)
 
     
     return(results)
