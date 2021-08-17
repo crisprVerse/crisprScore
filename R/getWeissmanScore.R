@@ -9,11 +9,7 @@
 library(reticulate)
 
 use_condaenv(condaenv="weissman", required=TRUE)
-
-# setwd("/gstore/data/omni/crispr/piru/CRISPRai/")
-# setwd("/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai")
-# setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/")
-# setwd("/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore3/inst/python/crisprai")
+use_python_version(version="2.7", required = FALSE)
 
 # basilisk::configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk_min.R")
 
