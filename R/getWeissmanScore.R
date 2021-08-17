@@ -15,12 +15,8 @@ configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk
 # input_file_tss  <- "example_input_for_R/tssTable.txt"
 # input_file_grna <- "example_input_for_R/sgrnaInfoTable.txt"
 
-input_file_tss  <- "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/example_input_for_R/tssTable.txt"
-input_file_grna <- "/gstore/data/omni/crispr/piru/crisprScore/inst/python/crisprai/example_input_for_R/sgrnaInfoTable.txt"
-
-# input_file_tss  <- "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/example_input_for_R/tssTable.txt"
-# input_file_grna <- "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/crisprScore/inst/python/crisprai/example_input_for_R/sgrnaInfoTable.txt"
-
+input_file_tss  <- "/gstore/data/omni/crispr/piru/example_input_for_R/tssTable.txt"
+input_file_grna <- "/gstore/data/omni/crispr/piru/example_input_for_R/sgrnaInfoTable.txt"
 
 
 tssTable <- read.table(input_file_tss,
