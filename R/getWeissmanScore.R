@@ -7,6 +7,7 @@
 ##
 
 library(reticulate)
+library(basilisk)
 
 # use_condaenv(condaenv="crisprai2", required=TRUE)
 # use_python_version(version="2.7.15", required = TRUE)
