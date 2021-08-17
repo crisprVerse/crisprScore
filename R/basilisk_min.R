@@ -16,57 +16,12 @@ crisprai_dependencies <- c("python==2.7.15",
 
 crisprai_dependencies_pip <- c("pandas==0.15.0")
 
-#' @importFrom basilisk BasiliskEnvironment
-env_crisprai <- BasiliskEnvironment(envname="crisprai_basilisk",
-                                    pkgname="crisprScore",
-                                    paths="python/crisprai",
-                                    packages=crisprai_dependencies,
-                                    channels = c("bioconda", "conda-forge"),
-                                    pip=crisprai_dependencies_pip)
 
-# env_azimuth <- BasiliskEnvironment(envname="azimuth_basilisk",
-#                                    pkgname="crisprScore",
-#                                    paths="python/azimuth",
-#                                    packages=azimuth_dependencies,
-#                                    channels = c("bioconda", "conda-forge"),
-#                                    pip=azimuth_dependencies_pip)
-# 
-# env_lindel <- BasiliskEnvironment(envname="lindel_basilisk",
-#                                   pkgname="crisprScore",
-#                                   paths="python/lindel",
-#                                   packages=lindel_dependencies,
-#                                   channels=c("conda-forge", "bioconda"))
-
-
-
-# if (.Platform$OS.type!="windows"){
-#     env_deephf <- BasiliskEnvironment(envname="deephf_basilisk",
-#                                       pkgname="crisprScore",
-#                                       paths="python/deephf",
-#                                       packages=deephf_dependencies,
-#                                       channels=c("conda-forge", "bioconda"))
-# 
-# 
-# 
-#     env_enpamgb <- BasiliskEnvironment(envname="enpamgb_basilisk",
-#                                        pkgname="crisprScore",
-#                                        paths="python/enpamgb",
-#                                        packages=enpamgb_dependencies,
-#                                        channels=c("conda-forge", "bioconda"),
-#                                        pip=enpamgb_dependencies_pip)
-# 
-#     env_deepcpf1 <- BasiliskEnvironment(envname="deepcpf1_basilisk",
-#                                         pkgname="crisprScore",
-#                                         paths="python/deepcpf1",
-#                                         packages=deepcpf1_dependencies,
-#                                         channels=c("conda-forge", "bioconda"))
-# 
-# } else {
-#     env_deephf   <- NULL
-#     env_enpamgb  <- NULL
-#     env_deepcpf1 <- NULL
-# }
-
-
+env_crisprai <- basilisk::BasiliskEnvironment(envname="crisprai_basilisk",
+                                              pkgname="crisprScore",
+                                              paths="python/crisprai",
+                                              packages=crisprai_dependencies,
+                                              channels = c("bioconda", "conda-forge"),
+                                              pip=crisprai_dependencies_pip)
 
 
