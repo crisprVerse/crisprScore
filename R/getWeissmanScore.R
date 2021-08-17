@@ -1,33 +1,3 @@
-# Function to call python module to get Weissman sgRNA score
-# 
-# converts data to correct format before calling python module
-
-# crisprai package using basilisk
-
-##
-
-library(reticulate)
-library(basilisk)
-
-# configureBasiliskEnv(src = "/gstore/data/omni/crispr/piru/crisprScore/R/basilisk_min.R")
-
-# input_file_tss  <- "example_input_for_R/tssTable.txt"
-# input_file_grna <- "example_input_for_R/sgrnaInfoTable.txt"
-
-input_file_tss  <- "/gstore/data/omni/crispr/piru/example_input_for_R/tssTable.txt"
-input_file_grna <- "/gstore/data/omni/crispr/piru/example_input_for_R/sgrnaInfoTable.txt"
-
-
-tssTable <- read.table(input_file_tss,
-                       head=TRUE,
-                       stringsAsFactors=FALSE)
-grnaTable <- read.table(input_file_grna,
-                        head=TRUE,
-                        stringsAsFactors=FALSE)
-tss_df <- tssTable
-sgrnaInfo_df <- sgrnaInfoTable <- grnaTable
-
-
 #' @export 
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getWeissmanScore <- function(tss_df,
@@ -412,43 +382,3 @@ getWeissmanScore <- function(tss_df,
     return(inputList)
 }
 
-
-
-
-
-
-
-## testing ##
-
-
-scores <- getWeissmanScore(tss_df,
-                            sgrnaInfo_df,
-                            verbose=TRUE,
-                            modality=c("CRISPRa"))
-
-head(scores)
-
-
-# head(finalList[["tssTable"]])
-# head(finalList[["p1p2Table"]])
-# head(finalList[["sgrnaTable"]])
-# head(finalList[["libraryTable"]])
-# 
-# tss <- finalList[["tssTable"]]
-# p1p2 <- finalList[["p1p2Table"]]
-# sgrnainfo <- finalList[["sgrnaTable"]]
-# libraryTable <- finalList[["libraryTable"]]
-
-
-
-# write.table(tss, file = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/input_files/sonata_hg38/min_input/new_trx_sonata_tssTable.txt",
-#             sep = "\t", row.names = FALSE, col.names = TRUE)
-# 
-# write.table(p1p2, file = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/input_files/sonata_hg38/min_input/new_trx_sonata_p1p2Table.txt",
-#             sep = "\t", row.names = FALSE, col.names = TRUE)
-# 
-# write.table(sgrnainfo, file = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/input_files/sonata_hg38/min_input/new_trx_sonata_sgrnaInfoTable.txt",
-#             sep = "\t", row.names = FALSE, col.names = TRUE)
-# 
-# write.table(libraryTable, file = "/Volumes/GoogleDrive/My Drive/Projects/CRISPR screen libraries/WeissmanHorlbeck/CRISPRai/input_files/sonata_hg38/min_input/new_trx_sonata_libraryTable.txt",
-#             sep = "\t", row.names = FALSE, col.names = TRUE)
