@@ -16,12 +16,12 @@ crisprai_dependencies <- c("python==2.7.15",
 
 crisprai_dependencies_pip <- c("pandas==0.15.0")
 
-
-env_crisprai <- basilisk::BasiliskEnvironment(envname="crisprai_basilisk",
-                                              pkgname="crisprScore",
-                                              paths="python/crisprai",
-                                              packages=crisprai_dependencies,
-                                              channels = c("bioconda", "conda-forge"),
-                                              pip=crisprai_dependencies_pip)
+#' @importFrom basilisk BasiliskEnvironment
+env_crisprai <- BasiliskEnvironment(envname="crisprai_basilisk",
+                                    pkgname="crisprScore",
+                                    paths="python/crisprai",
+                                    packages=crisprai_dependencies,
+                                    channels = c("bioconda", "conda-forge"),
+                                    pip=crisprai_dependencies_pip)
 
 
