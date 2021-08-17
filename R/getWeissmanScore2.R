@@ -8,7 +8,7 @@
 
 library(reticulate)
 
-use_condaenv(condaenv="crisprai", required=TRUE)
+use_condaenv(condaenv="new_crisprai", required=TRUE)
 # use_python_version(version="2.7.15", required = TRUE)
 # use_python(python="~/miniconda3/envs/crisprai2/bin/python2.7", required=TRUE)
 
