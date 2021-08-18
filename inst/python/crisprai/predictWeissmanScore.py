@@ -40,11 +40,14 @@ def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality
     PICKLE_FILE = 'trained_models/' + modality + '_estimator_weissman_hg19.pkl'
     
     # open pickle file to continue from previously trained session/model
-    with open(PICKLE_FILE) as infile:
-        fitTable, estimators, scaler, reg, transformedParams_train_header = cPickle.load(infile)
+    try:
+        with open(PICKLE_FILE) as infile:
+            fitTable, estimators, scaler, reg, transformedParams_train_header = cPickle.load(infile)
+    except:
+        raise Exception('Trained model file not found.') 
 
     paramTable = getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, verbose = verbose)
-
+    
     transformedParams_new = getTransformedParams(paramTable, fitTable, estimators, verbose = verbose)
 
     print 'Predicting sgRNA scores...'
@@ -57,13 +60,18 @@ def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality
 
 def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, verbose = False):
 
-    # load genome files
-    genomeDict=loadGenomeAsDict(GENOME_FASTA)
+    try:
+        genomeDict=loadGenomeAsDict(GENOME_FASTA)
+    except:
+        raise Exception("Genome FASTA file not found.")
 
     if verbose == True:
         print "Loading chromatin data..."
 
-    bwhandleDict = {'dnase':BigWigFile(open(CHROMATIN_DNASE)), 'faire':BigWigFile(open(CHROMATIN_FAIRE)), 'mnase':BigWigFile(open(CHROMATIN_MNASE))}
+    try:
+        bwhandleDict = {'dnase':BigWigFile(open(CHROMATIN_DNASE)), 'faire':BigWigFile(open(CHROMATIN_FAIRE)), 'mnase':BigWigFile(open(CHROMATIN_MNASE))}
+    except:
+        raise Exception("Could not load chromatin data.")
 
     # df contains both primary and secondary in different columns, so need to split into seprate dfs
     p1p2Table['primary TSS'] = p1p2Table['primary TSS'].apply(lambda tupString: (int(tupString.strip('()').split(', ')[0].split('.')[0]), int(tupString.strip('()').split(', ')[1].split('.')[0])))

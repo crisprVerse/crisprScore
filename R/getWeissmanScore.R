@@ -1,26 +1,27 @@
-#' @export 
+#' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getWeissmanScore <- function(tss_df,
                              sgrnaInfo_df,
                              verbose=FALSE,
-                             modality=c("CRISPRa", "CRISPRi")
+                             modality=c("CRISPRa", "CRISPRi"),
+                             fork=FALSE
 ){
-  
+
     modality  <- match.arg(modality)
     inputList <- .prepareInputData(tss_df,
                                    sgrnaInfo_df,
                                    verbose=verbose)
 
-    results <- basilisk::basiliskRun(env=env_crisprai,
-                                     shared=FALSE,
-                                     fork=fork,
-                                     fun=.pyPredictWeissmanScore,
-                                     modality=modality,
-                                     tssTable=inputList[["tssTable"]],
-                                     p1p2Table=inputList[["p1p2Table"]],
-                                     sgrnaTable=inputList[["sgrnaTable"]],
-                                     libraryTable=inputList[["libraryTable"]],
-                                     verbose=verbose)
+    results <- basiliskRun(env=env_crisprai,
+                           shared=FALSE,
+                           fork=fork,
+                           fun=.pyPredictWeissmanScore,
+                           modality=modality,
+                           tssTable=inputList[["tssTable"]],
+                           p1p2Table=inputList[["p1p2Table"]],
+                           sgrnaTable=inputList[["sgrnaTable"]],
+                           libraryTable=inputList[["libraryTable"]],
+                           verbose=verbose)
 
     return(results)
 }
@@ -35,31 +36,33 @@ getWeissmanScore <- function(tss_df,
                                     sgrnaTable,
                                     libraryTable,
                                     verbose
-                                    
+
 ){
-  
+
     if (.Platform$OS.type=="windows"){
       stop("Weissman score is not available for Windows at the moment.")
     }
-    
+
     tssTable <- r_to_py(tssTable)
     p1p2Table <- r_to_py(p1p2Table)
     sgrnaTable <- r_to_py(sgrnaTable)
     libraryTable <- r_to_py(libraryTable)
-    
+
     dir <- system.file("python",
                        "crisprai",
                        package="crisprScore",
                        mustWork=TRUE)
 
-    pyWeissmanScore <- import_from_path("predictWeissmanScore", path=dir)
-    
-    scores <- py_suppress_warnings(pyWeissmanScore$predictWeissmanScore(tssTable=tssTable,
-                                                                        p1p2Table=p1p2Table,
-                                                                        sgrnaTable=sgrnaTable,
-                                                                        libraryTable=libraryTable,
-                                                                        modality=modality,
-                                                                        verbose=verbose))
+    pyWeissmanScore <- reticulate::import_from_path("predictWeissmanScore",
+                                                    path=dir)
+
+    scores <- py_suppress_warnings(
+      pyWeissmanScore$predictWeissmanScore(tssTable=tssTable,
+                                           p1p2Table=p1p2Table,
+                                           sgrnaTable=sgrnaTable,
+                                           libraryTable=libraryTable,
+                                           modality=modality,
+                                           verbose=verbose))
 
     return(scores)
 }
@@ -95,20 +98,20 @@ getWeissmanScore <- function(tss_df,
     inputList <- .removeInconsistentGenes(inputList,
                                           value="strand")
     if (verbose){
-        message("Done removing strand mismatches.")    
+        message("Done removing strand mismatches.")
     }
 
     inputList <- .removeInconsistentGenes(inputList,
                                           value="chromosome")
     if (verbose){
-        message("Done removing chr mismatches")    
+        message("Done removing chr mismatches")
     }
-    
+
     inputList <- .removeMissingGenes(inputList)
     if (verbose){
-        message("Done removing missing genes")    
+        message("Done removing missing genes")
     }
-    
+
     return(inputList)
 }
 
@@ -137,8 +140,8 @@ getWeissmanScore <- function(tss_df,
                   "transcripts",
                   "position",
                   "strand",
-                  "chromosome") 
-        colnames(tssTable) <- cols 
+                  "chromosome")
+        colnames(tssTable) <- cols
         return(tssTable)
     }
 
@@ -147,7 +150,7 @@ getWeissmanScore <- function(tss_df,
     tssTable$position <- floor(as.numeric(tssTable$position))
     tssTable[["cage peak ranges"]] <- paste0("[(",
                                              tssTable$position,
-                                             ", ", 
+                                             ", ",
                                              tssTable$position + 1,
                                              ")]")
     return(tssTable)
@@ -178,8 +181,8 @@ getWeissmanScore <- function(tss_df,
                   "transcript",
                   "chromosome",
                   "strand",
-                  "position") 
-        colnames(tssTable) <- cols 
+                  "position")
+        colnames(tssTable) <- cols
         return(tssTable)
     }
 
@@ -189,7 +192,7 @@ getWeissmanScore <- function(tss_df,
     p1p2Table$position <- floor(as.numeric(p1p2Table$position))
     p1p2Table[["primary TSS"]] <- paste0("(",
                                          p1p2Table$position,
-                                         ", ", 
+                                         ", ",
                                          p1p2Table$position + 1,
                                          ")")
     p1p2Table[["secondary TSS"]] <- p1p2Table[["primary TSS"]]
@@ -230,7 +233,7 @@ getWeissmanScore <- function(tss_df,
                   "tss_id",
                   "position",
                   "strand")
-        colnames(sgrnaInfoTable) <- cols 
+        colnames(sgrnaInfoTable) <- cols
         return(sgrnaInfoTable)
     }
 
@@ -262,14 +265,14 @@ getWeissmanScore <- function(tss_df,
     txCol <- paste0("['", tssTable[["promoter"]], "']")
     sgrnaInfoTable[["transcript_list"]] <- txCol[matching_rows]
 
-    sgrnaInfoTable <- sgrnaInfoTable[,c("sgId", 
-                                      "Sublibrary", 
-                                      "gene_name", 
-                                      "length", 
-                                      "pam coordinate", 
-                                      "pass_score", 
-                                      "position", 
-                                      "strand", 
+    sgrnaInfoTable <- sgrnaInfoTable[,c("sgId",
+                                      "Sublibrary",
+                                      "gene_name",
+                                      "length",
+                                      "pam coordinate",
+                                      "pass_score",
+                                      "position",
+                                      "strand",
                                       "transcript_list")]
 
     return(sgrnaInfoTable)
@@ -297,7 +300,7 @@ getWeissmanScore <- function(tss_df,
         cols <- c("sgId",
                   "tss_id",
                   "sequence")
-        colnames(sgrnaInfoTable) <- cols 
+        colnames(sgrnaInfoTable) <- cols
         return(sgrnaInfoTable)
     }
 
@@ -312,10 +315,10 @@ getWeissmanScore <- function(tss_df,
     libraryTable[["transcripts"]] <- tssTable[matching_rows, "promoter"]
 
     # drop unnecessary columns and reorder
-    libraryTable <- libraryTable[,c("sgId", 
-                                  "sublibrary", 
-                                  "gene", 
-                                  "transcripts", 
+    libraryTable <- libraryTable[,c("sgId",
+                                  "sublibrary",
+                                  "gene",
+                                  "transcripts",
                                   "sequence")]
     return(libraryTable)
 }
@@ -339,7 +342,7 @@ getWeissmanScore <- function(tss_df,
         #     col <- colnames(df)[grep("gene", colnames(df))]
         #     df <- df[!df[[col]] %in% mismatch_genes,,drop=FALSE]
         #     return(df)
-        # })   
+        # })
         inputList <- .removeGenes(inputList, mismatch_genes)
     }
     # inputList <- lapply(inputList, as.data.frame)
@@ -349,16 +352,16 @@ getWeissmanScore <- function(tss_df,
 
 
 .removeMissingGenes <- function(inputList){
-    
+
     tssTable <- inputList[["tssTable"]]
     sgrnaTable <- inputList[["sgrnaTable"]]
     libraryTable <- inputList[["libraryTable"]]
-    
+
     # check if all genes in sgrnaTable and libraryTable are in TSS
     missing_genes <- append(setdiff(sgrnaTable$gene_name, tssTable$gene),
                             setdiff(libraryTable$gene, tssTable$gene))
     missing_genes <- unique(missing_genes)
-    
+
     if (length(missing_genes)>0){
         # inputList <- lapply(inputList, function(df){
         #     col <- colnames(df)[grep("gene", colnames(df))]
@@ -367,7 +370,7 @@ getWeissmanScore <- function(tss_df,
         # })
         inputList <- .removeGenes(inputList, missing_genes)
     }
-    
+
     # inputList <- lapply(inputList, as.data.frame)
     return(inputList)
 }
