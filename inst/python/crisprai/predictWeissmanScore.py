@@ -3,7 +3,7 @@
 
 
 import cPickle
-from sgRNA_learning3 import *    # contains functions to load genome and empirical data
+from sgRNA_learning import *    # contains functions to load genome and empirical data
 
 
 ### Data input variables ###
@@ -52,8 +52,6 @@ def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality
 
     print 'Predicting sgRNA scores...'
     predictedScores = pd.Series(reg.predict(scaler.transform(transformedParams_new.loc[:, transformedParams_train_header.columns].fillna(0).values)), index=transformedParams_new.index)
-
-    saveData(scoreTable = predictedScores, verbose = verbose)
     
     return predictedScores
 
@@ -73,14 +71,17 @@ def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, verbose = False
     except:
         raise Exception("Could not load chromatin data.")
 
-    # df contains both primary and secondary in different columns, so need to split into seprate dfs
+    # parse primary TSS and secondary TSS
     p1p2Table['primary TSS'] = p1p2Table['primary TSS'].apply(lambda tupString: (int(tupString.strip('()').split(', ')[0].split('.')[0]), int(tupString.strip('()').split(', ')[1].split('.')[0])))
     p1p2Table['secondary TSS'] = p1p2Table['secondary TSS'].apply(lambda tupString: (int(tupString.strip('()').split(', ')[0].split('.')[0]),int(tupString.strip('()').split(', ')[1].split('.')[0])))
 
     if verbose == True:
         print "Calculating parameters..."
 
-    paramTable = generateTypicalParamTable(libraryTable, sgrnaTable, tssTable, p1p2Table, genomeDict, bwhandleDict)
+    try:
+        paramTable = generateTypicalParamTable(libraryTable, sgrnaTable, tssTable, p1p2Table, genomeDict, bwhandleDict)
+    except:
+        raise Exception("Error generating parameters.")
 
     return paramTable
 
@@ -88,56 +89,17 @@ def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, verbose = False
 def getTransformedParams(paramTable, fitTable, estimators, verbose = False):
     
     if verbose == True:
-        print 'Transform and predict scores...'
+        print 'Transforming parameters...'
 
-    transformedParams_new = transformParams(paramTable, fitTable, estimators)
+    try:
+        transformedParams_new = transformParams(paramTable, fitTable, estimators)
+    except:
+        raise Exception("Error transforming parameters.")
 
-    # reconcile differences in column headers
+    # reconcil e differences in column headers
     colTups = []
     for (l1, l2), col in transformedParams_new.iteritems():
         colTups.append((l1,str(l2)))
     transformedParams_new.columns = pd.MultiIndex.from_tuples(colTups)
 
     return transformedParams_new
-
-
-## save results for testing ##
-def saveData(scoreTable, verbose = False):
-
-    PREDICTED_SCORES_PATH = 'debug/Aug9_predictWeissmanScore_min_Sonata.csv'
-
-    if verbose == True:
-        print 'Saving data...'
-
-    scoreTable.to_csv(PREDICTED_SCORES_PATH, sep='\t')
-
-
-def loadTestData():
-
-    print "Loading TSS data..."
-    tssTable = pd.read_csv(TSS_DATA, sep='\t', index_col=range(2))
-
-    print "Loading P1P2 data..."
-    p1p2Table = pd.read_csv(P1P2_DATA, sep='\t', header=0, index_col=range(2))
-
-    print "Loading sgRNA info data..."
-    sgInfoTable = pd.read_csv(SGRNA_TABLE_TRAINING, sep='\t', index_col=0)
-
-    print "Loading libraryTable data..."
-    libraryTable = pd.read_csv(LIBRARY_TABLE_TRAINING, sep='\t', index_col = 0)
-
-    return tssTable, p1p2Table, sgInfoTable, libraryTable
-
-
-### testing
-
-def testfunc(passedval):
-    print "The passed value is .. " + str(passedval)
-
-def testfuncpd(df):
-    print df.head()
-
-# tssTable, p1p2Table, sgInfoTable, libraryTable = loadTestData()
-
-# results = predictWeissmanScore(tssTable=tssTable, p1p2Table=p1p2Table, sgrnaTable=sgInfoTable, libraryTable=libraryTable, modality="CRISPRa", verbose = False)
-
