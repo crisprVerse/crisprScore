@@ -6,15 +6,6 @@ import cPickle
 from sgRNA_learning import *    # contains functions to load genome and empirical data
 
 
-### Data input variables ###
-
-genome_type = "lifted_hg38"
-TRAINED_DIR = 'hg19_trained/'
-PREDICTION_DIR = 'hg38_predictions/'
-
-# file output prefix
-OUTPUT_PREFIX = 'CRISPRa_July19_'
-
 # genome fasta file
 GENOME_FASTA =  'input_files/lifted_hg38/hg38.fa'
 
@@ -23,15 +14,6 @@ GENOME_FASTA =  'input_files/lifted_hg38/hg38.fa'
 CHROMATIN_DNASE = 'input_files/lifted_hg38/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig'
 CHROMATIN_FAIRE = 'input_files/lifted_hg38/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig'
 CHROMATIN_MNASE = 'input_files/lifted_hg38/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig'
-
-
-## file inputs for testing ##
-# use sonata_hg38 input files if sonata flag is set to True
-LIBRARY_TABLE_TRAINING = 'input_files/sonata_hg38/min_input/new2_trx_sonata_libraryTable.txt'
-SGRNA_TABLE_TRAINING = 'input_files/sonata_hg38/min_input/new2_trx_sonata_sgrnaInfoTable.txt'
-TSS_DATA = 'input_files/sonata_hg38/min_input/new2_trx_sonata_tssTable.txt'
-P1P2_DATA = 'input_files/sonata_hg38/min_input/new2_trx_sonata_p1p2Table.txt'
-
 
 
 def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality, verbose = False):
