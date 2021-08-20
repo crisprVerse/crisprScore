@@ -36,7 +36,7 @@
 #' @author Jean-Philippe Fortin
 #' 
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
 #' pam     <- "AGG" #3bp 
 #' input   <- paste0(spacer, pam) 

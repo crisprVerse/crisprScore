@@ -30,7 +30,7 @@ The input sequences for enPAM+GB scoring require 4 nucleotides
     Both canonical and non-canonical PAM sequences can be provided.
 }
 \examples{
-\donttest{
+\dontrun{
 flank5 <- "CATG" #4bp
 pam    <- "TTTT" #4bp
 spacer <- "TTTGGGAACCAATCGATAATCAC" #23bp
