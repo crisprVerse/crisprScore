@@ -18,7 +18,7 @@ A data frame with 6 columns:
 }
 }
 \usage{
-scoringMethodsInfo
+data(scoringMethodsInfo)
 }
 \description{
 data.frame detailing available scoring methods with information needed

@@ -51,6 +51,8 @@
 #'   \item{type}{type of the scoring algorithm (on-target or off-target)}
 #'   \item{len}{length of the nucleotide sequence needed for scoring}
 #' }
+#' @usage data(scoringMethodsInfo)
 "scoringMethodsInfo"
+
 
 
