@@ -64,6 +64,7 @@ methods available in `crisprScore`:
 
 ```{r}
 library(crisprScore)
+data(scoringMethodsInfo)
 print(scoringMethodsInfo)
 ```
 
