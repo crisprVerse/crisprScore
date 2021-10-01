@@ -1,8 +1,8 @@
-method	nuclease	left	right	type
-azimuth	SpCas9	-24	5	On-target
-deephf	SpCas9	-20	2	On-target
-lindel	SpCas9	-33	31	On-target
-mit	SpCas9	-20	2	Off-target
-cfd	SpCas9	-20 2	Off-target
-deepcpf1	AsCas12a	-4	29	On-target
-enpamgb	enAsCas12a	-4	29	On-target
+method	nuclease	left	right	type	label
+azimuth	SpCas9	-24	5	On-target	Azimuth
+deephf	SpCas9	-20	2	On-target	DeepHF
+lindel	SpCas9	-33	31	On-target	Lindel
+mit	SpCas9	-20	2	Off-target	MIT
+cfd	SpCas9	-20 2	Off-target		CFD
+deepcpf1	AsCas12a	-4	29	On-target	DeepCpf1
+enpamgb	enAsCas12a	-4	29	On-target	EnPAMGB

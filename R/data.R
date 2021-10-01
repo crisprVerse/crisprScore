@@ -49,6 +49,7 @@
 #'   \item{right}{downstream offset (relative to PAM site) to extract nucleotide
 #'        sequence needed for scoring}
 #'   \item{type}{type of the scoring algorithm (on-target or off-target)}
+#'   \item{label}{proper case-sensitive method name for labeling}
 #'   \item{len}{length of the nucleotide sequence needed for scoring}
 #' }
 #' @usage data(scoringMethodsInfo)
