@@ -1,9 +1,5 @@
-# python script for weissman/horlbeck algorithm for sgRNA predictions
-# adapted from https://github.com/mhorlbeck/CRISPRiaDesign/blob/master/CRISPRiaDesign_example_notebook.md
-
-
 import cPickle
-from sgRNA_learning import *    # contains functions to load genome and empirical data
+from sgRNA_learning import *
 
 
 # genome fasta file
