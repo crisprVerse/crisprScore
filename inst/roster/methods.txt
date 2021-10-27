@@ -1,8 +1,9 @@
 method	nuclease	left	right	type	label
+ruleset1	SpCas9	-24	5	On-target	RuleSet1
 azimuth	SpCas9	-24	5	On-target	Azimuth
 deephf	SpCas9	-20	2	On-target	DeepHF
 lindel	SpCas9	-33	31	On-target	Lindel
 mit	SpCas9	-20	2	Off-target	MIT
-cfd	SpCas9	-20 2	Off-target		CFD
+cfd	SpCas9	-20	2	Off-target	CFD
 deepcpf1	AsCas12a	-4	29	On-target	DeepCpf1
 enpamgb	enAsCas12a	-4	29	On-target	EnPAMGB

@@ -88,6 +88,25 @@ knitr::include_graphics("./figures/sequences_cas12a.svg")
 ```
 
 
+## Rule Set 1 (Cas9)
+
+The Rule Set 1 algorithm is one of the first on-target efficiency methods
+developed for the Cas9 nuclease [@ruleset1]. It generates a probability
+(therefore a score between 0 and 1) that a given sgRNA will cut at its
+intended target. 4 nucleotides upstream and 3 nucleotides downstream of
+the protospacer sequence are needed for scoring:
+
+```{r, eval=FALSE}
+flank5 <- "ACCT" #4bp
+spacer <- "ATCGATGCTGATGCTAGATA" #20bp
+pam    <- "AGG" #3bp 
+flank3 <- "TTG" #3bp
+input  <- paste0(flank5, spacer, pam, flank3) 
+results <- getRuleSet1Scores(input)
+```
+
+The Azimuth score described below is an improvement over Rule Set 1 
+from the same lab.
 
 ## Azimuth score (Cas9)
 
