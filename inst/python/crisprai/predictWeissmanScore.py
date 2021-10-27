@@ -63,7 +63,7 @@ def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, verbose = False
     try:
         paramTable = generateTypicalParamTable(libraryTable, sgrnaTable, tssTable, p1p2Table, genomeDict, bwhandleDict)
     except:
-        raise Exception("Error generating parameters.")
+        raise Exception("Error generating parameter table.")
 
     return paramTable
 
