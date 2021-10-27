@@ -114,7 +114,7 @@ getRuleSet1Scores <- function(sequences){
 
         nfeatures <- nrow(roster)
         out <- lapply(seq_len(nseq), function(j){
-            sapply(seq_len(nfeatures), function(i){
+            vapply(seq_len(nfeatures), function(i){
                 x <- substr(seqs[j],
                             roster$start[i],
                             roster$end[i])
