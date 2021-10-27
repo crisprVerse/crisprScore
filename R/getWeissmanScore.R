@@ -338,14 +338,9 @@ getWeissmanScore <- function(tss_df,
     mismatch_genes <- names(ns)[ns>1]
 
     if (length(mismatch_genes)>0){
-        # inputList <- lapply(inputList, function(df){
-        #     col <- colnames(df)[grep("gene", colnames(df))]
-        #     df <- df[!df[[col]] %in% mismatch_genes,,drop=FALSE]
-        #     return(df)
-        # })
         inputList <- .removeGenes(inputList, mismatch_genes)
     }
-    # inputList <- lapply(inputList, as.data.frame)
+
     return(inputList)
 }
 
@@ -363,15 +358,9 @@ getWeissmanScore <- function(tss_df,
     missing_genes <- unique(missing_genes)
 
     if (length(missing_genes)>0){
-        # inputList <- lapply(inputList, function(df){
-        #     col <- colnames(df)[grep("gene", colnames(df))]
-        #     df <- df[!df[[col]] %in% missing_genes,,drop=FALSE]
-        #     return(df)
-        # })
         inputList <- .removeGenes(inputList, missing_genes)
     }
 
-    # inputList <- lapply(inputList, as.data.frame)
     return(inputList)
 }
 
