@@ -1,3 +1,41 @@
+#' @title Calculate on-target sgRNA activity scores for Cas9 using crisprai
+#' @description Calculate on-target sgRNA activity scores for
+#'     CRISPR/Cas9-induced knockout using the Weissman scoring method.
+#'     The Weissman algorithm incorporates chromatin, position, and sequence 
+#'     features to predict sgRNA activity scores for CRISPRa and CRISPRi.
+#' 
+#' @param tss_df A data.frame containing transcription start site (TSS) data for
+#'     promoter. Must have these columns: tss_id, gene_symbol, chr, strand,
+#'     promoter, position, transcripts.
+#' @param sgrnaInfo_df A data.frame containing PAM site and 19 mer spacer
+#'     sequence for each promoter. Must have these columns: tss_id, grna_id,
+#'     chr, strand, pam_site, spacer_19mer.
+#' @param verbose Set to \code{TRUE} to view status or progress updates during
+#'     each step.
+#' @param modality Must be either CRISPRa or CRISPRi to specify type of screen.
+#' @param fork Set to \code{TRUE} to preserve changes to the R
+#'     configuration within the session.
+#' 
+#' @return \strong{getWeissmanScore} returns a data.frame with \code{sequence} 
+#'     and \code{score} columns. The Weissman score takes on a value between 0
+#'     and 1. A higher score indicates higher sgRNA efficiency.
+#' 
+#' @references 
+#' Horlbeck et al. Compact and highly active next-generation libraries for 
+#'     CRISPR-mediated gene repression and activation
+#'     eLife 2016;5:e19760.
+#'     \url{https://doi.org/10.7554/eLife.19760}.
+#' 
+#' @author Pirunthan Perampalam
+#' 
+#' @examples 
+#' \donttest{
+#' tssFile <- read.csv("tss_file.csv")
+#' sgrnaInfoFile <- read.csv("sgRNAinfo_file.csv")
+#' modality <- "CRISPRa" # for CRISPR activation screen
+#' results <- getWeissmanScore(tssFile, sgrnaInfoFile, modality=modality)
+#' }
+#' 
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getWeissmanScore <- function(tss_df,
