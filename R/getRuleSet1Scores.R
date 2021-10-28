@@ -100,11 +100,10 @@ getRuleSet1Scores <- function(sequences){
     }
 
     .getFeaturesScore <- function(seqs){
-
-        nucFeatures <- setdiff(names(ws),
-                               c("Intercept", "gc_low", "gc_high"))
+        miscFeatures <- c("Intercept", "gc_low", "gc_high")
+        nucFeatures <- setdiff(names(ws), miscFeatures)
         motifs <- gsub("[0-9]+", "", nucFeatures)
-        start  <- as.numeric(gsub("[ACGT]+", "", nucFeatures))
+        start  <- as.integer(gsub("[ACGT]+", "", nucFeatures))
         end    <- start + nchar(motifs) - 1
         roster <- data.frame(start=start,
                              end=end,

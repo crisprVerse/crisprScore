@@ -1,6 +1,6 @@
 Package: crisprScore
-Version: 0.99.10
-Date: 2021-09-18
+Version: 0.99.11
+Date: 2021-10-28
 Title: On-Target and Off-Target Scoring Algorithms for CRISPR gRNAs
 Authors@R: c(
     person("Jean-Philippe", "Fortin", email = "fortin946@gmail.com", role = c("aut", "cre", "cph")),
