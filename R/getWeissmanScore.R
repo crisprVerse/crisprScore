@@ -3,18 +3,21 @@
 #'     CRISPR/Cas9-induced knockout using the Weissman scoring method.
 #'     The Weissman algorithm incorporates chromatin, position, and sequence 
 #'     features to predict sgRNA activity scores for CRISPRa and CRISPRi.
+#'     TO DO: only hg38
 #' 
 #' @param tss_df A data.frame containing transcription start site (TSS) data for
 #'     promoter. Must have these columns: tss_id, gene_symbol, chr, strand,
-#'     promoter, position, transcripts.
+#'     promoter, position, transcripts (see details).
 #' @param sgrnaInfo_df A data.frame containing PAM site and 19 mer spacer
 #'     sequence for each promoter. Must have these columns: tss_id, grna_id,
-#'     chr, strand, pam_site, spacer_19mer.
+#'     chr, strand, pam_site, spacer_19mer (see details).
 #' @param verbose Set to \code{TRUE} to view status or progress updates during
 #'     each step.
 #' @param modality Must be either CRISPRa or CRISPRi to specify type of screen.
 #' @param fork Set to \code{TRUE} to preserve changes to the R
 #'     configuration within the session.
+#'     
+#' @details TO DO: details about each column      
 #' 
 #' @return \strong{getWeissmanScore} returns a data.frame with \code{sequence} 
 #'     and \code{score} columns. The Weissman score takes on a value between 0
@@ -49,7 +52,19 @@ getWeissmanScore <- function(tss_df,
     inputList <- .prepareInputData(tss_df,
                                    sgrnaInfo_df,
                                    verbose=verbose)
+  
+    
+ 
+    # specify fasta, chromatin data files, and pickle files
+    # TO DO: Replace with method to pull from Experiment Hub 
+    pickle_f <- paste0("trained_models/", modality, 
+                       "_estimator_weissman_hg19.pkl")
+    fasta_f <- c("input_files/lifted_hg38/hg38.fa")
+    dnase_f <- c("input_files/lifted_hg38/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig")
+    mnase_f <- c("input_files/lifted_hg38/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig")
+    faire_f <- c("input_files/lifted_hg38/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig")
 
+    
     results <- basiliskRun(env=env_crisprai,
                            shared=FALSE,
                            fork=fork,
@@ -59,6 +74,11 @@ getWeissmanScore <- function(tss_df,
                            p1p2Table=inputList[["p1p2Table"]],
                            sgrnaTable=inputList[["sgrnaTable"]],
                            libraryTable=inputList[["libraryTable"]],
+                           pickle_f=pickle_f,
+                           fasta_f=fasta_f,
+                           dnase_f=dnase_f,
+                           mnase_f=mnase_f,
+                           faire_f=faire_f,
                            verbose=verbose)
 
     return(results)
@@ -73,12 +93,17 @@ getWeissmanScore <- function(tss_df,
                                     p1p2Table,
                                     sgrnaTable,
                                     libraryTable,
+                                    pickle_f,
+                                    fasta_f,
+                                    dnase_f,
+                                    mnase_f,
+                                    faire_f,
                                     verbose
 
 ){
 
     if (.Platform$OS.type=="windows"){
-      stop("Weissman score is not available for Windows at the moment.")
+      stop("CRISPRai is not available for Windows at the moment.")
     }
 
     tssTable <- r_to_py(tssTable)
@@ -93,13 +118,20 @@ getWeissmanScore <- function(tss_df,
 
     pyWeissmanScore <- reticulate::import_from_path("predictWeissmanScore",
                                                     path=dir)
-
+    
+    # TO DO: add chromatin file vectors and pickle file path vectors
+    
     scores <- py_suppress_warnings(
       pyWeissmanScore$predictWeissmanScore(tssTable=tssTable,
                                            p1p2Table=p1p2Table,
                                            sgrnaTable=sgrnaTable,
                                            libraryTable=libraryTable,
                                            modality=modality,
+                                           pickle_f=pickle_f,
+                                           fasta_f=fasta_f,
+                                           dnase_f=dnase_f,
+                                           mnase_f=mnase_f,
+                                           faire_f=faire_f,
                                            verbose=verbose))
 
     return(scores)
