@@ -2,24 +2,24 @@ import cPickle
 from sgRNA_learning import *
 
 
-# genome fasta file
-GENOME_FASTA =  'input_files/lifted_hg38/hg38.fa'
+# # genome fasta file
+# GENOME_FASTA =  'input_files/lifted_hg38/hg38.fa'
 
-# paths to genome and bigWig files containing chromatin data of interest
-# see https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=wgEncodeOpenChromDnase    
-CHROMATIN_DNASE = 'input_files/lifted_hg38/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig'
-CHROMATIN_FAIRE = 'input_files/lifted_hg38/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig'
-CHROMATIN_MNASE = 'input_files/lifted_hg38/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig'
+# # paths to genome and bigWig files containing chromatin data of interest
+# # see https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=wgEncodeOpenChromDnase    
+# CHROMATIN_DNASE = 'input_files/lifted_hg38/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig'
+# CHROMATIN_FAIRE = 'input_files/lifted_hg38/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig'
+# CHROMATIN_MNASE = 'input_files/lifted_hg38/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig'
 
 
-def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality, verbose = False):
+def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality, pickle_f, fasta_f, dnase_f, mnase_f, faire_f, verbose = False):
 
     # trained model pickle file
-    PICKLE_FILE = 'trained_models/' + modality + '_estimator_weissman_hg19.pkl'
+    # PICKLE_FILE = 'trained_models/' + modality + '_estimator_weissman_hg19.pkl'
     
     # open pickle file to continue from previously trained session/model
     try:
-        with open(PICKLE_FILE) as infile:
+        with open(pickle_f) as infile:
             fitTable, estimators, scaler, reg, transformedParams_train_header = cPickle.load(infile)
     except:
         raise Exception('Trained model file not found.') 
@@ -34,10 +34,10 @@ def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality
     return predictedScores
 
 
-def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, verbose = False):
+def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fasta_f, dnase_f, mnase_f, faire_f, verbose = False):
 
     try:
-        genomeDict=loadGenomeAsDict(GENOME_FASTA)
+        genomeDict=loadGenomeAsDict(fasta_f)
     except:
         raise Exception("Genome FASTA file not found.")
 
@@ -45,7 +45,7 @@ def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, verbose = False
         print "Loading chromatin data..."
 
     try:
-        bwhandleDict = {'dnase':BigWigFile(open(CHROMATIN_DNASE)), 'faire':BigWigFile(open(CHROMATIN_FAIRE)), 'mnase':BigWigFile(open(CHROMATIN_MNASE))}
+        bwhandleDict = {'dnase':BigWigFile(open(dnase_f)), 'faire':BigWigFile(open(faire_f)), 'mnase':BigWigFile(open(mnase_f))}
     except:
         raise Exception("Could not load chromatin data.")
 
@@ -74,7 +74,7 @@ def getTransformedParams(paramTable, fitTable, estimators, verbose = False):
     except:
         raise Exception("Error transforming parameters.")
 
-    # reconcil e differences in column headers
+    # reconcile differences in column headers
     colTups = []
     for (l1, l2), col in transformedParams_new.iteritems():
         colTups.append((l1,str(l2)))
