@@ -8,11 +8,11 @@
 #' @param tss_df A \code{data.frame} containing transcription start site (TSS) data for
 #'     promoter. Must have these columns: \code{tss_id}, \code{gene_symbol}, 
 #'     \code{chr}, \code{strand}, \code{promoter, \code{position, 
-#'     \code{transcripts} (see details for more information).
+#'     \code{transcripts} (see below for format and details of input data).
 #' @param sgrnaInfo_df \code{A data.frame} containing PAM site and 19 mer spacer
 #'     sequence for each promoter. Must have these columns: \code{tss_id}, 
 #'     \code{grna_id}, \code{chr}, \code{strand}, \code{pam_site}, 
-#'     \code{spacer_19mer} (see details for more information).
+#'     \code{spacer_19mer} (see below for format and details of input data).
 #' @param verbose Set to \code{TRUE} to view status or progress updates during
 #'     each step.
 #' @param modality Must be either \code{CRISPRa} or \code{CRISPRi} to specify 
@@ -20,7 +20,7 @@
 #' @param fork Set to \code{TRUE} to preserve changes to the R
 #'     configuration within the session.
 #'     
-#' @details # Format of input data
+#' @details # Format and details of input data
 #' 
 #'     ## TSS info table
 #'     This must be a \code{data.frame} that contains the following columns:
