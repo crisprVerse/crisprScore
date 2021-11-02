@@ -11,15 +11,18 @@ from sgRNA_learning import *
 # CHROMATIN_FAIRE = 'input_files/lifted_hg38/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig'
 # CHROMATIN_MNASE = 'input_files/lifted_hg38/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig'
 
+pickleFile=pickleFile,
+                                           fastaFile=fastaFile,
+                                           chromatinFiles=chromatinFiles,
 
-def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality, pickle_f, fasta_f, dnase_f, mnase_f, faire_f, verbose = False):
+def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality, pickleFile, fastaFile, chromatinFiles, verbose = False):
 
     # trained model pickle file
     # PICKLE_FILE = 'trained_models/' + modality + '_estimator_weissman_hg19.pkl'
     
     # open pickle file to continue from previously trained session/model
     try:
-        with open(pickle_f) as infile:
+        with open(pickleFile) as infile:
             fitTable, estimators, scaler, reg, transformedParams_train_header = cPickle.load(infile)
     except:
         raise Exception('Trained model file not found.') 
@@ -34,10 +37,10 @@ def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality
     return predictedScores
 
 
-def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fasta_f, dnase_f, mnase_f, faire_f, verbose = False):
+def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fastaFile, chromatinFiles, verbose = False):
 
     try:
-        genomeDict=loadGenomeAsDict(fasta_f)
+        genomeDict=loadGenomeAsDict(fastaFile)
     except:
         raise Exception("Genome FASTA file not found.")
 
