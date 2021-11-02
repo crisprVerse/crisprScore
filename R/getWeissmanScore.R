@@ -1,28 +1,29 @@
-#' @title Calculate on-target sgRNA activity scores for Cas9 using crisprai
-#' @description Calculate on-target sgRNA activity scores for
-#'     CRISPR/Cas9-induced knockout using the Weissman scoring method.
-#'     The Weissman algorithm incorporates chromatin, position, and sequence 
-#'     features to predict sgRNA activity scores for CRISPRa and CRISPRi sgRNAs.
-#'     This method currently only works for sgRNAs designed for hg38.
+#' @title Calculate on-target sgRNA activity scores using crisprai
+#' @description Use the Weissman scoring method to calculate on-target sgRNA 
+#'     activity scores for Cas9-based CRISPR activation (CRISPRa) and CRISPR 
+#'     inactivation (CRISPRi) gene perturbation studies. The Weissman algorithm 
+#'     incorporates chromatin features, transcription start site, and sequence 
+#'     to predict sgRNA activity scores as these can all influence activity in
+#'     CRISPRa and CRISPRi perturbation studies. This method currently only 
+#'     works for sgRNAs designed for use with Cas9 and hg38.
 #'     
-#' @param tss_df A \code{data.frame} containing transcription start site (TSS) data for
-#'     promoter. Must have these columns: \code{tss_id}, \code{gene_symbol}, 
-#'     \code{chr}, \code{strand}, \code{promoter, \code{position, 
-#'     \code{transcripts} (see below for format and details of input data).
-#' @param sgrnaInfo_df \code{A data.frame} containing PAM site and 19 mer spacer
-#'     sequence for each promoter. Must have these columns: \code{tss_id}, 
-#'     \code{grna_id}, \code{chr}, \code{strand}, \code{pam_site}, 
-#'     \code{spacer_19mer} (see below for format and details of input data).
-#' @param verbose Set to \code{TRUE} to view status or progress updates during
-#'     each step.
-#' @param modality Must be either \code{CRISPRa} or \code{CRISPRi} to specify 
-#'     type of screen.
+#' @param tss_df A \code{data.frame} containing transcription start site (TSS) 
+#'     data for promoter. Must have these columns: \code{tss_id}, 
+#'     \code{gene_symbol}, \code{chr}, \code{strand}, \code{promoter, 
+#'     \code{position, \code{transcripts} (see below for more details about TSS 
+#'     info table).
+#' @param sgrnaInfo_df \code{A data.frame} containing PAM start site and sequence
+#'     for each sgRNA. Must have these columns: \code{tss_id}, \code{grna_id}, 
+#'     \code{chr}, \code{strand}, \code{pam_site}, \code{spacer_19mer} (see 
+#'     below for more details about sgRNA info table).
+#' @param verbose Should messages be printed to the console? Default value is 
+#'     \code{TRUE}.
+#' @param modality Which mode of perturbation is being used. Must be a 
+#'     \code{string} specifying either \code{CRISPRa} or \code{CRISPRi}.
 #' @param fork Set to \code{TRUE} to preserve changes to the R
 #'     configuration within the session.
 #'     
-#' @details # Format and details of input data
-#' 
-#'     ## TSS info table
+#' @details TSS info table details:
 #'     This must be a \code{data.frame} that contains the following columns:
 #'     * tss_id: name of the transcription start site.
 #'     * gene_symbol: HGNC/HUGO gene identifier.
@@ -32,7 +33,7 @@
 #'     * position: start position of transcription start site.
 #'     * transcripts: Ensembl transcript identifier.
 #'     
-#'     ## sgRNA info table
+#' @details sgRNA info table details:
 #'     This must be a \code{data.frame} that contains the following columns:
 #'     * tss_id: name of the transcription start site.
 #'     * grna_id: unique sgRNA identifier
@@ -57,8 +58,8 @@
 #' 
 #' @examples 
 #' \donttest{
-#' tssFile <- read.csv("tss_file.csv")
-#' sgrnaInfoFile <- read.csv("sgRNAinfo_file.csv")
+#' tssFile <- read.csv("tss_file.txt")
+#' sgrnaInfoFile <- read.csv("sgRNAinfo_file.txt")
 #' modality <- "CRISPRa" # for CRISPR activation screen
 #' results <- getWeissmanScore(tssFile, sgrnaInfoFile, modality=modality)
 #' }
