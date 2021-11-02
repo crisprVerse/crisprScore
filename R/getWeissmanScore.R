@@ -2,26 +2,50 @@
 #' @description Calculate on-target sgRNA activity scores for
 #'     CRISPR/Cas9-induced knockout using the Weissman scoring method.
 #'     The Weissman algorithm incorporates chromatin, position, and sequence 
-#'     features to predict sgRNA activity scores for CRISPRa and CRISPRi.
-#'     TO DO: only hg38
-#' 
-#' @param tss_df A data.frame containing transcription start site (TSS) data for
-#'     promoter. Must have these columns: tss_id, gene_symbol, chr, strand,
-#'     promoter, position, transcripts (see details).
-#' @param sgrnaInfo_df A data.frame containing PAM site and 19 mer spacer
-#'     sequence for each promoter. Must have these columns: tss_id, grna_id,
-#'     chr, strand, pam_site, spacer_19mer (see details).
+#'     features to predict sgRNA activity scores for CRISPRa and CRISPRi sgRNAs.
+#'     This method currently only works for sgRNAs designed for hg38.
+#'     
+#' @param tss_df A \code{data.frame} containing transcription start site (TSS) data for
+#'     promoter. Must have these columns: \code{tss_id}, \code{gene_symbol}, 
+#'     \code{chr}, \code{strand}, \code{promoter, \code{position, 
+#'     \code{transcripts} (see details for more information).
+#' @param sgrnaInfo_df \code{A data.frame} containing PAM site and 19 mer spacer
+#'     sequence for each promoter. Must have these columns: \code{tss_id}, 
+#'     \code{grna_id}, \code{chr}, \code{strand}, \code{pam_site}, 
+#'     \code{spacer_19mer} (see details for more information).
 #' @param verbose Set to \code{TRUE} to view status or progress updates during
 #'     each step.
-#' @param modality Must be either CRISPRa or CRISPRi to specify type of screen.
+#' @param modality Must be either \code{CRISPRa} or \code{CRISPRi} to specify 
+#'     type of screen.
 #' @param fork Set to \code{TRUE} to preserve changes to the R
 #'     configuration within the session.
 #'     
-#' @details TO DO: details about each column      
+#' @details # Format of input data
 #' 
-#' @return \strong{getWeissmanScore} returns a data.frame with \code{sequence} 
-#'     and \code{score} columns. The Weissman score takes on a value between 0
-#'     and 1. A higher score indicates higher sgRNA efficiency.
+#'     ## TSS info table
+#'     This must be a \code{data.frame} that contains the following columns:
+#'     * tss_id: name of the transcription start site.
+#'     * gene_symbol: HGNC/HUGO gene identifier.
+#'     * chr: chromosome location for gene. _e.g. chr19_.
+#'     * strand: strand location. Either _+_ or _-_.
+#'     * promoter: promoter ID.
+#'     * position: start position of transcription start site.
+#'     * transcripts: Ensembl transcript identifier.
+#'     
+#'     ## sgRNA info table
+#'     This must be a \code{data.frame} that contains the following columns:
+#'     * tss_id: name of the transcription start site.
+#'     * grna_id: unique sgRNA identifier
+#'     * chr: chromosome location for gene. _e.g. chr19_.
+#'     * strand: strand location. Either _+_ or _-_.
+#'     * pam_site: position of the __N__ in the _NGG_ PAM sequence.
+#'     * spacer_19mer: sgRNA sequence.
+#'     
+#'         
+#' 
+#' @return \strong{getWeissmanScore} returns a \code{data.frame} with 
+#'     \code{sequence} and \code{score} columns. The Weissman score takes on a 
+#'     value between 0 and 1. A higher score indicates higher sgRNA efficiency.
 #' 
 #' @references 
 #' Horlbeck et al. Compact and highly active next-generation libraries for 
@@ -39,6 +63,7 @@
 #' results <- getWeissmanScore(tssFile, sgrnaInfoFile, modality=modality)
 #' }
 #' 
+#' @md
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getWeissmanScore <- function(tss_df,
@@ -54,16 +79,26 @@ getWeissmanScore <- function(tss_df,
                                    verbose=verbose)
   
     
- 
+    # TO DO: Change these methods to pull from Experiment Hub 
     # specify fasta, chromatin data files, and pickle files
-    # TO DO: Replace with method to pull from Experiment Hub 
-    pickle_f <- paste0("trained_models/", modality, 
-                       "_estimator_weissman_hg19.pkl")
-    fasta_f <- c("input_files/lifted_hg38/hg38.fa")
+    temp_data_folder <- system.file("crisprai",
+                       "temp_data",
+                       package="crisprScore",
+                       mustWork=TRUE)
+    
+    pickleFile <- paste0(temp_data_folder, modality, "_model.pkl")
+    fastaFile <- paste0(temp_data_folder, "/hg38.fa")
+    
+    chromatinFiles=c(dnase=paste0(temp_data_folder, "/dnase.bigWig"), 
+                     faire=paste0(temp_data_folder, "/faire.bigWig"), 
+                     mnase=paste0(temp_data_folder, "/mnase.bigWig")
+                     )
+    '
+    previous file locations:
     dnase_f <- c("input_files/lifted_hg38/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig")
     mnase_f <- c("input_files/lifted_hg38/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig")
     faire_f <- c("input_files/lifted_hg38/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig")
-
+    '
     
     results <- basiliskRun(env=env_crisprai,
                            shared=FALSE,
@@ -74,11 +109,9 @@ getWeissmanScore <- function(tss_df,
                            p1p2Table=inputList[["p1p2Table"]],
                            sgrnaTable=inputList[["sgrnaTable"]],
                            libraryTable=inputList[["libraryTable"]],
-                           pickle_f=pickle_f,
-                           fasta_f=fasta_f,
-                           dnase_f=dnase_f,
-                           mnase_f=mnase_f,
-                           faire_f=faire_f,
+                           pickleFile=pickleFile,
+                           fastaFile=fastaFile,
+                           chromatinFiles=chromatinFiles,
                            verbose=verbose)
 
     return(results)
@@ -93,11 +126,9 @@ getWeissmanScore <- function(tss_df,
                                     p1p2Table,
                                     sgrnaTable,
                                     libraryTable,
-                                    pickle_f,
-                                    fasta_f,
-                                    dnase_f,
-                                    mnase_f,
-                                    faire_f,
+                                    pickleFile,
+                                    fastaFile,
+                                    chromatinFiles,
                                     verbose
 
 ){
@@ -110,6 +141,7 @@ getWeissmanScore <- function(tss_df,
     p1p2Table <- r_to_py(p1p2Table)
     sgrnaTable <- r_to_py(sgrnaTable)
     libraryTable <- r_to_py(libraryTable)
+    chromatinFiles <- r_to_py(chromatinFiles)
 
     dir <- system.file("python",
                        "crisprai",
@@ -127,11 +159,9 @@ getWeissmanScore <- function(tss_df,
                                            sgrnaTable=sgrnaTable,
                                            libraryTable=libraryTable,
                                            modality=modality,
-                                           pickle_f=pickle_f,
-                                           fasta_f=fasta_f,
-                                           dnase_f=dnase_f,
-                                           mnase_f=mnase_f,
-                                           faire_f=faire_f,
+                                           pickleFile=pickleFile,
+                                           fastaFile=fastaFile,
+                                           chromatinFiles=chromatinFiles,
                                            verbose=verbose))
 
     return(scores)
