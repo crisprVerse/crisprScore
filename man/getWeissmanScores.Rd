@@ -26,7 +26,7 @@ more details about \code{sgrna_df}.}
 \item{verbose}{Should messages be printed to the console? Default value is
 \code{TRUE}.}
 
-\item{modality}{Which mode of perturbation is being used. Must be a
+\item{modality}{Which mode of perturbation is being used? Must be a
 \code{string} specifying either \code{CRISPRa} or \code{CRISPRi}.}
 
 \item{fork}{Set to \code{TRUE} to preserve changes to the R
@@ -42,9 +42,10 @@ Use the Weissman scoring method to calculate on-target sgRNA
 activity scores for Cas9-based CRISPR activation (CRISPRa) and CRISPR
 inactivation (CRISPRi) gene perturbation studies. The Weissman algorithm
 incorporates chromatin features, transcription start site, and sequence
-to predict sgRNA activity scores as these can all influence activity in
-CRISPRa and CRISPRi perturbation studies. This method currently only
-works for sgRNAs designed for use with Cas9 and hg38.
+to predict single-guide RNA (sgRNA) activity scores as these can all
+influence activity in CRISPRa and CRISPRi perturbation studies. This
+method currently only works for sgRNAs designed for use with Cas9 and
+hg38 genome assembly.
 }
 \details{
 \code{tss_df} details:
