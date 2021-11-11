@@ -17,57 +17,54 @@ def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, pickleFi
     sgrnaTable = sgrnaTable.set_index('sgId')
     libraryTable = libraryTable.set_index('sgId')
 
-    paramTable = getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fastaFile, chromatinFiles, verbose = verbose)
+    paramTable = getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fastaFile, chromatinFiles, verbose)
     
-    transformedParams_new = getTransformedParams(paramTable, fitTable, estimators, verbose = verbose)
+    transformedParams_new = getTransformedParams(paramTable, fitTable, estimators, verbose)
 
-    print 'Predicting sgRNA scores...'
+    printNow('\nPredicting scores...', verbose)
     try:
         predictedScores = pd.Series(reg.predict(scaler.transform(transformedParams_new.loc[:, transformedParams_train_header.columns].fillna(0).values)), index=transformedParams_new.index)
     except:
-        raise Exception("Error getting predictions. Environment may be corrupted. Please try reinstalling package.")
+        raise Exception('Error getting predictions: Environment may be corrupted. Please try reinstalling package.')
 
     return predictedScores
 
 def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fastaFile, chromatinFiles, verbose):
     
     try:
-        genomeDict=loadGenomeAsDict(fastaFile)
+        genomeDict=loadGenomeAsDict(fastaFile, verbose)
     except:
-        raise Exception("Genome FASTA file not found. Error in file or file does not exist.")
+        raise Exception('Cannot open genome FASTA file: File is corrupted or does not exist.')
 
-    if verbose == True:
-        print "Loading chromatin data..."
+    printNow('\nLoading chromatin data...', verbose)
 
     try:
         bwhandleDict = {'dnase':BigWigFile(open(chromatinFiles[0])), 'faire':BigWigFile(open(chromatinFiles[1])), 'mnase':BigWigFile(open(chromatinFiles[2]))}
     except:
-        raise Exception("Could not load chromatin data. Error in files or files do not exist.")
+        raise Exception('Error opening chromatin files: Error in files or files do not exist.')
 
     # parse primary TSS and secondary TSS
     p1p2Table['primary TSS'] = p1p2Table['primary TSS'].apply(lambda tupString: (int(tupString.strip('()').split(', ')[0].split('.')[0]), int(tupString.strip('()').split(', ')[1].split('.')[0])))
     p1p2Table['secondary TSS'] = p1p2Table['secondary TSS'].apply(lambda tupString: (int(tupString.strip('()').split(', ')[0].split('.')[0]),int(tupString.strip('()').split(', ')[1].split('.')[0])))
 
-    if verbose == True:
-        print "Calculating parameters..."
+    printNow('\nCalculating parameters...', verbose)
 
     try:
-       paramTable = generateTypicalParamTable(libraryTable, sgrnaTable, tssTable, p1p2Table, genomeDict, bwhandleDict)
+       paramTable = generateTypicalParamTable(libraryTable, sgrnaTable, tssTable, p1p2Table, genomeDict, bwhandleDict, verbose)
     except:
-       raise Exception("Error generating parameter table.")
+       raise Exception('Error generating parameter table.')
      
     return paramTable
 
 
 def getTransformedParams(paramTable, fitTable, estimators, verbose):
     
-    if verbose == True:
-        print 'Transforming parameters...'
+    printNow('\nTransforming parameters...', verbose)
 
     try:
         transformedParams_new = transformParams(paramTable, fitTable, estimators)
     except:
-        raise Exception("Error transforming parameters.")
+        raise Exception('Error transforming parameters.')
 
     # reconcile differences in column headers
     colTups = []
