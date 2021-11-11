@@ -1,25 +1,9 @@
 import cPickle
-from sgRNA_learning import *
+from sgRNA_learning_pamfix import *
 
 
-# # genome fasta file
-# GENOME_FASTA =  'input_files/lifted_hg38/hg38.fa'
-
-# # paths to genome and bigWig files containing chromatin data of interest
-# # see https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=wgEncodeOpenChromDnase    
-# CHROMATIN_DNASE = 'input_files/lifted_hg38/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig'
-# CHROMATIN_FAIRE = 'input_files/lifted_hg38/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig'
-# CHROMATIN_MNASE = 'input_files/lifted_hg38/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig'
-
-pickleFile=pickleFile,
-                                           fastaFile=fastaFile,
-                                           chromatinFiles=chromatinFiles,
-
-def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality, pickleFile, fastaFile, chromatinFiles, verbose = False):
-
-    # trained model pickle file
-    # PICKLE_FILE = 'trained_models/' + modality + '_estimator_weissman_hg19.pkl'
-    
+def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, pickleFile, fastaFile, chromatinFiles, modality, verbose):
+   
     # open pickle file to continue from previously trained session/model
     try:
         with open(pickleFile) as infile:
@@ -27,30 +11,38 @@ def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, modality
     except:
         raise Exception('Trained model file not found.') 
 
-    paramTable = getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, verbose = verbose)
+    # set indices for pd dataframes
+    tssTable = tssTable.set_index(['gene', 'transcripts'])
+    p1p2Table = p1p2Table.set_index(['gene', 'transcript'])
+    sgrnaTable = sgrnaTable.set_index('sgId')
+    libraryTable = libraryTable.set_index('sgId')
+
+    paramTable = getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fastaFile, chromatinFiles, verbose = verbose)
     
     transformedParams_new = getTransformedParams(paramTable, fitTable, estimators, verbose = verbose)
 
     print 'Predicting sgRNA scores...'
-    predictedScores = pd.Series(reg.predict(scaler.transform(transformedParams_new.loc[:, transformedParams_train_header.columns].fillna(0).values)), index=transformedParams_new.index)
-    
+    try:
+        predictedScores = pd.Series(reg.predict(scaler.transform(transformedParams_new.loc[:, transformedParams_train_header.columns].fillna(0).values)), index=transformedParams_new.index)
+    except:
+        raise Exception("Error getting predictions. Environment may be corrupted. Please try reinstalling package.")
+
     return predictedScores
 
-
-def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fastaFile, chromatinFiles, verbose = False):
-
+def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fastaFile, chromatinFiles, verbose):
+    
     try:
         genomeDict=loadGenomeAsDict(fastaFile)
     except:
-        raise Exception("Genome FASTA file not found.")
+        raise Exception("Genome FASTA file not found. Error in file or file does not exist.")
 
     if verbose == True:
         print "Loading chromatin data..."
 
     try:
-        bwhandleDict = {'dnase':BigWigFile(open(dnase_f)), 'faire':BigWigFile(open(faire_f)), 'mnase':BigWigFile(open(mnase_f))}
+        bwhandleDict = {'dnase':BigWigFile(open(chromatinFiles[0])), 'faire':BigWigFile(open(chromatinFiles[1])), 'mnase':BigWigFile(open(chromatinFiles[2]))}
     except:
-        raise Exception("Could not load chromatin data.")
+        raise Exception("Could not load chromatin data. Error in files or files do not exist.")
 
     # parse primary TSS and secondary TSS
     p1p2Table['primary TSS'] = p1p2Table['primary TSS'].apply(lambda tupString: (int(tupString.strip('()').split(', ')[0].split('.')[0]), int(tupString.strip('()').split(', ')[1].split('.')[0])))
@@ -60,14 +52,14 @@ def getParamTable(tssTable, p1p2Table, sgrnaTable, libraryTable, fastaFile, chro
         print "Calculating parameters..."
 
     try:
-        paramTable = generateTypicalParamTable(libraryTable, sgrnaTable, tssTable, p1p2Table, genomeDict, bwhandleDict)
+       paramTable = generateTypicalParamTable(libraryTable, sgrnaTable, tssTable, p1p2Table, genomeDict, bwhandleDict)
     except:
-        raise Exception("Error generating parameter table.")
-
+       raise Exception("Error generating parameter table.")
+     
     return paramTable
 
 
-def getTransformedParams(paramTable, fitTable, estimators, verbose = False):
+def getTransformedParams(paramTable, fitTable, estimators, verbose):
     
     if verbose == True:
         print 'Transforming parameters...'

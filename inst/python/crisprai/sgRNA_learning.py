@@ -38,19 +38,14 @@ def loadExperimentData(experimentFile, supportedLibraryPath, library, basePath =
 			sep='\t',index_col=range(1),header=range(2))
 
 		condTups = [(condStr.split(':')[0],condStr.split(':')[1]) for condStr in parser.get(exptConfigFile, 'condition_tuples').strip().split('\n')]
-		# print condTups
 
 		geneTableDict[configDict['experiment_name']] = geneTable.loc[:,[level_name for level_name in geneTable.columns if (level_name[0],level_name[1]) in condTups]]
 		phenotypeTableDict[configDict['experiment_name']] = phenotypeTable.loc[:,[level_name for level_name in phenotypeTable.columns if (level_name[0],level_name[1]) in condTups]]
 
 	mergedLibraryTable = pd.concat(libraryTableDict.values())
-	# print mergedLibraryTable.head()
 	mergedLibraryTable_dedup = mergedLibraryTable.drop_duplicates(['gene','sequence'])
-	# print mergedLibraryTable_dedup.head()
 	mergedGeneTable = pd.concat(geneTableDict.values(), keys=geneTableDict.keys(), axis = 1)
-	# print mergedGeneTable.head()
 	mergedPhenotypeTable = pd.concat(phenotypeTableDict.values(), keys=phenotypeTableDict.keys(), axis = 1)
-	# print mergedPhenotypeTable.head()
 	mergedPhenotypeTable_dedup = mergedPhenotypeTable.loc[mergedLibraryTable_dedup.index]
 
 	return mergedLibraryTable_dedup, mergedPhenotypeTable_dedup, mergedGeneTable
@@ -63,7 +58,6 @@ def calculateDiscriminantScores(geneTable, effectSize = 'average phenotype of st
 
 	seriesDict = dict()
 	for group, table in pd.concat((zscores, pvals), keys=(effectSize,pValue),axis=1).reorder_levels((1,2,3,0), axis=1).groupby(level=range(3),axis=1):
-		# print table.head()
 		seriesDict[group] = table[group].apply(lambda row: row[effectSize] * row[pValue], axis=1)
 
 	return pd.DataFrame(seriesDict)
@@ -169,7 +163,6 @@ def generateTssTable(geneTable, libraryTssFile, cagePeakFile, cageWindow, aliasD
 		ranges = []
 		relaxedRanges = []
 		for peak in peaks:
-	#         print peak
 			if peak.strand == tssRow['strand'] and peak.itemRGB == strictColor:
 				ranges.append((peak.start, peak.end))
 			elif peak.strand == tssRow['strand'] and peak.itemRGB == relaxedColor:
@@ -320,103 +313,136 @@ def generateTssTable_P1P2strategy(tssTable, cagePeakFile, matchedp1p2Window, any
 	return pd.DataFrame(resultRows, columns=['gene','transcript','chromosome','strand','TSS source','primary TSS','secondary TSS']).set_index(keys=['gene','transcript'])
 
 def generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table, transcripts=False):
+
+	print "in generateSgrnaDistanceTable_p1p2Strategy function ......"
+
+	print "sgInfoTable"
+	print np.shape(sgInfoTable)
+
+	print "libraryTable"
+	print np.shape(libraryTable)
+
+	print "p1p2Table"
+	print np.shape(p1p2Table)
+
 	sgDistanceSeries = []
 
+	#p1p2Table.set_index('gene')
+
+
 	if transcripts == False: # when sgRNAs weren't designed based on the p1p2 strategy
-		for name, group in sgInfoTable['pam coordinate'].groupby(libraryTable['gene']):
-			if name in p1p2Table.index:
-				tssRow = p1p2Table.loc[name]
 
-				### start debug ###
-				# print 'tssRow type *********'
-				# print type(tssRow)
-				# tssRow.to_csv('debug_tssRow.csv')
+		print "inside transcripts == False"
 
-				### end debug ###
+		for name, group in sgInfoTable['pam_coordinate'].groupby(libraryTable['gene']):
+			
+			try:
+				print "in for loop:....name=" + name
 
-				if len(tssRow) == 1:
-					tssRow = tssRow.iloc[0]
-					for sgId, pamCoord in group.iteritems():
-						if (tssRow['strand'] == '+'):
-							sgDistanceSeries.append((sgId, name, tssRow.name,
-								pamCoord - tssRow['primary TSS'][0],
-								pamCoord - tssRow['primary TSS'][1],
-								pamCoord - tssRow['secondary TSS'][0],
-								pamCoord - tssRow['secondary TSS'][1]))
-						else:
-							sgDistanceSeries.append((sgId, name, tssRow.name,
-								(pamCoord - tssRow['primary TSS'][1]) * -1,
-								(pamCoord - tssRow['primary TSS'][0]) * -1,
-								(pamCoord - tssRow['secondary TSS'][1]) * -1,
-								(pamCoord - tssRow['secondary TSS'][0]) * -1))
+				if name in p1p2Table.index:
+					print "yes name in p1p2Table ***********************************"
 
-				else:
-					for sgId, pamCoord in group.iteritems():
-						closestTssRow = tssRow.loc[tssRow.apply(lambda row: abs(pamCoord - row['primary TSS'][0]), axis=1).idxmin()]
-						
-						### start debug ###
-						# print 'closestTssRow type *********'
-						# print type(closestTssRow)
-						# closestTssRow.to_csv('debug_closestTssRow.csv')
+					tssRow = p1p2Table.loc[name]
 
-						# print 'closestTssRow strand type *********'
-						# print type(closestTssRow)
+					### start debug ###
+					print 'tssRow type *********'
+					print type(tssRow)
+					#tssRow.to_csv('debug_tssRow.csv')
 
-						# print 'closestTssRow strand val *********'
-						# print closestTssRow['strand']
+					### end debug ###
 
-						# print 'closestTssRow entire df *********'
-						# print closestTssRow
-
-						# print 'length of closestTssRow *********'
-						# print len(closestTssRow)
-
-						# print '**************************'
-
-						if isinstance(closestTssRow, pd.core.frame.DataFrame):
-
-							# print '**************** IS DATA FRAME ****************'
-							# print closestTssRow
-							if len(closestTssRow) > 1:
-								for i in range(len(closestTssRow)):
-
-									# convert current row to pd Series
-									current_closestTssRow = closestTssRow.iloc[i]
-									# print 'converted series row *********'
-									# print current_closestTssRow
-
-									if (current_closestTssRow['strand'] == '+'):
-										sgDistanceSeries.append(((sgId + str(i)), name, current_closestTssRow.name,
-											pamCoord - current_closestTssRow['primary TSS'][0],
-											pamCoord - current_closestTssRow['primary TSS'][1],
-											pamCoord - current_closestTssRow['secondary TSS'][0],
-											pamCoord - current_closestTssRow['secondary TSS'][1]))
-									else:
-										sgDistanceSeries.append(((sgId + str(i)), name, current_closestTssRow.name,
-											(pamCoord - current_closestTssRow['primary TSS'][1]) * -1,
-											(pamCoord - current_closestTssRow['primary TSS'][0]) * -1,
-											(pamCoord - current_closestTssRow['secondary TSS'][1]) * -1,
-											(pamCoord - current_closestTssRow['secondary TSS'][0]) * -1))
-						
-						else:
-
-						### end debug ###
-
-							if (closestTssRow['strand'] == '+'):
-								sgDistanceSeries.append((sgId, name, closestTssRow.name,
-									pamCoord - closestTssRow['primary TSS'][0],
-									pamCoord - closestTssRow['primary TSS'][1],
-									pamCoord - closestTssRow['secondary TSS'][0],
-									pamCoord - closestTssRow['secondary TSS'][1]))
+					if len(tssRow) == 1:
+						tssRow = tssRow.iloc[0]
+						for sgId, pamCoord in group.iteritems():
+							if (tssRow['strand'] == '+'):
+								sgDistanceSeries.append((sgId, name, tssRow.name,
+									pamCoord - tssRow['primary TSS'][0],
+									pamCoord - tssRow['primary TSS'][1],
+									pamCoord - tssRow['secondary TSS'][0],
+									pamCoord - tssRow['secondary TSS'][1]))
 							else:
-								sgDistanceSeries.append((sgId, name, closestTssRow.name,
-									(pamCoord - closestTssRow['primary TSS'][1]) * -1,
-									(pamCoord - closestTssRow['primary TSS'][0]) * -1,
-									(pamCoord - closestTssRow['secondary TSS'][1]) * -1,
-									(pamCoord - closestTssRow['secondary TSS'][0]) * -1))
-						
+								sgDistanceSeries.append((sgId, name, tssRow.name,
+									(pamCoord - tssRow['primary TSS'][1]) * -1,
+									(pamCoord - tssRow['primary TSS'][0]) * -1,
+									(pamCoord - tssRow['secondary TSS'][1]) * -1,
+									(pamCoord - tssRow['secondary TSS'][0]) * -1))
+
+					else:
+
+						print "len(tssRow) is not 1..... ***********************************"
+
+						for sgId, pamCoord in group.iteritems():
+							closestTssRow = tssRow.loc[tssRow.apply(lambda row: abs(pamCoord - row['primary TSS'][0]), axis=1).idxmin()]
+							
+							### start debug ###
+							print 'closestTssRow type *********'
+							print type(closestTssRow)
+							# closestTssRow.to_csv('debug_closestTssRow.csv')
+
+							print 'closestTssRow strand type *********'
+							print type(closestTssRow)
+
+							print 'closestTssRow strand val *********'
+							print closestTssRow['strand']
+
+							print 'closestTssRow entire df *********'
+							print closestTssRow
+
+							print 'length of closestTssRow *********'
+							print len(closestTssRow)
+
+							print '**************************'
+
+							if isinstance(closestTssRow, pd.core.frame.DataFrame):
+
+								print '**************** IS DATA FRAME ****************'
+								print closestTssRow
+								
+								if len(closestTssRow) > 1:
+									for i in range(len(closestTssRow)):
+
+										# convert current row to pd Series
+										current_closestTssRow = closestTssRow.iloc[i]
+										print 'converted series row *********'
+										print current_closestTssRow
+
+										if (current_closestTssRow['strand'] == '+'):
+											sgDistanceSeries.append(((sgId + str(i)), name, current_closestTssRow.name,
+												pamCoord - current_closestTssRow['primary TSS'][0],
+												pamCoord - current_closestTssRow['primary TSS'][1],
+												pamCoord - current_closestTssRow['secondary TSS'][0],
+												pamCoord - current_closestTssRow['secondary TSS'][1]))
+										else:
+											sgDistanceSeries.append(((sgId + str(i)), name, current_closestTssRow.name,
+												(pamCoord - current_closestTssRow['primary TSS'][1]) * -1,
+												(pamCoord - current_closestTssRow['primary TSS'][0]) * -1,
+												(pamCoord - current_closestTssRow['secondary TSS'][1]) * -1,
+												(pamCoord - current_closestTssRow['secondary TSS'][0]) * -1))
+							
+							else:
+
+							### end debug ###
+
+								if (closestTssRow['strand'] == '+'):
+									sgDistanceSeries.append((sgId, name, closestTssRow.name,
+										pamCoord - closestTssRow['primary TSS'][0],
+										pamCoord - closestTssRow['primary TSS'][1],
+										pamCoord - closestTssRow['secondary TSS'][0],
+										pamCoord - closestTssRow['secondary TSS'][1]))
+								else:
+									sgDistanceSeries.append((sgId, name, closestTssRow.name,
+										(pamCoord - closestTssRow['primary TSS'][1]) * -1,
+										(pamCoord - closestTssRow['primary TSS'][0]) * -1,
+										(pamCoord - closestTssRow['secondary TSS'][1]) * -1,
+										(pamCoord - closestTssRow['secondary TSS'][0]) * -1))
+				else:
+					print "name not in p1p2"
+					
+			except:
+				raise Exception("Problem here: for loop @ generateSgrnaDistanceTable_p1p2Strategy")		
+
 	else:
-		for name, group in sgInfoTable['pam coordinate'].groupby([libraryTable['gene'],libraryTable['transcripts']]):
+		for name, group in sgInfoTable['pam_coordinate'].groupby([libraryTable['gene'],libraryTable['transcripts']]):
 			if name in p1p2Table.index:
 				tssRow = p1p2Table.loc[[name]]
 
@@ -440,12 +466,13 @@ def generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table
 					print name, tssRow
 					raise ValueError('all gene/trans pairs should be unique')
 
+	print "we here"
 	return pd.DataFrame(sgDistanceSeries, columns=['sgId', 'gene', 'transcript', 'primary TSS-Up', 'primary TSS-Down', 'secondary TSS-Up', 'secondary TSS-Down']).set_index(keys=['sgId'])
 
 def generateSgrnaDistanceTable(sgInfoTable, tssTable, libraryTable):
 	sgDistanceSeries = []
 
-	for name, group in sgInfoTable['pam coordinate'].groupby([libraryTable['gene'],libraryTable['transcripts']]):
+	for name, group in sgInfoTable['pam_coordinate'].groupby([libraryTable['gene'],libraryTable['transcripts']]):
 		if name in tssTable.index:
 			tssRow = tssTable.loc[name]
 			if len(tssRow['cage peak ranges']) != 0:
@@ -498,7 +525,7 @@ def generateRelativeBasesAndStrand(sgInfoTable, tssTable, libraryTable, genomeDi
 			print '\ngene: ' + str(gene)
 			###
 			for pos in np.arange(-30,10):
-				baseMatrix.append(getBaseRelativeToPam(chrom, sgInfo['pam coordinate'],sgInfo['length'], sgInfo['strand'], pos, genomeDict))
+				baseMatrix.append(getBaseRelativeToPam(chrom, sgInfo['pam_coordinate'],sgInfo['length'], sgInfo['strand'], pos, genomeDict))
 			relbases.append(baseMatrix)
 
 	relbases = pd.DataFrame(relbases, index = sgIds, columns = np.arange(-30,10)).loc[libraryTable.index]
@@ -624,19 +651,19 @@ def getChromatinDataSeries(bigwigFile, libraryTable, sgInfoTable, tssTable, coln
 			continue
 
 		if sgInfo['strand'] == '+':
-			sgRange = int(sgInfo['pam coordinate'] + sgInfo['length'])
+			sgRange = int(sgInfo['pam_coordinate'] + sgInfo['length'])
 		else:
-			sgRange = int(sgInfo['pam coordinate'] - sgInfo['length'])
+			sgRange = int(sgInfo['pam_coordinate'] - sgInfo['length'])
 
 		chrom = chromDict[geneTup]
 		
-		chromatinArray = bwindex.get_as_array(chrom, min(int(sgInfo['pam coordinate']), sgRange), max(int(sgInfo['pam coordinate']), sgRange))
+		chromatinArray = bwindex.get_as_array(chrom, min(int(sgInfo['pam_coordinate']), sgRange), max(int(sgInfo['pam_coordinate']), sgRange))
 		chromatinArray = np.nan_to_num(chromatinArray)  # replace nans with 0.0
 		if chromatinArray is not None and len(chromatinArray) > 0:
 			chromatinScores.append(np.nanmean(chromatinArray))
 		else: #often chrY when using K562 data..
 			# print name
-			# print chrom, min(sgInfo['pam coordinate'], sgRange), max(sgInfo['pam coordinate'], sgRange)
+			# print chrom, min(sgInfo['pam_coordinate'], sgRange), max(sgInfo['pam_coordinate'], sgRange)
 			chromatinScores.append(np.nan)
 
 	chromatinSeries = pd.Series(chromatinScores, index=libraryTable.index, name = colname)
@@ -647,116 +674,15 @@ def getChromatinDataSeries(bigwigFile, libraryTable, sgInfoTable, tssTable, coln
 def getChromatinDataSeriesByGene(bigwigFileHandle, libraryTable, sgInfoTable, p1p2Table, sgrnaDistanceTable_p1p2, colname = '', naValue = 0, normWindow = 1000):
 	bwindex = bigwigFileHandle #BigWigFile(open(bigwigFile))
 
-	### start debug ###
-
-	# try:
-	# 	sgInfoTable.to_csv('debug_sgInfoTable_getChromatinDataSeriesByGene.csv')
-	# 	print '\nsaved sgInfoTable'
-	# except:
-	# 	print '\nfailed to save sgInfoTable'
-
-	# try:
-	# 	sgrnaDistanceTable_p1p2.to_csv('debug_sgrnaDistanceTable_p1p2_getChromatinDataSeriesByGene.csv')
-	# 	print '\nsaved sgrnaDistanceTable_p1p2'
-	# except:
-	# 	print '\nfailed to save sgrnaDistanceTable_p1p2'
-
-	# try:
-	# 	print '\ntest sgInfoTable for unique index:'
-	# 	print sgInfoTable.index.is_unique
-	# except:
-	# 	print '\nerror checking sgInfoTable uniqueness'
-	
-	# try:
-	# 	print '\nget sgInfoTable duplicated index values'
-	# 	print sgInfoTable.index.duplicated()
-	# except:
-	# 	print '\nerror getting sgInfoTable duplicates'
-
-	# try:
-	# 	print '\ntest sgInfoTable for unique columns:'
-	# 	print sgInfoTable.columns.is_unique
-	# except:
-	# 	print '\nerror checking sgInfoTable columns uniqueness'
-	
-	# try:
-	# 	print '\nget sgInfoTable duplicated column index values'
-	# 	print sgInfoTable.columns.duplicated()
-	# except:
-	# 	print '\nerror getting sgInfoTable columns duplicates'
-
-	# try:
-	# 	print '\ntest sgrnaDistanceTable_p1p2 for unique index:'
-	# 	print sgrnaDistanceTable_p1p2.index.is_unique
-	# except:
-	# 	print '\nerror checking sgrnaDistanceTable_p1p2 uniqueness'
-	
-	# try:
-	# 	print '\nget sgrnaDistanceTable_p1p2 duplicated index values'
-	# 	print sgrnaDistanceTable_p1p2.index.duplicated()
-	# 	sgrnaDistanceDuplicates = sgrnaDistanceTable_p1p2.index.duplicated()
-
-	# 	print '\nsgrnaDistanceDuplicates.index'
-	# 	print sgrnaDistanceDuplicates.index
-
-	# 	print '\ntype for duplicate array: ' + str(type(sgrnaDistanceDuplicates))
-	# 	# pd.DataFrame(sgrnaDistanceDuplicates).to_csv('debugging_sgrnaDistanceTable_p1p2_duplicates_keys.csv')
-	# except:
-	# 	print '\nerror getting/saving sgrnaDistanceTable_p1p2 duplicates'
-
-	# pull out non-unique values and save in separate file
-	# sgrnaDistanceTable_p1p2.loc[~sgrnaDistanceTable_p1p2.index.duplicated(), :].to_csv('sgrnaDistanceTable_p1p2_duplicates_removed.csv')
-	# sgrnaDistanceTable_p1p2.loc[sgrnaDistanceDuplicates].to_csv('debugging_sgrnaDistanceTable_p1p2_duplicates_only.csv')
-
-	# try:
-	# 	print '\ntest sgrnaDistanceTable_p1p2 for unique columns:'
-	# 	print sgrnaDistanceTable_p1p2.columns.is_unique
-	# except:
-	# 	print '\nerror checking sgrnaDistanceTable_p1p2 columns uniqueness'
-	
-	# try:
-	# 	print '\nget sgrnaDistanceTable_p1p2 duplicated column index values'
-	# 	print sgrnaDistanceTable_p1p2.columns.duplicated()
-	# except:
-	# 	print '\nerror getting sgrnaDistanceTable_p1p2 columns duplicates'
-
-
-	# try:
-	# 	sgInfoTable = pd.read_csv(inputfolder + 'debug_sgInfoTable_getChromatinDataSeriesByGene.csv')
-	# except:
-	# 	print 'failed to reload sgInfoTable'
-	
-	# try:
-	# 	sgrnaDistanceTable_p1p2 = pd.read_csv(inputfolder + 'debug_sgrnaDistanceTable_p1p2_getChromatinDataSeriesByGene.csv')
-	# except:
-	# 	print 'failed to reload sgrnaDistanceTable_p1p2'
-	
-	# try:
-	# 	print '\ntry groupby'
-	# 	sgInfoTable.groupby([sgrnaDistanceTable_p1p2['gene'], sgrnaDistanceTable_p1p2['transcript']])
-	# 	print '\n *** successful groupby *** '
-	# except:
-	# 	print '\n *** error grouping *** \n\n'
-
-	### end debug ###
-
 	chromatinScores = []
 	for (gene, transcript), sgInfoGroup in sgInfoTable.groupby([sgrnaDistanceTable_p1p2['gene'], sgrnaDistanceTable_p1p2['transcript']]):   
-		
-		##### start debug #####
-
-		print '\ncurrent gene: ' + str(gene)
-		print '\ncurrent transcript: ' + str(transcript)
-
-		##### end debug #####
-
 
 		tssRow = p1p2Table.loc[[(gene, transcript)]].iloc[0,:]
 
 		chrom = tssRow['chromosome']
 
-        # read in chromatin data from provided bwindex bigwigfile
-        # using BigWigFile
+		# read in chromatin data from provided bwindex bigwigfile
+		# using BigWigFile
 		normWindowArray = bwindex.get_as_array(chrom, max(0, tssRow['primary TSS'][0] - normWindow), tssRow['primary TSS'][0] + normWindow)
 		normWindowArray = np.nan_to_num(normWindowArray)    # replace nans with 0.0
 		if normWindowArray is not None:
@@ -765,8 +691,8 @@ def getChromatinDataSeriesByGene(bigwigFileHandle, libraryTable, sgInfoTable, p1
 		else:
 			normFactor = 1
 
-		windowMin = max(0, min(sgInfoGroup['pam coordinate']) - max(sgInfoGroup['length']) - 10)
-		windowMax = max(sgInfoGroup['pam coordinate']) + max(sgInfoGroup['length']) + 10
+		windowMin = max(0, min(sgInfoGroup['pam_coordinate']) - max(sgInfoGroup['length']) - 10)
+		windowMax = max(sgInfoGroup['pam_coordinate']) + max(sgInfoGroup['length']) + 10
 		chromatinWindow = bwindex.get_as_array(chrom, windowMin, windowMax)
 		chromatinWindow = np.nan_to_num(chromatinWindow)    # replace nans with 0.0
 
@@ -779,17 +705,17 @@ def getChromatinDataSeriesByGene(bigwigFileHandle, libraryTable, sgInfoTable, p1
 
 def getChromatinData(sgInfoRow, chromatinWindowArray, windowMin, normFactor):
 	if sgInfoRow['strand'] == '+':
-		sgRange = int(sgInfoRow['pam coordinate']) + int(sgInfoRow['length'])
+		sgRange = int(sgInfoRow['pam_coordinate']) + int(sgInfoRow['length'])
 	else:
-		sgRange = int(sgInfoRow['pam coordinate']) - int(sgInfoRow['length'])
+		sgRange = int(sgInfoRow['pam_coordinate']) - int(sgInfoRow['length'])
 
 
 	if chromatinWindowArray is not None:# and len(chromatinWindowArray) > 0:
-		chromatinArray = chromatinWindowArray[min(int(sgInfoRow['pam coordinate']), sgRange) - int(windowMin): max(int(sgInfoRow['pam coordinate']), sgRange) - int(windowMin)]
+		chromatinArray = chromatinWindowArray[min(int(sgInfoRow['pam_coordinate']), sgRange) - int(windowMin): max(int(sgInfoRow['pam_coordinate']), sgRange) - int(windowMin)]
 		return np.nanmean(chromatinArray)/normFactor
 	else: #often chrY when using K562 data..
 		# print name
-		# print chrom, min(sgInfo['pam coordinate'], sgRange), max(sgInfo['pam coordinate'], sgRange)
+		# print chrom, min(sgInfo['pam_coordinate'], sgRange), max(sgInfo['pam_coordinate'], sgRange)
 		return np.nan
 
 
@@ -866,16 +792,6 @@ def generateTypicalParamTable(libraryTable, sgInfoTable, tssTable, p1p2Table, ge
 		   'RNA folding-with scaffold',
 		   'RNA folding-pairing, no scaffold'],axis=1)
 
-# def generateTypicalParamTable_parallel(libraryTable, sgInfoTable, tssTable, p1p2Table, genomeDict, bwFileHandleDict, processors):
-#   processPool = multiprocessing.Pool(processors)
-
-#   colTupList = zip([group for gene, group in libraryTable.groupby(libraryTable['gene'])],
-#       [group for gene, group in sgInfoTable.groupby(libraryTable['gene'])])
-
-#   result = processPool.map(lambda colTup: generateTypicalParamTable(colTup[0], colTup[1], tssTable, p1p2Table, genomeDict,bwFileHandleDict), colTupList)
-
-#   return pd.concat(result)
-
 ###############################################################################
 #                           Learn Parameter Weights                           #
 ###############################################################################
@@ -891,7 +807,6 @@ def fitParams(paramTable, scoreTable, fitTable):
 		col = col.fillna(0)
 
 		if fitRow['type'] == 'binary': #binary parameter
-			# print name, 'is binary parameter'
 			predictedParams.append(col)
 			estimators.append('binary')
 			
@@ -913,9 +828,6 @@ def fitParams(paramTable, scoreTable, fitTable):
 			assignedBins = binValues(col, parameters['bin width'], parameters['min edge data'])
 			groupStats = scoreTable.groupby(assignedBins).agg(parameters['bin function'])
 			
-			# print name
-			# print pd.concat((groupStats,scoreTable.groupby(assignedBins).size()), axis=1)
-			
 			binnedScores = assignedBins.apply(lambda binVal: groupStats.loc[binVal])
 			
 			predictedParams.append(binnedScores)
@@ -927,9 +839,6 @@ def fitParams(paramTable, scoreTable, fitTable):
 			assignedBins = binValues(col, parameters['bin width'], parameters['min edge data'])
 			binGroups = scoreTable.groupby(assignedBins) 
 			groupStats = binGroups.agg(parameters['bin function'])
-
-#             print name
-#             print pd.concat((groupStats,scoreTable.groupby(assignedBins).size()), axis=1)
 			
 			oneHotFrame = pd.DataFrame(np.zeros((len(assignedBins),len(binGroups))), index = assignedBins.index, \
 				columns=pd.MultiIndex.from_tuples([(name[0],', '.join([name[1],key])) for key in sorted(binGroups.groups.keys())]))
@@ -989,14 +898,13 @@ def binValues(col, binsize, minEdgePoints=0, edgeOffset = None):
 		else: #apply arbitrary offset instead to ease plotting
 			return bins.apply(lambda binVal: leftLessThan - edgeOffset if binVal in leftBin else(rightMoreThan + edgeOffset if binVal in rightBin else binVal))
 
-# error prone function		
 def transformParams(paramTable, fitTable, estimators):
 	transformedParams = []
 	
 	for i, (name, col) in enumerate(paramTable.iteritems()):
 		fitRow = fitTable.iloc[i]
 
-        # replace nans with zeroes
+		# replace nans with zeroes
 		col = col.fillna(0)
 
 		if fitRow['type'] == 'binary':
@@ -1014,9 +922,6 @@ def transformParams(paramTable, fitTable, estimators):
 			
 			assignedBins = applyBins(col, binStats.index.values)
 			binGroups = col.groupby(assignedBins)
-
-#             print name
-#             print pd.concat((groupStats,scoreTable.groupby(assignedBins).size()), axis=1)
 			
 			oneHotFrame = pd.DataFrame(np.zeros((len(assignedBins),len(binGroups))), index = assignedBins.index, \
 				columns=pd.MultiIndex.from_tuples([(name[0],', '.join([name[1],key])) for key in sorted(binGroups.groups.keys())]))
@@ -1042,7 +947,7 @@ def applyBins(column, binStrings):
 			binTups.append((float(binVal),binVal))
 			
 	binTups.sort()
-#     print binTups
+
 	leftBound = binTups[0][0]
 	if leftLabel == '':
 		leftLabel = binTups[0][1]
@@ -1098,7 +1003,7 @@ def findAllGuides(p1p2Table, genomeDict, rangeTup, sgRNALength=20):
 				newSgInfoTable.append((sgId, 'None', gene, sgRNALength + 3, pamCoord, 'not assigned', pamCoord, '-', tssTup[1].split(',')))
 
 	return pd.DataFrame(newLibraryTable,columns=['sgId','gene','transcripts','sequence', 'genomic sequence']).set_index('sgId'), \
-		pd.DataFrame(newSgInfoTable, columns=['sgId','Sublibrary','gene_name', 'length', 'pam coordinate','pass_score','position','strand', 'transcript_list']).set_index('sgId')
+		pd.DataFrame(newSgInfoTable, columns=['sgId','Sublibrary','gene_name', 'length', 'pam_coordinate','pass_score','position','strand', 'transcript_list']).set_index('sgId')
 
 ###############################################################################
 #                               Utility Functions                             #
@@ -1184,76 +1089,70 @@ def generateAliasDict(hgncFile, gencodeData):
 
 		geneToENSG[row['Approved Symbol']] = row['Ensembl Gene ID']
 
-	# for gene in gencodeData:
-	#   if gene not in geneToAliases:
-	#       geneToAliases[gene] = [gene]
-		
-	#   geneToAliases[gene].extend([tr[-1]['transcript_id'].split('.')[0] for tr in gencodeData[gene][1]])
-
 	return geneToAliases, geneToENSG
 
 #Parse information from the sgRNA ID standard format
 def parseSgId(sgId):
-    parseDict = dict()
-    
-    #sublibrary
-    if len(sgId.split('=')) == 2:
-        parseDict['Sublibrary'] = sgId.split('=')[0]
-        remainingId = sgId.split('=')[1]
-    else:
-        parseDict['Sublibrary'] = None
-        remainingId = sgId
-        
-    #gene name and strand
-    underscoreSplit = remainingId.split('_')
-    
-    for i,item in enumerate(underscoreSplit):
-        if item == '+':
-            strand = '+'
-            geneName = '_'.join(underscoreSplit[:i])
-            remainingId = '_'.join(underscoreSplit[i+1:])
-            break
-        elif item == '-':
-            strand = '-'
-            geneName = '_'.join(underscoreSplit[:i])
-            remainingId = '_'.join(underscoreSplit[i+1:])
-            break
-        else:
-            continue
-            
-    parseDict['strand'] = strand
-    parseDict['gene_name'] = geneName
-        
-    #position
-    dotSplit = remainingId.split('.')
-    parseDict['position'] = int(dotSplit[0])
-    remainingId = '.'.join(dotSplit[1:])
-    
-    #length incl pam
-    dashSplit = remainingId.split('-')
-    parseDict['length'] = int(dashSplit[0])
-    remainingId = '-'.join(dashSplit[1:])
-    
-    #pass score
-    tildaSplit = remainingId.split('~')
-    parseDict['pass_score'] = tildaSplit[-1]
-    remainingId = '~'.join(tildaSplit[:-1]) #should always be length 1 anyway
-    
-    #transcripts
-    parseDict['transcript_list'] = remainingId.split(',')
-    
-    return parseDict
+	parseDict = dict()
+
+	#sublibrary
+	if len(sgId.split('=')) == 2:
+		parseDict['Sublibrary'] = sgId.split('=')[0]
+		emainingId = sgId.split('=')[1]
+	else:
+		parseDict['Sublibrary'] = None
+		remainingId = sgId
+
+	#gene name and strand
+	underscoreSplit = remainingId.split('_')
+
+	for i,item in enumerate(underscoreSplit):
+		if item == '+':
+			strand = '+'
+			geneName = '_'.join(underscoreSplit[:i])
+			remainingId = '_'.join(underscoreSplit[i+1:])
+			break
+		elif item == '-':
+			strand = '-'
+			geneName = '_'.join(underscoreSplit[:i])
+			remainingId = '_'.join(underscoreSplit[i+1:])
+			break
+		else:
+			continue
+   
+	parseDict['strand'] = strand
+	parseDict['gene_name'] = geneName
+  
+	#position
+	dotSplit = remainingId.split('.')
+	parseDict['position'] = int(dotSplit[0])
+	remainingId = '.'.join(dotSplit[1:])
+
+	#length incl pam
+	dashSplit = remainingId.split('-')
+	parseDict['length'] = int(dashSplit[0])
+	remainingId = '-'.join(dashSplit[1:])
+
+	#pass score
+	tildaSplit = remainingId.split('~')
+	parseDict['pass_score'] = tildaSplit[-1]
+	remainingId = '~'.join(tildaSplit[:-1]) #should always be length 1 anyway
+
+	#transcripts
+	parseDict['transcript_list'] = remainingId.split(',')
+
+	return parseDict
 
 def parseAllSgIds(libraryTable):
 	sgInfoList = []
 	for sgId, row in libraryTable.iterrows():
 		sgInfo = parseSgId(sgId)
 
-		#fix pam coordinates for -strand ??
+		#fix pam_coordinates for -strand ??
 		if sgInfo['strand'] == '-':
-			sgInfo['pam coordinate'] = sgInfo['position'] #+ 1
+			sgInfo['pam_coordinate'] = sgInfo['position'] #+ 1
 		else:
-			sgInfo['pam coordinate'] = sgInfo['position']
+			sgInfo['pam_coordinate'] = sgInfo['position']
 
 		sgInfoList.append(sgInfo)
 
