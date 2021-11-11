@@ -650,26 +650,26 @@ def getChromatinData(sgInfoRow, chromatinWindowArray, windowMin, normFactor):
 
 def generateTypicalParamTable(libraryTable, sgInfoTable, tssTable, p1p2Table, genomeDict, bwFileHandleDict, transcripts=False):
 	
-	print '\nGenerate sgRNA length series...'
+	print 'Generate sgRNA length series...'
 	lengthSeries = generateSgrnaLengthSeries(libraryTable)
 	
-	print '\nGenerate sgRNA distance table...'
+	print 'Generate sgRNA distance table...'
 	sgrnaPositionTable_p1p2 = generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table, transcripts)
 
-	print '\nGenerate relative base and strand table...'
+	print 'Generate relative base and strand table...'
 	baseTable, strand = generateRelativeBasesAndStrand(sgInfoTable, tssTable, libraryTable, genomeDict)
 
-	print '\nGenerate boolean base table...'
+	print 'Generate boolean base table...'
 	booleanBaseTable = generateBooleanBaseTable(baseTable)
 
-	print '\nGenerate boolean double base table...'
+	print 'Generate boolean double base table...'
 	doubleBaseTable = generateBooleanDoubleBaseTable(baseTable)
 
-	print '\nGenerate homopolymer table...'
+	print 'Generate homopolymer table...'
 	baseList = ['A','G','C','T']
 	homopolymerTable = pd.concat([libraryTable.apply(lambda row: np.floor(getMaxLengthHomopolymer(row['sequence'], base)), axis=1) for base in baseList],keys=baseList,axis=1)
 
-	print '\nGenerate base fractions...'
+	print 'Generate base fractions...'
 	baseFractions = pd.concat([libraryTable.apply(lambda row: getFractionBaseList(row['sequence'], ['A']),axis=1),
 							libraryTable.apply(lambda row: getFractionBaseList(row['sequence'], ['G']),axis=1),
 							libraryTable.apply(lambda row: getFractionBaseList(row['sequence'], ['C']),axis=1),
@@ -678,19 +678,19 @@ def generateTypicalParamTable(libraryTable, sgInfoTable, tssTable, p1p2Table, ge
 							libraryTable.apply(lambda row: getFractionBaseList(row['sequence'], ['G','A']),axis=1),
 							libraryTable.apply(lambda row: getFractionBaseList(row['sequence'], ['C','A']),axis=1)],keys=['A','G','C','T','GC','purine','CA'],axis=1)
 
-	print '\nGenerate DNase table...'
+	print 'Generate DNase table...'
 	dnaseSeries = getChromatinDataSeriesByGene(bwFileHandleDict['dnase'], libraryTable, sgInfoTable, p1p2Table, sgrnaPositionTable_p1p2)
 
-	print '\nGenerate FAIRE table...'
+	print 'Generate FAIRE table...'
 	faireSeries = getChromatinDataSeriesByGene(bwFileHandleDict['faire'], libraryTable, sgInfoTable, p1p2Table, sgrnaPositionTable_p1p2)
 
-	print '\nGenerate MNase table...'
+	print 'Generate MNase table...'
 	mnaseSeries = getChromatinDataSeriesByGene(bwFileHandleDict['mnase'], libraryTable, sgInfoTable, p1p2Table, sgrnaPositionTable_p1p2)
 
-	print '\nGenerate RNA folding table...'
+	print 'Generate RNA folding table...'
 	rnafolding = getRNAfoldingTable(libraryTable)
 
-	print '\nJoining table...'
+	print 'Joining table...'
 
 	return pd.concat([lengthSeries,
 		   sgrnaPositionTable_p1p2.iloc[:,2:],
