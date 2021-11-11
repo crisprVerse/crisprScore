@@ -3,9 +3,10 @@
 #'     activity scores for Cas9-based CRISPR activation (CRISPRa) and CRISPR 
 #'     inactivation (CRISPRi) gene perturbation studies. The Weissman algorithm 
 #'     incorporates chromatin features, transcription start site, and sequence 
-#'     to predict sgRNA activity scores as these can all influence activity in
-#'     CRISPRa and CRISPRi perturbation studies. This method currently only 
-#'     works for sgRNAs designed for use with Cas9 and hg38.
+#'     to predict single-guide RNA (sgRNA) activity scores as these can all 
+#'     influence activity in CRISPRa and CRISPRi perturbation studies. This 
+#'     method currently only works for sgRNAs designed for use with Cas9 and 
+#'     hg38 genome assembly.
 #'
 #' @param tss_df A \code{data.frame} containing transcription start site (TSS) 
 #'     data for promoters. Must have these columns: \code{gene_symbol}, 
@@ -17,7 +18,7 @@
 #'     more details about \code{sgrna_df}. 
 #' @param verbose Should messages be printed to the console? Default value is 
 #'     \code{TRUE}.
-#' @param modality Which mode of perturbation is being used. Must be a 
+#' @param modality Which mode of perturbation is being used? Must be a 
 #'     \code{string} specifying either \code{CRISPRa} or \code{CRISPRi}.
 #' @param fork Set to \code{TRUE} to preserve changes to the R
 #'     configuration within the session.
@@ -76,19 +77,23 @@ getWeissmanScores <- function(tss_df,
                                    sgrna_df,
                                    verbose=verbose)
 
-    pkg_path <- system.file("crisprai",
+    dir <- system.file("crisprai",
                        "temp_data",
                        package="crisprScore",
                        mustWork=TRUE)
 
-    pickleFile <- paste0(pkg_path, "/", modality, "_model.pkl")
+    pickleFile <- paste0(dir, "/", modality, "_model.pkl")
     
     # TO DO: Change these methods to pull from Experiment Hub 
     # specify fasta, chromatin data files, and pickle files
-    fastaFile <- paste0(pkg_path, "/hg38.fa")
-    chromatinFiles=c(dnase=paste0(pkg_path, "/dnase.bigWig"),
-                     faire=paste0(pkg_path, "/faire.bigWig"),
-                     mnase=paste0(pkg_path, "/mnase.bigWig")
+    dnasef = "/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig"
+    fairef = "/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig"
+    mnasef = "/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig"
+    
+    fastaFile <- paste0(dir, "/hg38.fa")
+    chromatinFiles=c(dnase=paste0(dir, dnasef),
+                     faire=paste0(dir, fairef),
+                     mnase=paste0(dir, mnasef)
                      )
 
     results <- basiliskRun(env=env_crisprai,
@@ -172,7 +177,7 @@ getWeissmanScores <- function(tss_df,
     }
     p1p2Table <- .getP1P2Table(tss_df)
     if (verbose){
-        message("Done creating p1p2 table.")
+        message("Done creating P1P2 table.")
     }
     sgrnaTable <- .getSgrnaTable(tss_df, sgrna_df)
     if (verbose){
@@ -483,3 +488,49 @@ getWeissmanScores <- function(tss_df,
     return(inputList)
 }
 
+#' @title Get example data for CRISPRa or CRISPRi
+#' @description Retrieves example datasets for Cas9-based CRISPR activation 
+#'     (CRISPRa) or  CRISPR inactivation (CRISPRi) modalities that can be used 
+#'     in \code{getWeissmanScores}.  
+#'
+#' @param modality For which mode of perturbation should example data be 
+#'     retrieved? Must be a \code{string} specifying either \code{CRISPRa} or 
+#'     \code{CRISPRi}.
+#' 
+#' @return \strong{loadWeissmanExample} returns a \code{list} containing two
+#'     \code{data.frame}s named \code{tssTable} and \code{sgrnaTable} that have
+#'     an example \code{tss_df} and \code{sgrna_df}, respectively, for the 
+#'     selected CRISPR \code{modality}.
+#' 
+#' @author Pirunthan Perampalam
+#' 
+#' @examples 
+#' \donttest{
+#' ex.data <- loadWeissmanExample(modality="CRISPRa")
+#' tssTable <- ex.data[["tssTable"]]
+#' sgrnaTable <- ex.data[["sgrnaTable"]]
+#' }
+#' 
+#' @md
+#' @export
+loadWeissmanExample <- function(modality=c("CRISPRa", "CRISPRi")){
+    modality  <- match.arg(modality)
+    
+    ex_folder = paste0("test_data_", tolower(modality))
+    
+    dir <- system.file("crisprai",
+                       ex_folder,
+                       package="crisprScore",
+                       mustWork=TRUE)
+    
+    tssFileName <- paste0(dir, "/", tolower(modality), "_tss_example.txt")
+    sgrnaFileName <- paste0(dir, "/", tolower(modality), "_sgrna_example.txt")
+    
+    tss_df <- read.table(file=tssFileName, sep = "\t", header = TRUE)
+    sgrna_df <- read.table(file=sgrnaFileName, sep = "\t", header = TRUE)
+    
+    dfList <- list(tssTable=tss_df,
+                   sgrnaTable=sgrna_df)
+    
+    return(dfList)
+}
