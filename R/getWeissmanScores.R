@@ -358,13 +358,6 @@ getWeissmanScores <- function(tss_df,
     pam <- .pamGenentechToWeissman(sgrnaInfoTable[["position"]])
     sgrnaInfoTable[["pam_coordinate"]] <- pam
 
-    # source of error leading to incorrect shape of array in sgrna_learning py @ generateSgrnaDistanceTable_p1p2Strategy
-    # matching_rows <- match(sgrnaInfoTable$tss_id,
-    #                        tssTable$tss_id)
-    # txCol <- paste0("['", tssTable[["promoter"]], "']")
-    # sgrnaInfoTable[["transcript_list"]] <- txCol[matching_rows]
-    
-    # new method to get full transcripts list for each sgID
     tssTable$ID <- paste(tssTable$gene_symbol, tssTable$promoter, sep = "_")
     matching_rows <- match(sgrnaInfoTable$tss_id,
                            tssTable$ID)
@@ -417,11 +410,6 @@ getWeissmanScores <- function(tss_df,
                                    libraryTable[["tss_id"]])
     libraryTable[["sublibrary"]] <- "customLibrary"
 
-    # matching_rows <- match(libraryTable$tss_id,
-    #                        tssTable$tss_id)
-    # libraryTable[["transcripts"]] <- tssTable[matching_rows, "promoter"]
-    
-    # new method to get full transcripts list for each sgID
     tssTable$ID <- paste(tssTable$gene_symbol, tssTable$promoter, sep = "_")
     matching_rows <- match(libraryTable$tss_id,
                            tssTable$ID)
