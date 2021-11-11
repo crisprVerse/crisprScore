@@ -11,10 +11,10 @@
 #'     data for promoters. Must have these columns: \code{gene_symbol}, 
 #'     \code{promoter}, \code{transcripts}, \code{position}, \code{strand}, and
 #'     \code{chr}. See below for more details about \code{tss_df}.    
-#' @param sgrnaInfo_df \code{A data.frame} containing PAM start site and sequence
+#' @param sgrna_df \code{A data.frame} containing PAM start site and sequence
 #'     for each sgRNA. Must have these columns: \code{grna_id}, \code{tss_id}, 
 #'     \code{pam_site}, \code{strand}, and \code{spacer_19mer}. See below for 
-#'     more details about \code{sgrnaInfo_df}. 
+#'     more details about \code{sgrna_df}. 
 #' @param verbose Should messages be printed to the console? Default value is 
 #'     \code{TRUE}.
 #' @param modality Which mode of perturbation is being used. Must be a 
@@ -22,7 +22,7 @@
 #' @param fork Set to \code{TRUE} to preserve changes to the R
 #'     configuration within the session.
 #'     
-#' @details TSS info table details:
+#' @details \code{tss_df} details:
 #'     This must be a \code{data.frame} that contains the following columns:
 #'     * gene_symbol: HGNC/HUGO gene identifier.
 #'     * promoter: promoter ID.
@@ -31,7 +31,7 @@
 #'     * strand: strand location. Either _+_ or _-_.
 #'     * chr: chromosome location for gene. _e.g. chr19_.
 #'     
-#' @details sgRNA info table details:
+#' @details \code{sgrna_df} details:
 #'     This must be a \code{data.frame} that contains the following columns:
 #'     * grna_id: unique sgRNA identifier
 #'     * tss_id: name of the transcription start site.
@@ -53,17 +53,19 @@
 #' 
 #' @examples 
 #' \donttest{
-#' tssFile <- read.csv("tss_file.txt", header=TRUE, sep="\t")
-#' sgrnaInfoFile <- read.csv("sgRNAinfo_file.txt", header=TRUE, sep="\t")
-#' modality <- "CRISPRa" # for CRISPR activation screen
-#' results <- getWeissmanScore(tssFile, sgrnaInfoFile, modality=modality)
+#' tss.data <- read.table("tss_file.txt", header=TRUE, sep="\t")
+#' sgrna.data <- read.table("sgrna_file.txt", header=TRUE, sep="\t")
+#' modality <- "CRISPRa"
+#' results <- getWeissmanScores(tss_df = tss.data,
+#'                              sgrna_df = sgrna.data,
+#'                              modality = modality)
 #' }
 #' 
 #' @md
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getWeissmanScores <- function(tss_df,
-                             sgrnaInfo_df,
+                             sgrna_df,
                              verbose=FALSE,
                              modality=c("CRISPRa", "CRISPRi"),
                              fork=FALSE
@@ -71,7 +73,7 @@ getWeissmanScores <- function(tss_df,
 
     modality  <- match.arg(modality)
     inputList <- .prepareInputData(tss_df,
-                                   sgrnaInfo_df,
+                                   sgrna_df,
                                    verbose=verbose)
 
     pkg_path <- system.file("crisprai",
@@ -137,7 +139,7 @@ getWeissmanScores <- function(tss_df,
                        package="crisprScore",
                        mustWork=TRUE)
 
-    pyWeissmanScore <- reticulate::import_from_path("predictWeissmanScore_working2",
+    pyWeissmanScore <- reticulate::import_from_path("predictWeissmanScores",
                                                     path=dir)
     
     # TO DO: add chromatin file vectors and pickle file path vectors
@@ -161,7 +163,7 @@ getWeissmanScores <- function(tss_df,
 
 
 .prepareInputData <- function(tss_df,
-                              sgrnaInfo_df,
+                              sgrna_df,
                               verbose=FALSE
 ){
     tssTable <- .getTssTable(tss_df)
@@ -172,11 +174,11 @@ getWeissmanScores <- function(tss_df,
     if (verbose){
         message("Done creating p1p2 table.")
     }
-    sgrnaTable <- .getSgrnaTable(tss_df, sgrnaInfo_df)
+    sgrnaTable <- .getSgrnaTable(tss_df, sgrna_df)
     if (verbose){
         message("Done creating sgRNA table.")
     }
-    libraryTable <- .getLibraryTable(tss_df, sgrnaInfo_df)
+    libraryTable <- .getLibraryTable(tss_df, sgrna_df)
     if (verbose){
         message("Done creating library table.")
     }
