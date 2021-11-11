@@ -314,42 +314,17 @@ def generateTssTable_P1P2strategy(tssTable, cagePeakFile, matchedp1p2Window, any
 
 def generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table, transcripts=False):
 
-	print "in generateSgrnaDistanceTable_p1p2Strategy function ......"
-
-	print "sgInfoTable"
-	print np.shape(sgInfoTable)
-
-	print "libraryTable"
-	print np.shape(libraryTable)
-
-	print "p1p2Table"
-	print np.shape(p1p2Table)
-
 	sgDistanceSeries = []
 
-	#p1p2Table.set_index('gene')
-
-
 	if transcripts == False: # when sgRNAs weren't designed based on the p1p2 strategy
-
-		print "inside transcripts == False"
 
 		for name, group in sgInfoTable['pam_coordinate'].groupby(libraryTable['gene']):
 			
 			try:
-				print "in for loop:....name=" + name
 
 				if name in p1p2Table.index:
-					print "yes name in p1p2Table ***********************************"
 
 					tssRow = p1p2Table.loc[name]
-
-					### start debug ###
-					print 'tssRow type *********'
-					print type(tssRow)
-					#tssRow.to_csv('debug_tssRow.csv')
-
-					### end debug ###
 
 					if len(tssRow) == 1:
 						tssRow = tssRow.iloc[0]
@@ -369,42 +344,16 @@ def generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table
 
 					else:
 
-						print "len(tssRow) is not 1..... ***********************************"
-
 						for sgId, pamCoord in group.iteritems():
 							closestTssRow = tssRow.loc[tssRow.apply(lambda row: abs(pamCoord - row['primary TSS'][0]), axis=1).idxmin()]
-							
-							### start debug ###
-							print 'closestTssRow type *********'
-							print type(closestTssRow)
-							# closestTssRow.to_csv('debug_closestTssRow.csv')
-
-							print 'closestTssRow strand type *********'
-							print type(closestTssRow)
-
-							print 'closestTssRow strand val *********'
-							print closestTssRow['strand']
-
-							print 'closestTssRow entire df *********'
-							print closestTssRow
-
-							print 'length of closestTssRow *********'
-							print len(closestTssRow)
-
-							print '**************************'
 
 							if isinstance(closestTssRow, pd.core.frame.DataFrame):
-
-								print '**************** IS DATA FRAME ****************'
-								print closestTssRow
 								
 								if len(closestTssRow) > 1:
 									for i in range(len(closestTssRow)):
 
 										# convert current row to pd Series
 										current_closestTssRow = closestTssRow.iloc[i]
-										print 'converted series row *********'
-										print current_closestTssRow
 
 										if (current_closestTssRow['strand'] == '+'):
 											sgDistanceSeries.append(((sgId + str(i)), name, current_closestTssRow.name,
@@ -421,8 +370,6 @@ def generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table
 							
 							else:
 
-							### end debug ###
-
 								if (closestTssRow['strand'] == '+'):
 									sgDistanceSeries.append((sgId, name, closestTssRow.name,
 										pamCoord - closestTssRow['primary TSS'][0],
@@ -435,11 +382,9 @@ def generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table
 										(pamCoord - closestTssRow['primary TSS'][0]) * -1,
 										(pamCoord - closestTssRow['secondary TSS'][1]) * -1,
 										(pamCoord - closestTssRow['secondary TSS'][0]) * -1))
-				else:
-					print "name not in p1p2"
 					
 			except:
-				raise Exception("Problem here: for loop @ generateSgrnaDistanceTable_p1p2Strategy")		
+				raise Exception("Error: cannnot match to promoter table.")		
 
 	else:
 		for name, group in sgInfoTable['pam_coordinate'].groupby([libraryTable['gene'],libraryTable['transcripts']]):
@@ -466,7 +411,6 @@ def generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table
 					print name, tssRow
 					raise ValueError('all gene/trans pairs should be unique')
 
-	print "we here"
 	return pd.DataFrame(sgDistanceSeries, columns=['sgId', 'gene', 'transcript', 'primary TSS-Up', 'primary TSS-Down', 'secondary TSS-Up', 'secondary TSS-Down']).set_index(keys=['sgId'])
 
 def generateSgrnaDistanceTable(sgInfoTable, tssTable, libraryTable):
@@ -521,9 +465,6 @@ def generateRelativeBasesAndStrand(sgInfoTable, tssTable, libraryTable, genomeDi
 			strands.append(True if sgInfo['strand'] == strand else False)
 
 			baseMatrix = []
-			### debug print gene name
-			print '\ngene: ' + str(gene)
-			###
 			for pos in np.arange(-30,10):
 				baseMatrix.append(getBaseRelativeToPam(chrom, sgInfo['pam_coordinate'],sgInfo['length'], sgInfo['strand'], pos, genomeDict))
 			relbases.append(baseMatrix)
@@ -552,7 +493,6 @@ def generateBooleanDoubleBaseTable(baseTable):
 
 def getBaseRelativeToPam(chrom, pamPos, length, strand, relPos, genomeDict):
 	rc = {'A':'T','T':'A','G':'C','C':'G','N':'N'}
-	#print chrom, pamPos, relPos
 
 	pamPos = int(pamPos)
 
@@ -587,7 +527,6 @@ def getFractionBaseList(sequence, baseList):
 			
 	return counter / len(sequence)
 
-#need to fix file naming
 def getRNAfoldingTable(libraryTable):
 	tempfile_fa = tempfile.NamedTemporaryFile('w+t', delete=False)
 	tempfile_rnafold = tempfile.NamedTemporaryFile('w+t', delete=False)
@@ -597,7 +536,6 @@ def getRNAfoldingTable(libraryTable):
 
 	tempfile_fa.close()
 	tempfile_rnafold.close()
-	# print tempfile_fa.name, tempfile_rnafold.name
 
 	subprocess.call('RNAfold --noPS < %s > %s' % (tempfile_fa.name, tempfile_rnafold.name), shell=True)
 
@@ -613,7 +551,6 @@ def getRNAfoldingTable(libraryTable):
 
 	tempfile_fa.close()
 	tempfile_rnafold.close()
-	# print tempfile_fa.name, tempfile_rnafold.name
 
 	subprocess.call('RNAfold --noPS < %s > %s' % (tempfile_fa.name, tempfile_rnafold.name), shell=True)
 
@@ -662,15 +599,12 @@ def getChromatinDataSeries(bigwigFile, libraryTable, sgInfoTable, tssTable, coln
 		if chromatinArray is not None and len(chromatinArray) > 0:
 			chromatinScores.append(np.nanmean(chromatinArray))
 		else: #often chrY when using K562 data..
-			# print name
-			# print chrom, min(sgInfo['pam_coordinate'], sgRange), max(sgInfo['pam_coordinate'], sgRange)
 			chromatinScores.append(np.nan)
 
 	chromatinSeries = pd.Series(chromatinScores, index=libraryTable.index, name = colname)
 
 	return chromatinSeries.fillna(naValue)
 
-# function that reads chromatin data
 def getChromatinDataSeriesByGene(bigwigFileHandle, libraryTable, sgInfoTable, p1p2Table, sgrnaDistanceTable_p1p2, colname = '', naValue = 0, normWindow = 1000):
 	bwindex = bigwigFileHandle #BigWigFile(open(bigwigFile))
 
@@ -681,13 +615,10 @@ def getChromatinDataSeriesByGene(bigwigFileHandle, libraryTable, sgInfoTable, p1
 
 		chrom = tssRow['chromosome']
 
-		# read in chromatin data from provided bwindex bigwigfile
-		# using BigWigFile
 		normWindowArray = bwindex.get_as_array(chrom, max(0, tssRow['primary TSS'][0] - normWindow), tssRow['primary TSS'][0] + normWindow)
 		normWindowArray = np.nan_to_num(normWindowArray)    # replace nans with 0.0
 		if normWindowArray is not None:
 			normFactor = np.nanmax(normWindowArray)
-			
 		else:
 			normFactor = 1
 
@@ -714,8 +645,6 @@ def getChromatinData(sgInfoRow, chromatinWindowArray, windowMin, normFactor):
 		chromatinArray = chromatinWindowArray[min(int(sgInfoRow['pam_coordinate']), sgRange) - int(windowMin): max(int(sgInfoRow['pam_coordinate']), sgRange) - int(windowMin)]
 		return np.nanmean(chromatinArray)/normFactor
 	else: #often chrY when using K562 data..
-		# print name
-		# print chrom, min(sgInfo['pam_coordinate'], sgRange), max(sgInfo['pam_coordinate'], sgRange)
 		return np.nan
 
 
@@ -723,7 +652,6 @@ def generateTypicalParamTable(libraryTable, sgInfoTable, tssTable, p1p2Table, ge
 	
 	print '\nGenerate sgRNA length series...'
 	lengthSeries = generateSgrnaLengthSeries(libraryTable)
-	# sgrnaPositionTable = generateSgrnaDistanceTable(sgInfoTable, tssTable, libraryTable)
 	
 	print '\nGenerate sgRNA distance table...'
 	sgrnaPositionTable_p1p2 = generateSgrnaDistanceTable_p1p2Strategy(sgInfoTable, libraryTable, p1p2Table, transcripts)
@@ -750,7 +678,7 @@ def generateTypicalParamTable(libraryTable, sgInfoTable, tssTable, p1p2Table, ge
 							libraryTable.apply(lambda row: getFractionBaseList(row['sequence'], ['G','A']),axis=1),
 							libraryTable.apply(lambda row: getFractionBaseList(row['sequence'], ['C','A']),axis=1)],keys=['A','G','C','T','GC','purine','CA'],axis=1)
 
-	print '\nGenerate DNase table...' ## error happens in this function
+	print '\nGenerate DNase table...'
 	dnaseSeries = getChromatinDataSeriesByGene(bwFileHandleDict['dnase'], libraryTable, sgInfoTable, p1p2Table, sgrnaPositionTable_p1p2)
 
 	print '\nGenerate FAIRE table...'
