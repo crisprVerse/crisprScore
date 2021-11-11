@@ -1,5 +1,5 @@
 import cPickle
-from sgRNA_learning_pamfix import *
+from sgRNA_learning import *
 
 
 def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, pickleFile, fastaFile, chromatinFiles, modality, verbose):
