@@ -66,13 +66,10 @@ This must be a \code{data.frame} that contains the following columns:
 * spacer_19mer: sgRNA spacer sequence.
 }
 \examples{
-\donttest{
-tss.data <- read.table("tss_file.txt", header=TRUE, sep="\t")
-sgrna.data <- read.table("sgrna_file.txt", header=TRUE, sep="\t")
-modality <- "CRISPRa"
-results <- getWeissmanScores(tss_df = tss.data,
-                             sgrna_df = sgrna.data,
-                             modality = modality)
+\dontrun{
+results <- getWeissmanScores(tss_df = tssExampleCrispra,
+                             sgrna_df = grnaExampleCrispra,
+                             modality = "CRISPRa")
 }
 
 }
