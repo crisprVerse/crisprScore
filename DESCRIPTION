@@ -6,6 +6,7 @@ Authors@R: c(
     person("Jean-Philippe", "Fortin", email = "fortin946@gmail.com", role = c("aut", "cre", "cph")),
     person("Aaron", "Lun", email = "infinite.monkeys.with.keyboards@gmail.com", role = c("aut")),
     person("Luke", "Hoberecht", email = "lukehob3@gmail.com", role = c("ctb")))
+    person("Pirunthan", "Perampalam", email = "pirunthan@gmail.com", role = c("ctb")))
 Depends:
     crisprScoreData
 Imports:
