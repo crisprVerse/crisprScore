@@ -28,7 +28,7 @@
 #' @author Jean-Philippe Fortin
 #' 
 #' @examples 
-#' \donttest{
+#' \dontrun{
 #' flank5 <- "ACCT" #4bp
 #' spacer <- "ATCGATGCTGATGCTAGATA" #20bp
 #' pam    <- "AGG" #3bp 

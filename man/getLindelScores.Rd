@@ -31,7 +31,7 @@ The input sequences for Lindel scoring require 13 nucleotides
     sequences (NGG) are accepted by Lindel.
 }
 \examples{
-\donttest{
+\dontrun{
 flank5 <- "ACCTTTTAATCGA" #13bp
 spacer <- "TGCTGATGCTAGATATTAAG" #20bp
 pam    <- "TGG" #3bp
