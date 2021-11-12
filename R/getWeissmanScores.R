@@ -53,23 +53,20 @@
 #' @author Pirunthan Perampalam
 #' 
 #' @examples 
-#' \donttest{
-#' tss.data <- read.table("tss_file.txt", header=TRUE, sep="\t")
-#' sgrna.data <- read.table("sgrna_file.txt", header=TRUE, sep="\t")
-#' modality <- "CRISPRa"
-#' results <- getWeissmanScores(tss_df = tss.data,
-#'                              sgrna_df = sgrna.data,
-#'                              modality = modality)
+#' \dontrun{
+#' results <- getWeissmanScores(tss_df = tssExampleCrispra,
+#'                              sgrna_df = grnaExampleCrispra,
+#'                              modality = "CRISPRa")
 #' }
 #' 
 #' @md
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getWeissmanScores <- function(tss_df,
-                             sgrna_df,
-                             verbose=FALSE,
-                             modality=c("CRISPRa", "CRISPRi"),
-                             fork=FALSE
+                              sgrna_df,
+                              verbose=FALSE,
+                              modality=c("CRISPRa", "CRISPRi"),
+                              fork=FALSE
 ){
 
     modality  <- match.arg(modality)
@@ -93,8 +90,7 @@ getWeissmanScores <- function(tss_df,
     fastaFile <- paste0(dir, "/hg38.fa")
     chromatinFiles=c(dnase=paste0(dir, dnasef),
                      faire=paste0(dir, fairef),
-                     mnase=paste0(dir, mnasef)
-                     )
+                     mnase=paste0(dir, mnasef))
 
     results <- basiliskRun(env=env_crisprai,
                            shared=FALSE,
@@ -476,49 +472,3 @@ getWeissmanScores <- function(tss_df,
     return(inputList)
 }
 
-#' @title Get example data for CRISPRa or CRISPRi
-#' @description Retrieves example datasets for Cas9-based CRISPR activation 
-#'     (CRISPRa) or  CRISPR inactivation (CRISPRi) modalities that can be used 
-#'     in \code{getWeissmanScores}.  
-#'
-#' @param modality For which mode of perturbation should example data be 
-#'     retrieved? Must be a \code{string} specifying either \code{CRISPRa} or 
-#'     \code{CRISPRi}.
-#' 
-#' @return \strong{loadWeissmanExample} returns a \code{list} containing two
-#'     \code{data.frame}s named \code{tssTable} and \code{sgrnaTable} that have
-#'     an example \code{tss_df} and \code{sgrna_df}, respectively, for the 
-#'     selected CRISPR \code{modality}.
-#' 
-#' @author Pirunthan Perampalam
-#' 
-#' @examples 
-#' \donttest{
-#' ex.data <- loadWeissmanExample(modality="CRISPRa")
-#' tssTable <- ex.data[["tssTable"]]
-#' sgrnaTable <- ex.data[["sgrnaTable"]]
-#' }
-#' 
-#' @md
-#' @export
-loadWeissmanExample <- function(modality=c("CRISPRa", "CRISPRi")){
-    modality  <- match.arg(modality)
-    
-    ex_folder = paste0("test_data_", tolower(modality))
-    
-    dir <- system.file("crisprai",
-                       ex_folder,
-                       package="crisprScore",
-                       mustWork=TRUE)
-    
-    tssFileName <- paste0(dir, "/", tolower(modality), "_tss_example.txt")
-    sgrnaFileName <- paste0(dir, "/", tolower(modality), "_sgrna_example.txt")
-    
-    tss_df <- read.table(file=tssFileName, sep = "\t", header = TRUE)
-    sgrna_df <- read.table(file=sgrnaFileName, sep = "\t", header = TRUE)
-    
-    dfList <- list(tssTable=tss_df,
-                   sgrnaTable=sgrna_df)
-    
-    return(dfList)
-}
