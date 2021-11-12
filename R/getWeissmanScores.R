@@ -78,6 +78,7 @@ getWeissmanScores <- function(tss_df,
                        "temp_data",
                        package="crisprScore",
                        mustWork=TRUE)
+    dir <- "/Users/fortinj2/crisprScore/inst/crisprai/temp_data"
 
     pickleFile <- paste0(dir, "/", modality, "_model.pkl")
     
