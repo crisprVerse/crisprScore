@@ -36,7 +36,7 @@
 #' @author Jean-Philippe Fortin
 #' 
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
 #' pam     <- "AGG" #3bp 
 #' input   <- paste0(spacer, pam) 
@@ -121,7 +121,8 @@ getDeepHFScores <- function(sequences,
         scores <- deephf$getDeepHF(np_array(sequences.valid),
                                    model_type,
                                    model_file)
-        scores <- scores[,c(1,4,5,6),drop=FALSE]
+        cols <- c("index", "PAM", "gRNA_Seq", "Efficiency")
+        scores <- scores[,cols,drop=FALSE]
         scores$index <- scores$index+1
         scores <- scores[order(scores$index),,drop=FALSE]
         scores$index <- NULL
