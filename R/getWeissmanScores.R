@@ -57,6 +57,10 @@
 #' results <- getWeissmanScores(tss_df = tssExampleCrispra,
 #'                              sgrna_df = grnaExampleCrispra,
 #'                              modality = "CRISPRa")
+#' 
+#' results <- getWeissmanScores(tss_df = tssExampleCrispri,
+#'                              sgrna_df = grnaExampleCrispri,
+#'                              modality = "CRISPRi")
 #' }
 #' 
 #' @md
