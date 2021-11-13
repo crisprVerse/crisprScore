@@ -2,7 +2,7 @@
 % Please edit documentation in R/getWeissmanScores.R
 \name{getWeissmanScores}
 \alias{getWeissmanScores}
-\title{Calculate on-target sgRNA activity scores using crisprai}
+\title{Calculate on-target sgRNA activity scores for CRISPRa and CRISPRi}
 \usage{
 getWeissmanScores(
   tss_df,
@@ -13,18 +13,19 @@ getWeissmanScores(
 )
 }
 \arguments{
-\item{tss_df}{A \code{data.frame} containing transcription start site (TSS)
-data for promoters. Must have these columns: \code{gene_symbol},
+\item{tss_df}{A \code{data.frame} specifying coordinates of transcription
+start site (TSS) of the targeted promoter regions.
+Must have the following columns: \code{gene_symbol},
 \code{promoter}, \code{transcripts}, \code{position}, \code{strand}, and
-\code{chr}. See below for more details about \code{tss_df}.}
+\code{chr}. See details section below for more information.}
 
-\item{sgrna_df}{\code{A data.frame} containing PAM start site and sequence
-for each sgRNA. Must have these columns: \code{grna_id}, \code{tss_id},
-\code{pam_site}, \code{strand}, and \code{spacer_19mer}. See below for
-more details about \code{sgrna_df}.}
+\item{sgrna_df}{A \code{A data.frame} specifying coordinates and spacer
+sequences of the sgRNAs to score.  Must have the following columns:
+\code{grna_id}, \code{tss_id}, \code{pam_site}, \code{strand}, and
+\code{spacer_19mer}. See details section below for more information.}
 
-\item{verbose}{Should messages be printed to the console? Default value is
-\code{TRUE}.}
+\item{verbose}{Should messages be printed to the console?
+TRUE by default.}
 
 \item{modality}{Which mode of perturbation is being used? Must be a
 \code{string} specifying either \code{CRISPRa} or \code{CRISPRi}.}
@@ -34,46 +35,46 @@ configuration within the session.}
 }
 \value{
 \strong{getWeissmanScore} returns a \code{data.frame} with
-\code{sequence} and \code{score} columns. The Weissman score takes on a
+\code{grna_id} and \code{score} columns. The Weissman score takes on a
 value between 0 and 1. A higher score indicates higher sgRNA efficiency.
 }
 \description{
-Use the Weissman scoring method to calculate on-target sgRNA
-activity scores for Cas9-based CRISPR activation (CRISPRa) and CRISPR
-inactivation (CRISPRi) gene perturbation studies. The Weissman algorithm
-incorporates chromatin features, transcription start site, and sequence
-to predict single-guide RNA (sgRNA) activity scores as these can all
-influence activity in CRISPRa and CRISPRi perturbation studies. This
-method currently only works for sgRNAs designed for use with Cas9 and
-hg38 genome assembly.
+Use the Weissman lab scoring method (library design v2) to
+calculate on-target sgRNA  activity scores for Cas9-based CRISPR
+activation (CRISPRa) and CRISPR inactivation (CRISPRi) gene perturbation
+studies. The algorithm incorporates chromatin features, transcription
+start site, and sequence to predict gRNA activity scores.
+Only sgRNAs designed for the human genome (hg38 build) using Cas9 are
+supported at the moment, and only spacers of length 19 are
+supported at the moment.
 }
 \details{
 \code{tss_df} details:
 This must be a \code{data.frame} that contains the following columns:
-* gene_symbol: HGNC/HUGO gene identifier.
-* promoter: promoter ID.
+* gene_symbol: string specifying sHGNC/HUGO gene identifier.
+* promoter: string specifying promoter ID (e.g. "P1" or "P2").
 * transcripts: Ensembl transcript identifier.
-* position: start position of transcription start site (TSS).
-* strand: strand location. Either \emph{+} or \emph{-}.
-* chr: chromosome location for gene. \emph{e.g. chr19}.
+* position: start position of TSS in hg38 coordinates.
+* strand: strand of the gene/TSS. Must be either \emph{+} or \emph{-}.
+* chr: string specifying chromosome (e.g. "chr1").
 
 \code{sgrna_df} details:
 This must be a \code{data.frame} that contains the following columns:
-* grna_id: unique sgRNA identifier
-* tss_id: name of the transcription start site.
-* pam_site: position of the \strong{N} in the \emph{NGG} PAM sequence.
-* strand: strand location. Either \emph{+} or \emph{-}.
-* spacer_19mer: sgRNA spacer sequence.
+* grna_id: string specifying a unique sgRNA identifier.
+* tss_id: string specifying name of the TSS.
+* pam_site: genomic ccoordinate of the \strong{N} in the \emph{NGG} PAM sequence.
+* strand: strand fo the sgRNA. Must be either \emph{+} or \emph{-}.
+* spacer_19mer: string specifying sgRNA 19mer spacer sequence.
 }
 \examples{
 \dontrun{
-results <- getWeissmanScores(tss_df = tssExampleCrispra,
-                             sgrna_df = grnaExampleCrispra,
-                             modality = "CRISPRa")
+results <- getWeissmanScores(tss_df=tssExampleCrispra,
+                             sgrna_df=sgrnaExampleCrispra,
+                             modality="CRISPRa")
 
-results <- getWeissmanScores(tss_df = tssExampleCrispri,
-                             sgrna_df = grnaExampleCrispri,
-                             modality = "CRISPRi")
+results <- getWeissmanScores(tss_df=tssExampleCrispri,
+                             sgrna_df=sgrnaExampleCrispri,
+                             modality="CRISPRi")
 }
 
 }

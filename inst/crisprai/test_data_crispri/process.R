@@ -20,8 +20,8 @@ grna <- grna[grna$tss_id %in% tss$tss_id,]
 
 
 tssExampleCrispri  <- tss
-grnaExampleCrispri <- grna
+sgrnaExampleCrispri <- grna
 save(tssExampleCrispri,
      file="../../../data/tssExampleCrispri.rda")
-save(grnaExampleCrispri,
-     file="../../../data/grnaExampleCrispri.rda")
+save(sgrnaExampleCrispri,
+     file="../../../data/sgrnaExampleCrispri.rda")
