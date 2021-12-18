@@ -32,7 +32,7 @@ The input sequences for Azimuth scoring require 4 nucleotides
     Note that a canonical PAM sequence (NGG) is required for Azimuth.
 }
 \examples{
-\dontrun{
+if (interactive()){
 flank5 <- "ACCT" #4bp
 spacer <- "ATCGATGCTGATGCTAGATA" #20bp
 pam    <- "AGG" #3bp 

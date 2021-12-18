@@ -35,7 +35,7 @@ The input sequences for DeepCpf1 scoring require 4 nucleotides
     sequence will be convert to TTTC for scoring purposes.
 }
 \examples{
-\dontrun{
+if (interactive()){
 flank5 <- "ACC" #3bp
 pam    <- "TTTT" #4bp
 spacer <- "AATCGATGCTGATGCTAGATATT" #23bp

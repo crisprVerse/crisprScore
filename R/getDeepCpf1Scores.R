@@ -27,7 +27,7 @@
 #' @author Jean-Philippe Fortin
 #' 
 #' @examples
-#' \dontrun{
+#' if (interactive()){
 #' flank5 <- "ACC" #3bp
 #' pam    <- "TTTT" #4bp
 #' spacer <- "AATCGATGCTGATGCTAGATATT" #23bp
