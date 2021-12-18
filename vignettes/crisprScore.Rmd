@@ -96,7 +96,7 @@ developed for the Cas9 nuclease [@ruleset1]. It generates a probability
 intended target. 4 nucleotides upstream and 3 nucleotides downstream of
 the protospacer sequence are needed for scoring:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 flank5 <- "ACCT" #4bp
 spacer <- "ATCGATGCTGATGCTAGATA" #20bp
 pam    <- "AGG" #3bp 
