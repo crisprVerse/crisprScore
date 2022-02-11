@@ -190,6 +190,25 @@ input  <- paste0(flank5, pam, spacer, flank3)
 results <- getEnPAMGBScores(input)
 ```
 
+## CRISPRscan (Moreno-Mateos score)
+
+The CRISPRscan algorithm, also known as the Moreno-Mateos score), is an
+on-target efficiency method for the SpCas9 nuclease developed for sgRNAs
+expressed from a T7 promoter, and trained on zebrafish data [@crisprscan].
+It generates a probability (therefore a score between 0 and 1) that a given
+sgRNA will cut at its intended target. 
+6 nucleotides upstream and 6 nucleotides downstream of
+the protospacer sequence are needed for scoring:
+
+```{r, eval=TRUE}
+flank5 <- "ACCTAA" #6bp
+spacer <- "ATCGATGCTGATGCTAGATA" #20bp
+pam    <- "AGG" #3bp 
+flank3 <- "TTGAAT" #6bp
+input  <- paste0(flank5, spacer, pam, flank3) 
+results <- getCRISPRscanScores(input)
+```
+
 
 # Off-target specificity scores 
 

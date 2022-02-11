@@ -2,6 +2,7 @@
 
 export(getAzimuthScores)
 export(getCFDScores)
+export(getCRISPRscanScores)
 export(getDeepCpf1Scores)
 export(getDeepHFScores)
 export(getEnPAMGBScores)
