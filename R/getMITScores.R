@@ -2,8 +2,9 @@
 #' @description Calculate MIT off-target specificity scores for CRISPR/Cas9.
 #' 
 #' @param spacers Character vector of 20bp spacer sequences.
-#' @param protospacers Character vector of 23bp protospacer sequences 
-#'     for off-targets ([20bp spacer] + [3bp PAM]).
+#' @param protospacers Character vector of 20bp protospacer sequences 
+#'     for off-targets.
+#' @param pams Character vector of 3nt PAM sequences. 
 #' @param includeDistance Should distance between mismatches be considered
 #'     during scoring? TRUE by default.
 #' 
@@ -25,24 +26,31 @@
 #' # Calculating MIT scores for two off-targets with respect to
 #' # one spacer sequence:
 #' spacer <- "AGGTGTAGTGTGTGTGATAA"
-#' protospacer1 <- paste0("CGGTGTAGTGTGTGTGATAA", "AGG")
-#' protospacer2 <- paste0("CGGTGTCGTGTGTGTGATAA", "CGG")
+#' protospacer1 <- "CGGTGTAGTGTGTGTGATAA"
+#' protospacer2 <- "CGGTGTCGTGTGTGTGATAA"
+#' pams <- c("AGG", "CGG")
 #' results <- getMITScores(spacers=spacer,
-#'     protospacers=c(protospacer1, protospacer2)
+#'     protospacers=c(protospacer1, protospacer2),
+#'     pams=pams
 #' )
 #' 
 #' @importFrom Biostrings DNAStringSet
 #' @export
 getMITScores <- function(spacers,
                          protospacers,
-                         includeDistance=TRUE){
+                         pams,
+                         includeDistance=TRUE
+){
     spacers       <- .checkSequenceInputs(spacers)
     protospacers  <- .checkSequenceInputs(protospacers)
-    if (unique(nchar(protospacers))!=23){
-        stop("Protospacer sequences must have length 23nt (20nt-spacer + PAM).")
+    if (unique(nchar(protospacers))!=20){
+        stop("Protospacer sequences must have length 20nt.")
     } 
     if (unique(nchar(spacers))!=20){
         stop("Spacer sequences must have length 20nt.")
+    }
+    if (unique(nchar(pams))!=3){
+        stop("PAM sequences must have length 3nt.")
     }
     if (length(spacers)==1){
         spacers <- rep(spacers, length(protospacers))
@@ -52,12 +60,12 @@ getMITScores <- function(spacers,
                  " have the same length.")
         }
     }
+    pams <- substr(pams, 2,3)
     
     spacers.wt  <- spacers
-    spacers.off <- substr(protospacers, 1,nchar(protospacers) - 3) 
+    spacers.off <- protospacers 
     spacers.wt   <- DNAStringSet(spacers.wt)
     spacers.off  <- DNAStringSet(spacers.off)
-    pams <- substr(protospacers, nchar(protospacers) - 1, nchar(protospacers))
     x <- as.matrix(spacers.wt)
     y <- as.matrix(spacers.off)
     wh <- x!=y

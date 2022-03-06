@@ -2,35 +2,45 @@
 % Please edit documentation in R/getCFDScores.R
 \name{getCFDScores}
 \alias{getCFDScores}
-\title{Calculate CFD off-target specificity scores for CRISPR/Cas9}
+\title{Calculate CFD off-target specificity scores}
 \usage{
-getCFDScores(spacers, protospacers)
+getCFDScores(spacers, protospacers, pams, nuclease = c("SpCas9", "CasRx"))
 }
 \arguments{
-\item{spacers}{Character vector of 20bp spacer sequences.}
+\item{spacers}{Character vector of 20bp spacer sequences.
+Must be in 5' to 3' direction.
+For SpCas9, must be of length 20bp.
+For CasRx, must be at most of length 27bp.}
 
-\item{protospacers}{Character vector of 23bp protospacer sequences.}
+\item{protospacers}{Character vector of 20bp protospacer sequences
+(target sequences). Must be in 5' to 3' direction.}
+
+\item{pams}{Character vector of PAM sequences.}
+
+\item{nuclease}{String specifying the nuclease. Either "SpCas9" (default)
+or "CasRx".}
 }
 \value{
 \strong{getCFDScores} returns a data.frame with \code{spacer},
     \code{protospacer}, and \code{score} columns. The CFD score takes
     on a value between 0 and 1. For a given pair (on-target, off-target), 
-    a higher CFD score indicates a higher likelihood for the Cas9 nuclease
+    a higher CFD score indicates a higher likelihood for the nuclease
     to cut at the off-target. Non-canonical PAM sequences are taken into
     account by the CFD algorithm.
 }
 \description{
 Calculate cutting frequency determination (CFD) off-target
-    specificity scores for CRISPR/Cas9.
+    specificity scores for CRISPR/Cas9 or CRISPR/CasRX.
 }
 \examples{
 # Calculating MIT scores for two off-targets with respect to
 # one spacer sequence:
 spacer <- "AGGTGTAGTGTGTGTGATAA"
-protospacer1 <- paste0("CGGTGTAGTGTGTGTGATAA", "AGG")
-protospacer2 <- paste0("CGGTGTCGTGTGTGTGATAA", "CGG")
+protospacer1 <- "CGGTGTAGTGTGTGTGATAA"
+protospacer2 <- "CGGTGTCGTGTGTGTGATAA"
 results <- getCFDScores(spacers=spacer,
-    protospacers=c(protospacer1, protospacer2)
+    protospacers=c(protospacer1, protospacer2),
+    pams=c("AGG", "CGG")
 )
 
 }

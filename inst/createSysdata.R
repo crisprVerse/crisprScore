@@ -2,9 +2,13 @@ library(devtools)
 load("mit/mit.weights.rda")
 load("cfd_cas9/cfd.mm.weights.cas9.rda")
 load("cfd_cas9/cfd.pam.weights.cas9.rda")
+load("cfd_casrx/cfd.mm.weights.casrx.rda")
+load("cfd_casrx/cfd.pam.weights.casrx.rda")
 use_data(mit.weights, 
 	cfd.mm.weights.cas9,
 	cfd.pam.weights.cas9,
+	cfd.mm.weights.casrx,
+	cfd.pam.weights.casrx,
 	internal=TRUE,
 	overwrite=TRUE
 )

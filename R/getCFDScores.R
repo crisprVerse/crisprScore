@@ -1,14 +1,21 @@
-#' @title Calculate CFD off-target specificity scores for CRISPR/Cas9
+#' @title Calculate CFD off-target specificity scores 
 #' @description Calculate cutting frequency determination (CFD) off-target
-#'     specificity scores for CRISPR/Cas9.
+#'     specificity scores for CRISPR/Cas9 or CRISPR/CasRX.
 #' 
 #' @param spacers Character vector of 20bp spacer sequences.
-#' @param protospacers Character vector of 23bp protospacer sequences. 
+#'     Must be in 5' to 3' direction.
+#'     For SpCas9, must be of length 20bp.
+#'     For CasRx, must be at most of length 27bp.
+#' @param protospacers Character vector of 20bp protospacer sequences
+#'     (target sequences). Must be in 5' to 3' direction.
+#' @param pams Character vector of PAM sequences.
+#' @param nuclease String specifying the nuclease. Either "SpCas9" (default)
+#'     or "CasRx".
 #' 
 #' @return \strong{getCFDScores} returns a data.frame with \code{spacer},
 #'     \code{protospacer}, and \code{score} columns. The CFD score takes
 #'     on a value between 0 and 1. For a given pair (on-target, off-target), 
-#'     a higher CFD score indicates a higher likelihood for the Cas9 nuclease
+#'     a higher CFD score indicates a higher likelihood for the nuclease
 #'     to cut at the off-target. Non-canonical PAM sequences are taken into
 #'     account by the CFD algorithm.
 #' 
@@ -25,23 +32,23 @@
 #' # Calculating MIT scores for two off-targets with respect to
 #' # one spacer sequence:
 #' spacer <- "AGGTGTAGTGTGTGTGATAA"
-#' protospacer1 <- paste0("CGGTGTAGTGTGTGTGATAA", "AGG")
-#' protospacer2 <- paste0("CGGTGTCGTGTGTGTGATAA", "CGG")
+#' protospacer1 <- "CGGTGTAGTGTGTGTGATAA"
+#' protospacer2 <- "CGGTGTCGTGTGTGTGATAA"
 #' results <- getCFDScores(spacers=spacer,
-#'     protospacers=c(protospacer1, protospacer2)
+#'     protospacers=c(protospacer1, protospacer2),
+#'     pams=c("AGG", "CGG")
 #' )
 #' 
 #' @importFrom Biostrings width
 #' @export
-getCFDScores <- function(spacers, protospacers){
+getCFDScores <- function(spacers,
+                         protospacers,
+                         pams,
+                         nuclease=c("SpCas9", "CasRx")
+){
+    nuclease <- match.arg(nuclease)
     spacers       <- .checkSequenceInputs(spacers)
     protospacers  <- .checkSequenceInputs(protospacers)
-    if (unique(nchar(protospacers))!=23){
-        stop("Protospacer sequences must have length 23nt (20nt-spacer + PAM).")
-    } 
-    if (unique(nchar(spacers))!=20){
-        stop("Spacer sequences must have length 20nt.")
-    }
     if (length(spacers)==1){
         spacers <- rep(spacers, length(protospacers))
     } else {
@@ -50,11 +57,34 @@ getCFDScores <- function(spacers, protospacers){
                  " have the same length.")
         }
     }
+
+    if (nuclease=="SpCas9"){
+        if (unique(nchar(protospacers))!=20){
+            stop("Protospacer sequences must have length 20nt.")
+        } 
+        if (unique(nchar(spacers))!=20){
+            stop("Spacer sequences must have length 20nt.")
+        }
+        if (unique(nchar(pams))!=3){
+            stop("PAM sequences must have length 3nt.")
+        }
+        pams <- substr(pams,2,3)
+    } else if (nuclease=="CasRx"){
+        if (unique(nchar(protospacers))!=27){
+            stop("Protospacer sequences must have length 27nt.")
+        } 
+        if (unique(nchar(spacers))!=27){
+            stop("Spacer sequences must have length 27nt.")
+        }
+        if (unique(nchar(pams))!=1){
+            stop("PAM sequences must have length 1nt.")
+        }
+    }
+   
     spacers.wt  <- spacers
-    spacers.off <- substr(protospacers, 1,nchar(protospacers) - 3) 
+    spacers.off <- protospacers
     spacers.wt   <- DNAStringSet(spacers.wt)
     spacers.off  <- DNAStringSet(spacers.off)
-    pams <- substr(protospacers, nchar(protospacers) - 1, nchar(protospacers))
     x <- as.matrix(spacers.wt)
     y <- as.matrix(spacers.off)
     wh <- x!=y
@@ -70,15 +100,40 @@ getCFDScores <- function(spacers, protospacers){
         }
         return(xx)
     })
+
+    pam.weights <- .getPamWeights(nuclease)
+    mm.weights  <- .getMmWeights(nuclease)
     mm.scores <- vapply(mm,
-                        function(x) prod(cfd.mm.weights.cas9[x]),
+                        function(x) prod(mm.weights[x]),
                         FUN.VALUE=0)
     mm.scores[is.na(mm.scores)] <- 1
-    pam.scores <- cfd.pam.weights.cas9[pams]
+    pam.scores <- pam.weights[pams]
     cfd.scores <- as.numeric(mm.scores*pam.scores)
     data.frame(spacer=spacers, 
                protospacer=protospacers,
                score=cfd.scores)
 }
+
+
+.getPamWeights <- function(nuclease){
+    if (nuclease=="SpCas9"){
+        ws <- cfd.pam.weights.cas9
+    } else if (nuclease=="CasRx"){
+        ws <- cfd.pam.weights.casrx
+    }
+    return(ws)
+}
+
+.getMmWeights <- function(nuclease){
+    if (nuclease=="SpCas9"){
+        ws <- cfd.mm.weights.cas9
+    } else if (nuclease=="CasRx"){
+        ws <- cfd.mm.weights.casrx
+    }
+    return(ws)
+}
+
+
+
 
 

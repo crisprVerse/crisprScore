@@ -22,6 +22,29 @@
 "cfd.pam.weights.cas9"
 
 
+#' Mismatch position weights for the CFD off-target algorithm (CasRx)
+#'
+#' CFD off-target scoring weights for each nucleotide position and each
+#'     pair of DNA:RNA mismatches, for 27-mer spacer sequences.
+#'     Position 1 refers to the spacer position adjacent to
+#'     the PAM sequence. A higher weight indicates greater mismatch tolerance 
+#'     by the CasRx nuclease.
+#' 
+#' @format Numeric vector 
+"cfd.mm.weights.casrx"
+
+
+#' PAM sequence weights for the CFD off-target algorithm (CasRx)
+#'
+#' CFD off-target PAM weights for each possible 1-mer CasRx PAM sequences.
+#'     A higher weight indicates greater mismatch tolerance 
+#'     by the CasRx nuclease.
+#' 
+#' @format Numeric vector
+"cfd.pam.weights.casrx"
+
+
+
 
 #' Mismatch position weights for the MIT off-target algorithm (Cas9)
 #'
