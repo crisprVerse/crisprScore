@@ -70,11 +70,11 @@ getCFDScores <- function(spacers,
         }
         pams <- substr(pams,2,3)
     } else if (nuclease=="CasRx"){
-        if (unique(nchar(protospacers))!=27){
-            stop("Protospacer sequences must have length 27nt.")
+        if (unique(nchar(protospacers))>27){
+            stop("Protospacer sequences must have length at most27nt.")
         } 
-        if (unique(nchar(spacers))!=27){
-            stop("Spacer sequences must have length 27nt.")
+        if (unique(nchar(spacers))>27){
+            stop("Spacer sequences must have length at most 27nt.")
         }
         if (unique(nchar(pams))!=1){
             stop("PAM sequences must have length 1nt.")
