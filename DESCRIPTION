@@ -1,5 +1,5 @@
 Package: crisprScore
-Version: 0.99.19
+Version: 0.99.20
 Date: 2022-03-05
 Title: On-Target and Off-Target Scoring Algorithms for CRISPR gRNAs
 Authors@R: c(
@@ -14,6 +14,7 @@ Imports:
     BiocGenerics,
     Biostrings,
     IRanges,
+    methods,
     randomForest,
     reticulate,
     stringr,
