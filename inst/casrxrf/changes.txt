@@ -1,0 +1,2 @@
+The code was cloned from https://gitlab.com/sanjanalab/cas13/-/tree/master/Cas13designGuidePredictor
+We have substantially cleaned the original code and rewrote most of it to adhere coding standards of our package crisprScore.
