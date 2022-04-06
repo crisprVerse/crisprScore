@@ -1,3 +1,16 @@
+ # TO DO: Change these methods to pull from Experiment Hub 
+#dnasef = "/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig"
+#fairef = "/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig"
+#mnasef = "/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig"
+    
+#fastaFile <- paste0(dir, "/hg38.fa")
+#chromatinFiles=c(dnase=paste0(dir, dnasef),
+#                 faire=paste0(dir, fairef),
+                 #mnase=paste0(dir, mnasef))
+
+
+
+
 #' @title Calculate on-target sgRNA activity scores for CRISPRa and CRISPRi
 #' @description Use the Weissman lab scoring method (library design v2) to
 #'     calculate on-target sgRNA  activity scores for Cas9-based CRISPR
@@ -41,7 +54,7 @@
 #'     * strand: strand fo the sgRNA. Must be either _+_ or _-_.
 #'     * spacer_19mer: string specifying sgRNA 19mer spacer sequence.
 #' 
-#' @return \strong{getWeissmanScore} returns a \code{data.frame} with 
+#' @return \strong{getWeissmanScores} returns a \code{data.frame} with 
 #'     \code{grna_id} and \code{score} columns. The Weissman score takes on a 
 #'     value between 0 and 1. A higher score indicates higher sgRNA efficiency.
 #' 
@@ -51,7 +64,7 @@
 #'     eLife 2016;5:e19760.
 #'     \url{https://doi.org/10.7554/eLife.19760}.
 #' 
-#' @author Pirunthan Perampalam
+#' @author Pirunthan Perampalam, Jean-Philippe Fortin
 #' 
 #' @examples 
 #' \dontrun{
@@ -71,32 +84,32 @@ getWeissmanScores <- function(tss_df,
                               sgrna_df,
                               verbose=FALSE,
                               modality=c("CRISPRa", "CRISPRi"),
+                              fastaFile=NULL,
+                              chromatinFiles=NULL,
                               fork=FALSE
 ){
+
+    .checkChromatinFiles(chromatinFiles)
+    .checkFastaFile(fastaFile)
 
     modality  <- match.arg(modality)
     inputList <- .prepareInputData(tss_df,
                                    sgrna_df,
                                    verbose=verbose)
 
-    dir <- system.file("crisprai",
-                       "temp_data",
-                       package="crisprScore",
-                       mustWork=TRUE)
-    dir <- "/Users/fortinj2/crisprScore/inst/crisprai/temp_data"
+    #dir <- system.file("crisprai",
+    #                   "temp_data",
+    #                   package="crisprScore",
+    #                   mustWork=TRUE)
+    #dir <- "/Users/fortinj2/crisprScore/inst/crisprai/temp_data"
+    #pickleFile <- paste0(dir, "/", modality, "_model.pkl")
 
-    pickleFile <- paste0(dir, "/", modality, "_model.pkl")
+    if (modality=="CRISPRa"){
+        pickleFile <- crisprScoreData::CRISPRa_model.pkl()
+    } else if (modality=="CRISPRi"){
+        pickleFile <- crisprScoreData::CRISPRa_model.pkl()
+    }
     
-    # TO DO: Change these methods to pull from Experiment Hub 
-    # specify fasta, chromatin data files, and pickle files
-    dnasef = "/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig"
-    fairef = "/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig"
-    mnasef = "/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig"
-    
-    fastaFile <- paste0(dir, "/hg38.fa")
-    chromatinFiles=c(dnase=paste0(dir, dnasef),
-                     faire=paste0(dir, fairef),
-                     mnase=paste0(dir, mnasef))
 
     results <- basiliskRun(env=env_crisprai,
                            shared=FALSE,
@@ -113,6 +126,38 @@ getWeissmanScores <- function(tss_df,
                            verbose=verbose)
 
     return(results)
+}
+
+
+.checkFastaFile <- function(fasta){
+    if (is.null(fasta)){
+        stop("Argument fasta cannot be NULL.")
+    }
+    if (length(fasta)!=1){
+        stop("fasta must be a character vector of length 1.")
+    }
+     if (!file.exists(fasta)){
+        stop("Fasta file cannot be found.")
+    }
+    invisible(TRUE)
+}
+
+.checkChromatinFiles <- function(chromatinFiles){
+    if (is.null(chromatinFiles)){
+        stop("Argument chromatinFiles cannot be NULL.")
+    }
+    if (length(chromatinFiles)!=3){
+        stop("chromatinFiles must be a character vector of length 3.")
+    }
+    choices <- c("mnase", "faire", "dnase")
+    if (!all(sort(names(chromatinFiles))==sort(names(choices)))){
+        stop("chromatinFiles must be a character vector with the",
+             " following names: mnase, faire, dnase.")
+    }
+    if (!sum(file.exists(chromatinFiles))==3){
+        stop("Some of the chromatin files cannot be found.")
+    }
+    invisible(TRUE)
 }
 
 
