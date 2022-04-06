@@ -9,6 +9,8 @@ getWeissmanScores(
   sgrna_df,
   verbose = FALSE,
   modality = c("CRISPRa", "CRISPRi"),
+  fastaFile = NULL,
+  chromatinFiles = NULL,
   fork = FALSE
 )
 }
@@ -34,7 +36,7 @@ TRUE by default.}
 configuration within the session.}
 }
 \value{
-\strong{getWeissmanScore} returns a \code{data.frame} with
+\strong{getWeissmanScores} returns a \code{data.frame} with
 \code{grna_id} and \code{score} columns. The Weissman score takes on a
 value between 0 and 1. A higher score indicates higher sgRNA efficiency.
 }
@@ -85,5 +87,5 @@ eLife 2016;5:e19760.
 \url{https://doi.org/10.7554/eLife.19760}.
 }
 \author{
-Pirunthan Perampalam
+Pirunthan Perampalam, Jean-Philippe Fortin
 }
