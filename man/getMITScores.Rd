@@ -4,13 +4,15 @@
 \alias{getMITScores}
 \title{Calculate MIT off-target specificity scores for CRISPR/Cas9}
 \usage{
-getMITScores(spacers, protospacers, includeDistance = TRUE)
+getMITScores(spacers, protospacers, pams, includeDistance = TRUE)
 }
 \arguments{
 \item{spacers}{Character vector of 20bp spacer sequences.}
 
-\item{protospacers}{Character vector of 23bp protospacer sequences 
-for off-targets ([20bp spacer] + [3bp PAM]).}
+\item{protospacers}{Character vector of 20bp protospacer sequences 
+for off-targets.}
+
+\item{pams}{Character vector of 3nt PAM sequences.}
 
 \item{includeDistance}{Should distance between mismatches be considered
 during scoring? TRUE by default.}
@@ -30,10 +32,12 @@ Calculate MIT off-target specificity scores for CRISPR/Cas9.
 # Calculating MIT scores for two off-targets with respect to
 # one spacer sequence:
 spacer <- "AGGTGTAGTGTGTGTGATAA"
-protospacer1 <- paste0("CGGTGTAGTGTGTGTGATAA", "AGG")
-protospacer2 <- paste0("CGGTGTCGTGTGTGTGATAA", "CGG")
+protospacer1 <- "CGGTGTAGTGTGTGTGATAA"
+protospacer2 <- "CGGTGTCGTGTGTGTGATAA"
+pams <- c("AGG", "CGG")
 results <- getMITScores(spacers=spacer,
-    protospacers=c(protospacer1, protospacer2)
+    protospacers=c(protospacer1, protospacer2),
+    pams=pams
 )
 
 }

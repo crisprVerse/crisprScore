@@ -94,7 +94,7 @@ The Rule Set 1 algorithm is one of the first on-target efficiency methods
 developed for the Cas9 nuclease [@ruleset1]. It generates a probability
 (therefore a score between 0 and 1) that a given sgRNA will cut at its
 intended target. 4 nucleotides upstream and 3 nucleotides downstream of
-the protospacer sequence are needed for scoring:
+the PAM sequence are needed for scoring:
 
 ```{r, eval=TRUE}
 flank5 <- "ACCT" #4bp
@@ -113,7 +113,7 @@ from the same lab.
 The Azimuth algorithm is an improved version of the popular Rule Set 2 score for
 the Cas9 nuclease [@azimuth]. It generates a probability (therefore a score 
 between 0 and 1) that a given sgRNA will cut at its intended target.
-4 nucleotides upstream and 3 nucleotides downstream of the protospacer 
+4 nucleotides upstream and 3 nucleotides downstream of the PAM 
 sequence are needed for scoring:
 
 ```{r, eval=FALSE}
@@ -131,7 +131,7 @@ The DeepHF algorithm is an on-target cutting efficiency prediction algorithm for
 several variants of the Cas9 nuclease [@deepcas9] using a recurrent neural 
 network (RNN) framework. Similar to the Azimuth score, it generates a 
 probability of cutting at the intended on-target. The algorithm only needs 
-protospacer sequences as inputs:
+the protospacer and PAM sequences as inputs:
 
 
 ```{r, eval=FALSE}
@@ -154,7 +154,7 @@ The DeepCpf1 algorithm is an on-target cutting efficiency prediction algorithm
 for the Cas12a nuclease [@deepcpf1] using a convolutional neural network (CNN) 
 framework. It generates a score between 0 and 1 to quantify the likelihood of 
 Cas12a to cut for a given sgRNA. 3 nucleotides upstream and 4 nucleotides 
-downstream of the protospacer sequence are needed for scoring:
+downstream of the PAM sequence are needed for scoring:
 
 
 ```{r, eval=FALSE}
@@ -177,8 +177,7 @@ for the enhanced Cas12a (enCas12a) nuclease [@enpamgb] using a gradient-booster
 comparison to the wildtype Cas12 nuclease [@encas12a], and the enPAM+GB 
 algorithm takes PAM activity into account in the calculation of the final score.
 It generates a probability (therefore a score between 0 and 1) of a given sgRNA 
-to cut at the intended target. 3 nucleotides upstream and 4 nucleotides 
-downstream of the protospacer sequence are needed for scoring:
+to cut at the intended target. 3 nucleotides upstream of the PAM sequence and 4 nucleotides downstream of the protospacer sequence are needed for scoring:
 
 
 ```{r, eval=FALSE}
@@ -188,6 +187,25 @@ spacer <- "AATCGATGCTGATGCTAGATATT" #23bp
 flank3 <- "AAGT" #4bp
 input  <- paste0(flank5, pam, spacer, flank3) 
 results <- getEnPAMGBScores(input)
+```
+
+## CRISPRscan (Moreno-Mateos score)
+
+The CRISPRscan algorithm, also known as the Moreno-Mateos score), is an
+on-target efficiency method for the SpCas9 nuclease developed for sgRNAs
+expressed from a T7 promoter, and trained on zebrafish data [@crisprscan].
+It generates a probability (therefore a score between 0 and 1) that a given
+sgRNA will cut at its intended target. 
+6 nucleotides upstream of the protospacer sequence
+and 6 nucleotides downstream of the PAM sequence are needed for scoring:
+
+```{r, eval=TRUE}
+flank5 <- "ACCTAA" #6bp
+spacer <- "ATCGATGCTGATGCTAGATA" #20bp
+pam    <- "AGG" #3bp 
+flank3 <- "TTGAAT" #6bp
+input  <- paste0(flank5, spacer, pam, flank3) 
+results <- getCRISPRscanScores(input)
 ```
 
 
@@ -230,20 +248,22 @@ will have a lower cutting likelihood.
 
 The `getMITScores` function takes as argument a character vector of 20bp 
 sequences specifying the spacer sequences of sgRNAs (`spacers` argument), as 
-well as a vector of 23bp sequences representing the protospacer sequences (20bp 
-spacer + 3bp PAM sequence) of the putative off-targets in the targeted 
-genome (`protospacers` argument). If only one spacer sequence is provided,
-it will beused for all provided protospacers. 
+well as a vector of 20bp sequences representing the protospacer sequences of the putative off-targets in the targeted 
+genome (`protospacers` argument). PAM sequences (`pams`) must also be provided. If only one spacer sequence is provided,
+it will reused for all provided protospacers. 
 
 The following code will generate MIT scores for 3 off-targets with respect to 
 the sgRNA `ATCGATGCTGATGCTAGATA`:
 
 ```{r}
 spacer   <- "ATCGATGCTGATGCTAGATA"
-protospacers  <- c("ACCGATGCTGATGCTAGATAAGG",
-                   "ATCGATGCTGATGCTAGATTAGG",
-                   "ATCGATGCTGATGCTAGATAAGA")
-getMITScores(spacers=spacer, protospacers=protospacers)
+protospacers  <- c("ACCGATGCTGATGCTAGATA",
+                   "ATCGATGCTGATGCTAGATT",
+                   "ATCGATGCTGATGCTAGATA")
+pams <- c("AGG", "AGG", "AGA")
+getMITScores(spacers=spacer,
+             protospacers=protospacers,
+             pams=pams)
 ```
 
 
@@ -257,9 +277,11 @@ position 15 has a different weight than an A->T mismatch at position 15).
 
 Similar to the `getMITScores` function, the `getCFDScores` function takes as 
 argument a character vector of 20bp sequences specifying the spacer sequences of
-sgRNAs (`spacers` argument), as well as a vector of 23bp sequences representing
-the protospacer sequences (20bp spacer + 3bp PAM sequence) of the putative 
-off-targets in the targeted genome (`protospacers` argument). If only one spacer
+sgRNAs (`spacers` argument), as well as a vector of 20bp sequences representing
+the protospacer sequences of the putative 
+off-targets in the targeted genome (`protospacers` argument). 
+`pams` must also be provided. 
+If only one spacer
 sequence is provided, it will be used for all provided protospacers. 
 
 The following code will generate CFD scores for 3 off-targets with respect to 
@@ -268,10 +290,13 @@ the sgRNA `ATCGATGCTGATGCTAGATA`:
 
 ```{r}
 spacer   <- "ATCGATGCTGATGCTAGATA"
-protospacers  <- c("ACCGATGCTGATGCTAGATAAGG",
-                   "ATCGATGCTGATGCTAGATTAGG",
-                   "ATCGATGCTGATGCTAGATAAGA")
-getCFDScores(spacers=spacer, protospacers=protospacers)
+protospacers  <- c("ACCGATGCTGATGCTAGATA",
+                   "ATCGATGCTGATGCTAGATT",
+                   "ATCGATGCTGATGCTAGATA")
+pams <- c("AGG", "AGG", "AGA")
+getCFDScores(spacers=spacer,
+             protospacers=protospacers,
+             pams=pams)
 ```
 
 
