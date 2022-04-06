@@ -49,7 +49,7 @@ Input sequences for DeepHF scoring must be 23bpprotospacer
     default).
 }
 \examples{
-\dontrun{
+if (interactive()){
 spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
 pam     <- "AGG" #3bp 
 input   <- paste0(spacer, pam) 

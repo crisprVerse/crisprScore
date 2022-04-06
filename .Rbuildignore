@@ -2,8 +2,4 @@ vignettes/figures/resave.sh
 vignettes/figures/*.pptx
 ^\.BBSoptions$
 inst/python/azimuth/azimuth/azure_models/*
-inst/crisprai/temp_data
-inst/crisprai/test_data_crispra/crispra_sgrna_example.txt
-inst/crisprai/test_data_crispra/crispra_tss_example.txt
-inst/crisprai/test_data_crispri/crispri_sgrna_example.txt
-inst/crisprai/test_data_crispri/crispri_tss_example.txt
+inst/crisprai
