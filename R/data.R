@@ -55,5 +55,5 @@
 #' @usage data(scoringMethodsInfo)
 "scoringMethodsInfo"
 
-
+## To do: add documentation for sgrna and tss example files
 
