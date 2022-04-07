@@ -109,7 +109,7 @@ getCrispraiScores <- function(tss_df,
     if (modality=="CRISPRa"){
         pickleFile <- crisprScoreData::CRISPRa_model.pkl()
     } else if (modality=="CRISPRi"){
-        pickleFile <- crisprScoreData::CRISPRa_model.pkl()
+        pickleFile <- crisprScoreData::CRISPRi_model.pkl()
     }
     
 
