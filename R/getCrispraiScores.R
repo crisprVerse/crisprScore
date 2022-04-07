@@ -10,7 +10,6 @@
 
 
 
-
 #' @title Calculate on-target sgRNA activity scores for CRISPRa and CRISPRi
 #' @description Use the Weissman lab scoring method (library design v2) to
 #'     calculate on-target sgRNA  activity scores for Cas9-based CRISPR
@@ -34,6 +33,9 @@
 #'     TRUE by default.
 #' @param modality Which mode of perturbation is being used? Must be a 
 #'     \code{string} specifying either \code{CRISPRa} or \code{CRISPRi}.
+#' @param fastaFile String specifying fasta file of the hg38 genome.
+#' @param chromatinFiles Named character vector of length 3 specifying
+#'     BigWig files containing chromatin accessibility data. 
 #' @param fork Set to \code{TRUE} to preserve changes to the R
 #'     configuration within the session.
 #'     
@@ -68,11 +70,11 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' results <- getWeissmanScores(tss_df=tssExampleCrispra,
+#' results <- getCrispraiScores(tss_df=tssExampleCrispra,
 #'                              sgrna_df=sgrnaExampleCrispra,
 #'                              modality="CRISPRa")
 #' 
-#' results <- getWeissmanScores(tss_df=tssExampleCrispri,
+#' results <- getCrispraiScores(tss_df=tssExampleCrispri,
 #'                              sgrna_df=sgrnaExampleCrispri,
 #'                              modality="CRISPRi")
 #' }
@@ -80,7 +82,7 @@
 #' @md
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
-getWeissmanScores <- function(tss_df,
+getCrispraiScores <- function(tss_df,
                               sgrna_df,
                               verbose=FALSE,
                               modality=c("CRISPRa", "CRISPRi"),

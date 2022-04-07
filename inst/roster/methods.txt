@@ -9,3 +9,4 @@ deepcpf1	AsCas12a	-4	29	On-target	DeepCpf1
 enpamgb	enAsCas12a	-4	29	On-target	EnPAMGB
 crisprscan	SpCas9	-26	8	On-target	CRISPRscan
 casrxrf	CasRx	NA	NA	On-target	CasRx-RF
+crisprai	SpCas9	-19	2	On-target	CRISPRai 
