@@ -3,13 +3,13 @@ library(crisprScore)
 chromatinFiles <- getChromatinFiles()
 fastaFile <- getGenomeFasta()
 
-results <- getWeissmanScores(tss_df=tssExampleCrispra,
+results <- getCrispraiScores(tss_df=tssExampleCrispra,
                              sgrna_df=sgrnaExampleCrispra,
                              modality="CRISPRa",
                              chromatinFiles=chromatinFiles,
                              fastaFile=fastaFile)
 
-results <- getWeissmanScores(tss_df=tssExampleCrispri,
+results <- getCrispraiScores(tss_df=tssExampleCrispri,
                              sgrna_df=sgrnaExampleCrispri,
                              modality="CRISPRi",
                              chromatinFiles=chromatinFiles,
@@ -17,7 +17,7 @@ results <- getWeissmanScores(tss_df=tssExampleCrispri,
 
 
 tssExampleCrispri[3,5] <- tssExampleCrispri[3,5]-500
-results <- getWeissmanScores(tss_df=tssExampleCrispri,
+results <- getCrispraiScores(tss_df=tssExampleCrispri,
                              sgrna_df=sgrnaExampleCrispri,
                              modality="CRISPRi",
                              chromatinFiles=chromatinFiles,
