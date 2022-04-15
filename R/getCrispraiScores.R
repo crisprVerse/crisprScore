@@ -1,13 +1,11 @@
- # TO DO: Change these methods to pull from Experiment Hub 
-#dnasef = "/wgEncodeOpenChromDnaseK562BaseOverlapSignalV2_lifted_hg38.bigWig"
-#fairef = "/wgEncodeOpenChromFaireK562Sig_lifted_hg38.bigWig"
-#mnasef = "/wgEncodeSydhNsomeK562Sig_lifted_hg38.bigWig"
-    
-#fastaFile <- paste0(dir, "/hg38.fa")
-#chromatinFiles=c(dnase=paste0(dir, dnasef),
-#                 faire=paste0(dir, fairef),
-                 #mnase=paste0(dir, mnasef))
-
+# library(crisprDesignGne)
+# fastaFile <- getGenomeFasta()
+# chromatinFiles <- getChromatinFiles()
+# results <- getCrispraiScores(tss_df=tssExampleCrispra,
+#                              sgrna_df=sgrnaExampleCrispra,
+#                              chromatinFiles=chromatinFiles,
+#                              fastaFile=fastaFile,
+#                              modality="CRISPRa")
 
 
 #' @title Calculate on-target sgRNA activity scores for CRISPRa and CRISPRi
@@ -41,6 +39,7 @@
 #'     
 #' @details \code{tss_df} details:
 #'     This must be a \code{data.frame} that contains the following columns:
+#'     * tss_id: string specifying name of the TSS.
 #'     * gene_symbol: string specifying sHGNC/HUGO gene identifier.
 #'     * promoter: string specifying promoter ID (e.g. "P1" or "P2").
 #'     * transcripts: Ensembl transcript identifier.
@@ -91,8 +90,11 @@ getCrispraiScores <- function(tss_df,
                               fork=FALSE
 ){
 
+
     .checkChromatinFiles(chromatinFiles)
     .checkFastaFile(fastaFile)
+    .checkTssFrame(tss_df)
+    .checkGrnaFrame(sgrna_df)
 
     modality  <- match.arg(modality)
     inputList <- .prepareInputData(tss_df,
@@ -161,6 +163,98 @@ getCrispraiScores <- function(tss_df,
     }
     invisible(TRUE)
 }
+
+
+
+
+
+
+.checkTssFrame <- function(tssFrame){
+    cols <- c("tss_id",
+              "gene_symbol",
+              "promoter",
+              "transcripts",
+              "position",
+              "strand",
+              "chr")
+    if (!all(cols %in% colnames(tssFrame))){
+        choices <- setdiff(cols, colnames(tssFrame))
+        stop("The following columns are missing in the tssFrame: \n \t",
+             paste0(choices, collapse=", "),".")
+    }
+    
+    if (sum(is.na(tssFrame$tss_id))>0){
+        stop("tss_id has some missing values.")
+    }
+    if (sum(is.na(tssFrame$gene_symbol))>0){
+        stop("gene_symbol has some missing values.")
+    }
+    if (sum(is.na(tssFrame$promoter))>0){
+        stop("promoter has some missing values.")
+    }
+    if (sum(is.na(tssFrame$transcripts))>0){
+        stop("transcripts has some missing values.")
+    }
+    if (sum(is.na(tssFrame$position))>0){
+        stop("position has some missing values.")
+    }
+    if (sum(is.na(tssFrame$strand))>0){
+        stop("strand has some missing values.")
+    }
+    if (sum(is.na(tssFrame$chr))>0){
+        stop("chr has some missing values.")
+    }
+
+    # Check promoters:
+    dfs <- split(tssFrame, f=tssFrame$gene_symbol)
+    lens <- vapply(dfs, function(df){
+        length(unique(df$strand))
+    }, FUN.VALUE=1)
+    if (any(lens>1)){
+        stop("Some genes have promoters with different strand directions.")
+    }
+    invisible(TRUE)
+}
+
+.checkGrnaFrame <- function(grnaFrame){
+    cols <- c("grna_id",
+              "tss_id",
+              "pam_site",
+              "strand", 
+              "spacer_19mer")
+    if (!all(cols %in% colnames(grnaFrame))){
+        choices <- setdiff(cols, colnames(grnaFrame))
+        stop("The following columns are missing in the grnaFrame: \n \t",
+             paste0(choices, collapse=", "),".")
+    }
+    if (sum(is.na(grnaFrame$grna_id))>0){
+        stop("grna_id has some missing values.")
+    }
+    if (sum(is.na(grnaFrame$tss_id))>0){
+        stop("tss_id has some missing values.")
+    }
+    if (sum(is.na(grnaFrame$pam_site))>0){
+        stop("pam_site has some missing values.")
+    }
+    if (sum(is.na(grnaFrame$strand))>0){
+        stop("strand has some missing values.")
+    }
+    if (sum(is.na(grnaFrame$spacer_19mer))>0){
+        stop("spacer_19mer has some missing values.")
+    }
+    lens <- unique(nchar(grnaFrame$spacer_19mer))
+    if (length(lens)!=1){
+        stop("Sequences specified in spacer_19mer must",
+             " all be of length 19.")
+    } else {
+        if (lens!=19){
+            stop("Sequences specified in spacer_19mer must",
+                 " all be of length 19.")
+        }
+    }
+    invisible(TRUE)
+}
+
 
 
 #' @importFrom reticulate import_from_path
