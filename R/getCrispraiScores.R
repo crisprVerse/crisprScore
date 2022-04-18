@@ -192,9 +192,9 @@ getCrispraiScores <- function(tss_df,
     if (sum(is.na(tssFrame$promoter))>0){
         stop("promoter has some missing values.")
     }
-    if (sum(is.na(tssFrame$transcripts))>0){
-        stop("transcripts has some missing values.")
-    }
+    #if (sum(is.na(tssFrame$transcripts))>0){
+    #    stop("transcripts has some missing values.")
+    #}
     if (sum(is.na(tssFrame$position))>0){
         stop("position has some missing values.")
     }
