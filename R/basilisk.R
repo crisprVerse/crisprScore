@@ -25,7 +25,7 @@ azimuth_dependencies <- c("python==2.7",
 azimuth_dependencies_pip <- c("scikit-learn==0.17.1")
 
 deephf_dependencies <- c("python==3.6",
-                         "viennarna>=2.4.5",
+                         "viennarna==2.4.5",
                          "absl-py==0.12.0",
                          "astor==0.8.1",
                          "biopython==1.71",
