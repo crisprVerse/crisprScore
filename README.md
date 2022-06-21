@@ -41,7 +41,7 @@ install_github("Jfortin1/crisprScore")
 ## Demo 
 
 A reproducible and comprehensive workflow can be found here:
-https://github.com/Jfortin1/crisprDesign/blob/master/vignettes/crisprScore.Rmd
+https://github.com/Jfortin1/crisprScore/blob/master/vignettes/crisprScore.Rmd
 
 
 ## License 
