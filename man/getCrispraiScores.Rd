@@ -58,6 +58,7 @@ supported at the moment.
 \details{
 \code{tss_df} details:
 This must be a \code{data.frame} that contains the following columns:
+* tss_id: string specifying name of the TSS.
 * gene_symbol: string specifying sHGNC/HUGO gene identifier.
 * promoter: string specifying promoter ID (e.g. "P1" or "P2").
 * transcripts: Ensembl transcript identifier.

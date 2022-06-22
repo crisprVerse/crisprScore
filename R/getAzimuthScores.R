@@ -51,41 +51,45 @@ getAzimuthScores <- function(sequences, fork=FALSE){
         stop("Positions 26 and 27 of the sequences must be G",
              " nucleotides (canonical PAM sequences required).")
     }
-    results <- basiliskRun(env=env_azimuth,
-                           shared=FALSE,
-                           fork=fork,
-                           fun=.azimuth_python, 
-                           sequences=sequences)
-    return(results)
-}
-
-
-#' @importFrom reticulate source_python
-#' @importFrom reticulate np_array
-#' @importFrom reticulate import_from_path
-.azimuth_python <- function(sequences){
-
-    dir <- system.file("python",
-                       "azimuth",
-                       package="crisprScore",
-                       mustWork=TRUE)
-    azimuth <- import_from_path("getAzimuth", dir)
 
     df <- data.frame(sequence=sequences,
                      score=NA_real_,
                      stringsAsFactors=FALSE)
     good <- !grepl("N", sequences)
     sequences.valid <- sequences[good]
-    ns <- length(sequences.valid)
-    if (ns>0){
-        if (ns==1){
-            sequences.valid <- rep(sequences.valid,2)
-            scores <- azimuth$getAzimuth(np_array(sequences.valid))
+
+    #Saving to disk:
+    dir <- tempdir()
+    inputfile  <- file.path(dir, "input.txt")
+    outputfile <- file.path(dir, "output.txt")
+
+      # Ready to get the scores
+    env <- basilisk:::.obtainEnvironmentPath(env_azimuth)
+    basilisk.utils::activateEnvironment(env)
+    programFile <- system.file("python",
+                               "azimuth/getAzimuth.py",
+                               package="crisprScore",
+                               mustWork=TRUE)
+    cmd <- paste0("python ",
+                  programFile, " ",
+                  inputfile, " ",
+                  outputfile)
+
+    if (sum(good)>0){
+        if (sum(good)==1){
+            sequences.valid <- rep(sequences.valid, 2)
+        }
+        .dumpToFile(sequences.valid, inputfile)
+        system(cmd)
+        scores <- read.table(outputfile)[,1]
+        if (sum(good)==1){
             scores <- scores[1]
-        } else {
-            scores <- azimuth$getAzimuth(np_array(sequences.valid)) 
         }
         df$score[good] <- scores
     }
+
     return(df)
 }
+
+
+
