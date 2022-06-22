@@ -59,35 +59,49 @@ getDeepCpf1Scores <- function(sequences,
             }, FUN.VALUE="character")
         }
     }
-    results <- basiliskRun(env=env_deepcpf1,
-                           shared=FALSE,
-                           fork=fork,
-                           fun=.deepcpf1_python, 
-                           sequences=sequences)
-    return(results)
-}
-
-#' @importFrom reticulate import_from_path
-#' @importFrom reticulate np_array
-#' @importFrom reticulate py_suppress_warnings
-.deepcpf1_python <- function(sequences){
-
-    dir <- system.file("python",
-                       "deepcpf1",
-                       package="crisprScore",
-                       mustWork=TRUE)
-    deepcpf1 <- import_from_path("getDeepCpf1", path=dir)
-    
+  
+    #Output data.frame
     df <- data.frame(sequence=sequences,
                      score=NA_real_,
                      stringsAsFactors=FALSE)
     good <- !grepl("N", sequences)
     sequences.valid <- sequences[good]
-    if (length(sequences.valid)>0){
-        sequences_array <- np_array(sequences.valid)
-        scores <- py_suppress_warnings(deepcpf1$getDeepCpf1(sequences_array))
+
+    #Saving to disk:
+    dir <- tempdir()
+    inputfile  <- file.path(dir, "input.txt")
+    outputfile <- file.path(dir, "output.txt")
+   
+    # Ready to get the scores
+    env <- basilisk:::.obtainEnvironmentPath(env_deepcpf1)
+    basilisk.utils::activateEnvironment(env)
+    programFile <- system.file("python",
+                               "deepcpf1/getDeepCpf1.py",
+                               package="crisprScore",
+                               mustWork=TRUE)
+    cmd <- paste0("python ",
+                  programFile, " ",
+                  inputfile, " ",
+                  outputfile)
+    if (sum(good)>0){
+        .dumpToFile(sequences.valid, inputfile)
+        system(cmd)
+        scores <- read.table(outputfile)[,1]
         scores <- scores/100
         df$score[good] <- scores
-    } 
+    }
+
     return(df)
 }
+
+.dumpToFile <- function(sequences, file){
+    write.table(sequences,
+              file=file,
+              quote=FALSE,
+              col.names=FALSE,
+              row.names=FALSE)
+}
+
+
+
+
