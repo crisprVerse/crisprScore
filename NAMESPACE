@@ -2,6 +2,7 @@
 
 export(getAzimuthScores)
 export(getCFDScores)
+export(getCRISPRaterScores)
 export(getCRISPRscanScores)
 export(getCasRxRFScores)
 export(getCrispraiScores)
