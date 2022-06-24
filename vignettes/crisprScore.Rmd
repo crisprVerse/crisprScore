@@ -2,13 +2,13 @@
 title: "On-target and off-target scoring for CRISPR/Cas systems"
 author: 
 - name: Jean-Philippe Fortin
-  affiliation: OMNI Bioinformatics, gRED, Genentech
+  affiliation: Data Science and Statistical Computing, gRED, Genentech
   email: fortin946@gmail.com
 - name: Aaron Lun
-  affiliation: Data Science Statistical Computing, gRED, Genentech
+  affiliation: Data Science and Statistical Computing, gRED, Genentech
   email: infinite.monkeys.with.keyboards@gmail.com
 - name: Luke Hoberecht
-  affiliation: OMNI Bioinformatics, gRED, Genentech
+  affiliation: Data Science and Statistical Computing, gRED, Genentech
   email: lukehob3@gmail.com
 date: "`r Sys.Date()`"
 output: 
@@ -59,11 +59,16 @@ file in order for `crisprScore` to work properly:
 options(reticulate.useImportHook=FALSE)
 ```
 
+We load `crisprScore` in the usual way:
+
+```{r, warnings=FALSE, message=FALSE}
+library(crisprScore)
+```
+
 The `scoringMethodsInfo` data.frame contains a succinct summary of scoring
 methods available in `crisprScore`: 
 
 ```{r}
-library(crisprScore)
 data(scoringMethodsInfo)
 print(scoringMethodsInfo)
 ```
@@ -74,21 +79,21 @@ See `?scoringMethodsInfo` for more information about the different columns.
 
 Predicting on-target cutting efficiency is an extensive area of research, and 
 we try to provide in `crisprScore` the latest state-of-the-art algorithms as 
-they become available. Different algorithms require different input nucleotide 
-sequences to predict cutting efficiency as illustrated in the two
-figures below. 
+they become available. 
 
+## Cas9 methods
+
+Different algorithms require different input nucleotide 
+sequences to predict cutting efficiency as illustrated in the figure below.
 
 ```{r, echo=FALSE,fig.cap="Sequence inputs for Cas9 scoring methods"}
 knitr::include_graphics("./figures/sequences_cas9.svg")
 ```
 
-```{r, echo=FALSE, fig.cap="Sequence inputs for Cas12a scoring methods"}
-knitr::include_graphics("./figures/sequences_cas12a.svg")
-```
 
 
-## Rule Set 1 (Cas9)
+
+### Rule Set 1 (SpCas9)
 
 The Rule Set 1 algorithm is one of the first on-target efficiency methods
 developed for the Cas9 nuclease [@ruleset1]. It generates a probability
@@ -108,7 +113,7 @@ results <- getRuleSet1Scores(input)
 The Azimuth score described below is an improvement over Rule Set 1 
 from the same lab.
 
-## Azimuth score (Cas9)
+### Azimuth score (SpCas9)
 
 The Azimuth algorithm is an improved version of the popular Rule Set 2 score for
 the Cas9 nuclease [@azimuth]. It generates a probability (therefore a score 
@@ -125,7 +130,7 @@ input  <- paste0(flank5, spacer, pam, flank3)
 results <- getAzimuthScores(input)
 ```
 
-## DeepHF score (Cas9)
+### DeepHF score (SpCas9, HF-SpCas9)
 
 The DeepHF algorithm is an on-target cutting efficiency prediction algorithm for
 several variants of the Cas9 nuclease [@deepcas9] using a recurrent neural 
@@ -148,7 +153,95 @@ also specify the promoter used for expressing sgRNAs using the argument
 `promoter` ("U6" by default). See `?getDeepHFScores` for more details.
 
 
-## DeepCpf1 score (Cas12a)
+
+
+
+
+
+
+### CRISPRscan (Moreno-Mateos score, SpCas9)
+
+The CRISPRscan algorithm, also known as the Moreno-Mateos score), is an
+on-target efficiency method for the SpCas9 nuclease developed for sgRNAs
+expressed from a T7 promoter, and trained on zebrafish data [@crisprscan].
+It generates a probability (therefore a score between 0 and 1) that a given
+sgRNA will cut at its intended target. 
+6 nucleotides upstream of the protospacer sequence
+and 6 nucleotides downstream of the PAM sequence are needed for scoring:
+
+```{r, eval=TRUE}
+flank5 <- "ACCTAA" #6bp
+spacer <- "ATCGATGCTGATGCTAGATA" #20bp
+pam    <- "AGG" #3bp 
+flank3 <- "TTGAAT" #6bp
+input  <- paste0(flank5, spacer, pam, flank3) 
+results <- getCRISPRscanScores(input)
+```
+
+
+
+### CRISPRater (SpCas9)
+
+The CRISPRater algorithm is an on-target efficiency method for the SpCas9 nuclease [@crisprater].
+It generates a probability (therefore a score between 0 and 1) that a given
+sgRNA will cut at its intended target. 
+Only the 20bp spacer sequence is required.
+
+```{r, eval=TRUE}
+spacer <- "ATCGATGCTGATGCTAGATA" #20bp
+results <- getCRISPRaterScores(spacer)
+```
+
+### CRISPRai (SpCas9)
+
+The CRISPRai algorithm was developed by the Weissman lab to score SpCas9 gRNAs for CRISPRa and CRISPRi applications [@crisprai], for the human genome. The function `getCrispraiScores` requires several inputs. 
+
+First, it requires a data.frame specifying the genomic coordinates of the transcription starting sites (TSSs). 
+An example of such a data.frame is provided in the crisprScore package:
+
+```{r, eval=TRUE}
+head(tssExampleCrispri)
+```
+
+It also requires a data.frame specifying the genomic coordinates of the  gRNA sequences to score. An example of such a data.frame is provided in the crisprScore package:
+
+```{r, eval=TRUE}
+head(sgrnaExampleCrispri)
+```
+
+All columns  present in `tssExampleCrispri` and `sgrnaExampleCrispri` are mandatory for `getCrispraiScores` to work. 
+
+Two additional arguments are required: `fastaFile`, to specify the path of the fasta file of the human reference genome, and `chromatinFiles`, which is a list specifying the path of files containing chromatin accessibility genomic tracks in hg38 coordinates. The chromatin files can be downloaded from Zenodo at the following link:  [Currently being uploaded].
+The fasta file for the human genome (hg38) can be dowloaded directly from here:
+https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz
+
+
+
+One can obtain the CRISPRai scores using the following command:
+
+```{r, eval=FALSE}
+results <- getCrispraiScores(tss_df=tssExampleCrispri,
+                             sgrna_df=sgrnaExampleCrispri,
+                             modality="CRISPRi",
+                             fastaFile="your/path/hg38.fa",
+                             chromatinFiles=list(mnase="path/to/mnaseFile.bw",
+                                                 dnase="path/to/dnaseFile.bw",
+                                                 faire="oath/to/faireFile.bw"))
+```
+
+The function works identically for CRISPRa applications, with modality replaced
+by `CRISPRa`. 
+
+## Cas12a methods
+
+Different algorithms require different input nucleotide 
+sequences to predict cutting efficiency as illustrated in the figure below.
+
+```{r, echo=FALSE, fig.cap="Sequence inputs for Cas12a scoring methods"}
+knitr::include_graphics("./figures/sequences_cas12a.svg")
+```
+
+### DeepCpf1 score (AsCas12a)
 
 The DeepCpf1 algorithm is an on-target cutting efficiency prediction algorithm 
 for the Cas12a nuclease [@deepcpf1] using a convolutional neural network (CNN) 
@@ -166,10 +259,7 @@ input  <- paste0(flank5, pam, spacer, flank3)
 results <- getDeepCpf1Scores(input)
 ```
 
-
-
-
-## enPAM+GB score (enCas12a)
+### enPAM+GB score (enCas12a)
 
 The enPAM+GB algorithm is an on-target cutting efficiency prediction algorithm 
 for the enhanced Cas12a (enCas12a) nuclease [@enpamgb] using a gradient-booster
@@ -189,23 +279,25 @@ input  <- paste0(flank5, pam, spacer, flank3)
 results <- getEnPAMGBScores(input)
 ```
 
-## CRISPRscan (Moreno-Mateos score)
 
-The CRISPRscan algorithm, also known as the Moreno-Mateos score), is an
-on-target efficiency method for the SpCas9 nuclease developed for sgRNAs
-expressed from a T7 promoter, and trained on zebrafish data [@crisprscan].
-It generates a probability (therefore a score between 0 and 1) that a given
-sgRNA will cut at its intended target. 
-6 nucleotides upstream of the protospacer sequence
-and 6 nucleotides downstream of the PAM sequence are needed for scoring:
+## Cas13d methods
 
-```{r, eval=TRUE}
-flank5 <- "ACCTAA" #6bp
-spacer <- "ATCGATGCTGATGCTAGATA" #20bp
-pam    <- "AGG" #3bp 
-flank3 <- "TTGAAT" #6bp
-input  <- paste0(flank5, spacer, pam, flank3) 
-results <- getCRISPRscanScores(input)
+### CasRxRF (RfxCas13d) 
+
+The CasRxRF method was developed to characterize on-target efficiency of the RNA-targeting nuclease RfxCas13d, abbreviated as CasRx [@casrxrf].
+
+It requires as an input the mRNA sequence targeted by the gRNAs, and returns as an output on-target efficiency scores for all gRNAs targeting the mRNA sequence.
+
+As an example, we predict on-target efficiency for gRNAs targeting the mRNA sequence stored in the file `test.fa`:
+
+
+```{r, eval=FALSE}
+fasta <- file.path(system.file(package="crisprScore"),
+                   "casrxrf/test.fa")
+mrnaSequence <- Biostrings::readDNAStringSet(filepath=fasta
+                                             format="fasta",
+                                             use.names=TRUE)
+results <- getCasRxRFScores(mrnaSequence)
 ```
 
 
