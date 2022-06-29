@@ -90,7 +90,12 @@ getDeepCpf1Scores <- function(sequences,
         scores <- scores/100
         df$score[good] <- scores
     }
-
+    if (file.exists(inputfile)){
+        file.remove(inputfile)
+    }
+    if (file.exists(outputfile)){
+        file.remove(outputfile)
+    }
     return(df)
 }
 

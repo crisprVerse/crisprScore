@@ -153,6 +153,41 @@ also specify the promoter used for expressing sgRNAs using the argument
 `promoter` ("U6" by default). See `?getDeepHFScores` for more details.
 
 
+### DeepSpCas9 score (SpCas9)
+
+The DeepSpCas9 algorithm is an on-target cutting efficiency prediction
+algorithm for the SpCas9 nuclease [@deepspcas9]. Similar to the Azimuth score,
+it generates a  probability of cutting at the intended on-target.
+4 nucleotides upstream of the protospacer sequence, and 3 nucleotides
+downstream of the PAM  sequence are needed in top of the protospacer
+sequence for scoring:
+
+```{r, eval=FALSE}
+flank5 <- "ACCT" #4bp
+spacer <- "ATCGATGCTGATGCTAGATA" #20bp
+pam    <- "AGG" #3bp 
+flank3 <- "TTG" #3bp
+input  <- paste0(flank5, spacer, pam, flank3) 
+results <- getDeepSpCas9Scores(input)
+```
+
+
+```{r, eval=FALSE}
+spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
+pam     <- "AGG" #3bp 
+input   <- paste0(spacer, pam) 
+results <- getDeepHFScores(input)
+```
+
+Users can specify for which Cas9 they wish to score sgRNAs by using the argument
+`enzyme`: "WT" for Wildtype Cas9 (WT-SpCas9), "HF" for high-fidelity Cas9 
+(SpCas9-HF), or "ESP" for enhancedCas9 (eSpCas9). For wildtype Cas9, users can
+also specify the promoter used for expressing sgRNAs using the argument 
+`promoter` ("U6" by default). See `?getDeepHFScores` for more details.
+
+
+
+
 
 
 

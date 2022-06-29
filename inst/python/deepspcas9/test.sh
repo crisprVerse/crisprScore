@@ -1,0 +1,1 @@
+python ./getDeepSpCas9Scores.py dataset/sample.txt /Users/fortinj2/crisprScore/inst/python/deepspcas9/DeepCas9_Final/ scores.txt

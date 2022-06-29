@@ -159,6 +159,16 @@ crisprai_dependencies <- c("python==2.7.18",
                            "wheel==0.36.2")
 crisprai_dependencies_pip <- c("pandas==0.15.0")
 
+
+deepspcas9_dependencies <- c("python==2.7",
+                             "scipy==1.1.0",
+                             "numpy==1.14.5")
+deepspcas9_dependencies_pip <- c("tensorflow==1.4.1")
+
+
+
+
+
 #' @importFrom basilisk BasiliskEnvironment
 env_azimuth <- BasiliskEnvironment(envname="azimuth_basilisk",
                                    pkgname="crisprScore",
@@ -181,6 +191,13 @@ env_crisprai <- BasiliskEnvironment(envname="crisprai_basilisk",
                                                  "bioconda",
                                                  "conda-forge"),
                                     pip=crisprai_dependencies_pip)
+
+env_deepspcas9 <- BasiliskEnvironment(envname="azimuth_deepspcas9",
+                                      pkgname="crisprScore",
+                                      paths="python/deepspcas9",
+                                      packages=deepspcas9_dependencies,
+                                      channels = c("bioconda", "conda-forge"),
+                                      pip=deepspcas9_dependencies_pip)
 
 if (.Platform$OS.type!="windows"){
     env_deephf <- BasiliskEnvironment(envname="deephf_basilisk",

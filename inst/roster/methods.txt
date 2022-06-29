@@ -11,3 +11,4 @@ crisprscan	SpCas9	-26	8	On-target	CRISPRscan
 casrxrf	CasRx	NA	NA	On-target	CasRx-RF
 crisprai	SpCas9	-19	2	On-target	CRISPRai 
 crisprater	SpCas9	-20	-1	On-target	CRISPRater
+deepspcas9	SpCas9	-24	5	On-target	DeepSpCas9
