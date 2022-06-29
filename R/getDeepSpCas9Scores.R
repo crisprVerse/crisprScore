@@ -4,6 +4,8 @@
 #' 
 #' @param sequences Character vector of 30bp sequences needed for DeepSpCas9
 #'     scoring, see details below.
+#' @param fork Set to \code{TRUE} to preserve changes to the R
+#'     configuration within the session.
 #' 
 #' @details The input sequences for DeepSpCas9 scoring require 4 nucleotides
 #'     upstream of the protospacer sequence, the protospacer sequence
@@ -15,7 +17,7 @@
 #'     takes on a value between 0 and 1. A higher score indicates higher
 #'     knockout efficiency.
 #' 
-#' @reference
+#' @references
 #' Kim HK, Kim Y, Lee S, et al. SpCas9 activity prediction by DeepSpCas9, 
 #'     a deep learning–base model with high generalization performance.
 #'     Science advances. 2019 Nov 6;5(11):eaax9249.
@@ -31,7 +33,6 @@
 #' input  <- paste0(flank5, spacer, pam, flank3) 
 #' results <- getDeepSpCas9Scores(input)
 #' }
-#' 
 #' @export 
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 getDeepSpCas9Scores <- function(sequences,

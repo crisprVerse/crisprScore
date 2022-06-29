@@ -9,6 +9,9 @@ getDeepSpCas9Scores(sequences, fork = FALSE)
 \arguments{
 \item{sequences}{Character vector of 30bp sequences needed for DeepSpCas9
 scoring, see details below.}
+
+\item{fork}{Set to \code{TRUE} to preserve changes to the R
+configuration within the session.}
 }
 \value{
 \strong{getDeepSpCas9Scores} returns a data.frame with
@@ -35,7 +38,11 @@ flank3 <- "AAT" #3bp
 input  <- paste0(flank5, spacer, pam, flank3) 
 results <- getDeepSpCas9Scores(input)
 }
-
+}
+\references{
+Kim HK, Kim Y, Lee S, et al. SpCas9 activity prediction by DeepSpCas9, 
+    a deep learning–base model with high generalization performance.
+    Science advances. 2019 Nov 6;5(11):eaax9249.
 }
 \author{
 Jean-Philippe Fortin
