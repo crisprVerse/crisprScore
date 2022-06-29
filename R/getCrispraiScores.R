@@ -55,7 +55,7 @@
 #'     * strand: strand fo the sgRNA. Must be either _+_ or _-_.
 #'     * spacer_19mer: string specifying sgRNA 19mer spacer sequence.
 #' 
-#' @return \strong{getWeissmanScores} returns a \code{data.frame} with 
+#' @return \strong{getCrispraiScores} returns a \code{data.frame} with 
 #'     \code{grna_id} and \code{score} columns. The Weissman score takes on a 
 #'     value between 0 and 1. A higher score indicates higher sgRNA efficiency.
 #' 

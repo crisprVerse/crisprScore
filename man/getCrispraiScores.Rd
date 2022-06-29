@@ -41,7 +41,7 @@ BigWig files containing chromatin accessibility data.}
 configuration within the session.}
 }
 \value{
-\strong{getWeissmanScores} returns a \code{data.frame} with
+\strong{getCrispraiScores} returns a \code{data.frame} with
 \code{grna_id} and \code{score} columns. The Weissman score takes on a
 value between 0 and 1. A higher score indicates higher sgRNA efficiency.
 }
