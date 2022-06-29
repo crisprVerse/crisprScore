@@ -1,0 +1,3 @@
+The original code comes from https://github.com/MyungjaeSong/Paired-Library/tree/DeepCRISPR.info/DeepCas9.
+
+We've created a copy of the original DeepCas9_TestCode.py and saved it as getDeepSpCas9Scores.py. The new script allows using arguments as inputs such as input sequences, input model, and output file, with a cleaner output format so that it can be directly called from R. 
