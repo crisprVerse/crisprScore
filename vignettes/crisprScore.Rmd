@@ -229,27 +229,37 @@ results <- getCRISPRaterScores(spacer)
 
 ### CRISPRai (SpCas9)
 
-The CRISPRai algorithm was developed by the Weissman lab to score SpCas9 gRNAs for CRISPRa and CRISPRi applications [@crisprai], for the human genome. The function `getCrispraiScores` requires several inputs. 
+The CRISPRai algorithm was developed by the Weissman lab to score SpCas9 
+gRNAs for CRISPRa and CRISPRi applications [@crisprai], for the human genome.
+The function `getCrispraiScores` requires several inputs. 
 
-First, it requires a data.frame specifying the genomic coordinates of the transcription starting sites (TSSs). 
-An example of such a data.frame is provided in the crisprScore package:
+First, it requires a data.frame specifying the genomic coordinates of 
+the transcription starting sites (TSSs). An example of such a data.frame
+is provided in the crisprScore package:
 
 ```{r, eval=TRUE}
 head(tssExampleCrispri)
 ```
 
-It also requires a data.frame specifying the genomic coordinates of the  gRNA sequences to score. An example of such a data.frame is provided in the crisprScore package:
+It also requires a data.frame specifying the genomic coordinates of the
+gRNA sequences to score. An example of such a data.frame 
+is provided in the crisprScore package:
 
 ```{r, eval=TRUE}
 head(sgrnaExampleCrispri)
 ```
 
-All columns  present in `tssExampleCrispri` and `sgrnaExampleCrispri` are mandatory for `getCrispraiScores` to work. 
+All columns  present in `tssExampleCrispri` and `sgrnaExampleCrispri` are 
+mandatory for `getCrispraiScores` to work. 
 
-Two additional arguments are required: `fastaFile`, to specify the path of the fasta file of the human reference genome, and `chromatinFiles`, which is a list specifying the path of files containing chromatin accessibility genomic tracks in hg38 coordinates. The chromatin files can be downloaded from Zenodo at the following link:  [Currently being uploaded].
-The fasta file for the human genome (hg38) can be dowloaded directly from here:
+Two additional arguments are required: `fastaFile`, to specify the path of 
+the fasta file of the human reference genome, and `chromatinFiles`, which is 
+a list of length 3 specifying the path of files containing the chromatin
+accessibility data needed for the algorithm in hg38 coordinates.
+The chromatin files can be downloaded from Zenodo 
+[here](https://zenodo.org/record/6716721#.YrzCfS-cY4d).
+The fasta file for the human genome (hg38) can be downloaded directly from here:
 https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz
-
 
 
 One can obtain the CRISPRai scores using the following command:
