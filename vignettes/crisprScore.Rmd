@@ -130,6 +130,39 @@ input  <- paste0(flank5, spacer, pam, flank3)
 results <- getAzimuthScores(input)
 ```
 
+
+
+### Rule Set 3 (SpCas9)
+
+The Rule Set 3 is an improvement over Rule Set 1 and Rule Set 2/Azimuth
+developed for the SpCas9 nuclease, taking into account the type of
+tracrRNAs [@ruleset3]. Two types of tracrRNAs are currently offered:
+
+```
+GTTTTAGAGCTA-----GAAA-----TAGCAAGTTAAAAT... --> Hsu2013 tracrRNA
+GTTTAAGAGCTATGCTGGAAACAGCATAGCAAGTTTAAAT... --> Chen2013 tracrRNA
+```
+
+Similar to Rule Set 1 and Azimuth, the input sequence requires  4 nucleotides
+upstream of the protospacer sequence, the protospacer sequence itself
+(20nt spacersequence and PAM sequence), and 3 nucleotides downstream of
+the PAM sequence:
+
+```{r, eval=FALSE}
+flank5 <- "ACCT" #4bp
+spacer <- "ATCGATGCTGATGCTAGATA" #20bp
+pam    <- "AGG" #3bp 
+flank3 <- "TTG" #3bp
+input  <- paste0(flank5, spacer, pam, flank3) 
+results <- getRuleSet3Scores(input, tracrRNA="Hsu2013")
+```
+
+
+A more involved version of the algorithm takes into account gene context of 
+the target protospacer sequence (Rule Set 3 Target) and will be soon 
+implemented in `crisprScore`. 
+
+
 ### DeepHF score (SpCas9, HF-SpCas9)
 
 The DeepHF algorithm is an on-target cutting efficiency prediction algorithm for
