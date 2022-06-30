@@ -167,15 +167,15 @@ deepspcas9_dependencies_pip <- c("tensorflow==1.4.1")
 
 
 
-rs3_dependencies <- c("joblib==1.0.1",
-                      "pandas==1.4.2",,
+rs3_dependencies <- c("python==3.7.7",
+                      "joblib==1.0.1",
+                      "pandas==1.3.5",
                       "scikit-learn==1.0.2",
                       "biopython==1.78",
                       "lightgbm==3.2.1",
-                      "tqdm==4.61.2",
-                      "requests==2.25.1")
+                      "tqdm==4.64.0",
+                      "requests==2.27.1")
 rs3_dependencies_pip <- c("sglearn==1.2.5")
-
 
 
 
@@ -212,7 +212,7 @@ env_deepspcas9 <- BasiliskEnvironment(envname="deepspcas9__basilisk",
 
 env_rs3 <- BasiliskEnvironment(envname="rs3__basilisk",
                                pkgname="crisprScore",
-                               packages=rs_dependencies,
+                               packages=rs3_dependencies,
                                channels = c("bioconda", "conda-forge"),
                                pip=rs3_dependencies_pip)
 
