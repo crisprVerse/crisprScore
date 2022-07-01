@@ -1,25 +1,9 @@
 ---
 title: "On-target and off-target scoring for CRISPR gRNAs"
-author: 
-- name: Jean-Philippe Fortin
-  affiliation: Data Science and Statistical Computing, gRED, Genentech
-  email: fortin946@gmail.com
-- name: Aaron Lun
-  affiliation: Data Science and Statistical Computing, gRED, Genentech
-  email: infinite.monkeys.with.keyboards@gmail.com
-- name: Luke Hoberecht
-  affiliation: Data Science and Statistical Computing, gRED, Genentech
-  email: lukehob3@gmail.com
-date: "`r Sys.Date()`"
-output: 
-  BiocStyle::html_document:
-    toc_float: true
-    number_sections: true
-vignette: >
-  %\VignetteIndexEntry{crisprScore}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
-bibliography: references.bib
+author: "Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht"
+date: "July 1, 2022"
+output: github_document
+bibliography: vignettes/references.bib
 ---
 
 ```{r, echo=FALSE, results="hide"}
@@ -119,7 +103,7 @@ Different algorithms require different input nucleotide
 sequences to predict cutting efficiency as illustrated in the figure below.
 
 ```{r, echo=FALSE,fig.cap="Sequence inputs for Cas9 scoring methods"}
-knitr::include_graphics("./figures/sequences_cas9.svg")
+knitr::include_graphics("vignettes/figures/sequences_cas9.svg")
 ```
 
 
@@ -339,7 +323,7 @@ Different algorithms require different input nucleotide
 sequences to predict cutting efficiency as illustrated in the figure below.
 
 ```{r, echo=FALSE, fig.cap="Sequence inputs for Cas12a scoring methods"}
-knitr::include_graphics("./figures/sequences_cas12a.svg")
+knitr::include_graphics("vignettes/figures/sequences_cas12a.svg")
 ```
 
 ### DeepCpf1 score 
