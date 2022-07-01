@@ -1,7 +1,5 @@
 ---
-title: "On-target and off-target scoring for CRISPR gRNAs"
-author: "Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht"
-date: "July 1, 2022"
+title: "crisprScore: on-target and off-target scoring for CRISPR gRNAs"
 output: github_document
 bibliography: vignettes/references.bib
 ---
@@ -10,6 +8,9 @@ bibliography: vignettes/references.bib
 options("knitr.graphics.auto_pdf"=TRUE)
 ```
 
+Authors: Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht
+
+Date: July 1, 2022
 
 # Overview
 
