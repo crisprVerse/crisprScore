@@ -527,9 +527,20 @@ input <- paste0(flank5, spacer, pam, flank3)
 results <- getLindelScores(input)
 ```
 
+
+# License
+
+The project as a whole is covered by the MIT license. The code for all
+underlying Python packages, with their original licenses, can be found in
+`inst/python`. We made sure that all licenses are compatible with the MIT 
+license and to indicate changes that we have made to the original code. 
+
+# Reproducibility
+
 ```{r}
 sessionInfo()
 ```
+
 
 # References
 

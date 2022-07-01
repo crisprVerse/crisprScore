@@ -1,6 +1,38 @@
 crisprScore: on-target and off-target scoring for CRISPR gRNAs
 ================
 
+-   [Overview](#overview)
+-   [Installation and getting
+    started](#installation-and-getting-started)
+    -   [Software requirements](#software-requirements)
+        -   [OS Requirements](#os-requirements)
+        -   [R Dependencies](#r-dependencies)
+    -   [Installation](#installation)
+-   [Getting started](#getting-started)
+-   [On-targeting efficiency scores](#on-targeting-efficiency-scores)
+    -   [Cas9 methods](#cas9-methods)
+        -   [Rule Set 1](#rule-set-1)
+        -   [Azimuth](#azimuth)
+        -   [Rule Set 3](#rule-set-3)
+        -   [DeepHF](#deephf)
+        -   [DeepSpCas9](#deepspcas9)
+        -   [CRISPRscan](#crisprscan)
+        -   [CRISPRater](#crisprater)
+        -   [CRISPRai](#crisprai)
+    -   [Cas12a methods](#cas12a-methods)
+        -   [DeepCpf1 score](#deepcpf1-score)
+        -   [enPAM+GB score](#enpamgb-score)
+    -   [Cas13d methods](#cas13d-methods)
+        -   [CasRxRF](#casrxrf)
+-   [Off-target specificity scores](#off-target-specificity-scores)
+    -   [MIT score](#mit-score)
+    -   [CFD score](#cfd-score)
+-   [Indel prediction score](#indel-prediction-score)
+    -   [Lindel score (Cas9)](#lindel-score-cas9)
+-   [License](#license)
+-   [Reproducibility](#reproducibility)
+-   [References](#references)
+
 Authors: Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht
 
 Date: July 1, 2022
@@ -549,6 +581,16 @@ flank3 <- "CTTTTAATCGATGCTGATGCTAGATATTA" #29bp
 input <- paste0(flank5, spacer, pam, flank3)
 results <- getLindelScores(input)
 ```
+
+# License
+
+The project as a whole is covered by the MIT license. The code for all
+underlying Python packages, with their original licenses, can be found
+in `inst/python`. We made sure that all licenses are compatible with the
+MIT license and to indicate changes that we have made to the original
+code.
+
+# Reproducibility
 
 ``` r
 sessionInfo()
