@@ -1,7 +1,9 @@
-On-target and off-target scoring for CRISPR gRNAs
+crisprScore: on-target and off-target scoring for CRISPR gRNAs
 ================
-Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht
-July 1, 2022
+
+Authors: Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht
+
+Date: July 1, 2022
 
 # Overview
 
