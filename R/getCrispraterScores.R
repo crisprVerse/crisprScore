@@ -35,7 +35,8 @@ getCRISPRaterScores <- function(sequences){
         stop("Provided sequences must have length 20nt (20nt-spacer")
     }
     results <- .getModelScoreCRISPRater(sequences)
-    return(results)
+    out <- data.frame(score=results)
+    return(out)
 }
 
 
