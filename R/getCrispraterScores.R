@@ -59,7 +59,8 @@ getCRISPRaterScores <- function(sequences){
     model_offset <- 0.6505037
 
     features <- .extractFeaturesForCRISPRater(sequences)
-    score <- model_offset + model_weights %*% t(features)
+    score <- model_offset +  features %*%  model_weights
+    score <- as.numeric(score)
     return(score)
 }
 
