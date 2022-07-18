@@ -73,7 +73,7 @@ getDeepCpf1Scores <- function(sequences,
     outputfile <- file.path(dir, "output.txt")
    
     # Ready to get the scores
-    env <- basilisk:::.obtainEnvironmentPath(env_deepcpf1)
+    env <- basilisk::obtainEnvironmentPath(env_deepcpf1)
     basilisk.utils::activateEnvironment(env)
     programFile <- system.file("python",
                                "deepcpf1/getDeepCpf1.py",
