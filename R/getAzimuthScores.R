@@ -40,6 +40,7 @@
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 #' @importFrom basilisk obtainEnvironmentPath
+#' @importFrom basilisk.utils activateEnvironment
 getAzimuthScores <- function(sequences, fork=FALSE){
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=30){

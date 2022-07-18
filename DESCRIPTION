@@ -1,5 +1,5 @@
 Package: crisprScore
-Version: 1.1.8
+Version: 1.1.9
 Date: 2022-07-18
 Title: On-Target and Off-Target Scoring Algorithms for CRISPR gRNAs
 Authors@R: c(
@@ -11,7 +11,8 @@ Depends:
     R (>= 4.1),
     crisprScoreData (>= 1.1.3)
 Imports:
-    basilisk (>= 1.3.5),
+    basilisk (>= 1.9.2),
+    basilisk.utils (>= 1.9.1),
     BiocGenerics,
     Biostrings,
     IRanges,
