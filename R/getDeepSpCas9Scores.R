@@ -71,7 +71,7 @@ getDeepSpCas9Scores <- function(sequences,
     outputfile <- file.path(dir, "output.txt")
    
     # Ready to get the scores
-    env <- basilisk:::.obtainEnvironmentPath(env_deepspcas9)
+    env <- basilisk::obtainEnvironmentPath(env_deepspcas9)
     basilisk.utils::activateEnvironment(env)
     programFile <- system.file("python",
                                "deepspcas9/getDeepSpCas9Scores.py",

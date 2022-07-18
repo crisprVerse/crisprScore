@@ -85,7 +85,7 @@ getRuleSet3Scores <- function(sequences,
     outputfile <- file.path(dir, "output.txt")
     
     # Ready to get the scores
-    env <- basilisk:::.obtainEnvironmentPath(env_rs3)
+    env <- basilisk::obtainEnvironmentPath(env_rs3)
     basilisk.utils::activateEnvironment(env)
     programFile <- system.file("python",
                                "rs3/getRuleSet3ScoresSequence.py",

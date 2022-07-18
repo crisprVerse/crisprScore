@@ -39,6 +39,7 @@
 #' 
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
+#' @importFrom basilisk obtainEnvironmentPath
 getAzimuthScores <- function(sequences, fork=FALSE){
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=30){
@@ -64,7 +65,7 @@ getAzimuthScores <- function(sequences, fork=FALSE){
     outputfile <- file.path(dir, "output.txt")
 
       # Ready to get the scores
-    env <- basilisk:::.obtainEnvironmentPath(env_azimuth)
+    env <- basilisk::obtainEnvironmentPath(env_azimuth)
     basilisk.utils::activateEnvironment(env)
     programFile <- system.file("python",
                                "azimuth/getAzimuth.py",
