@@ -72,7 +72,8 @@ getDeepSpCas9Scores <- function(sequences,
    
     # Ready to get the scores
     env <- basilisk::obtainEnvironmentPath(env_deepspcas9)
-    basilisk.utils::activateEnvironment(env)
+    envls <- basilisk.utils::activateEnvironment(env)
+    on.exit(basilisk.utils::deactivateEnvironment(envls))
     programFile <- system.file("python",
                                "deepspcas9/getDeepSpCas9Scores.py",
                                package="crisprScore",
@@ -81,14 +82,15 @@ getDeepSpCas9Scores <- function(sequences,
                             "deepspcas9/DeepCas9_Final",
                             package="crisprScore")
     modelDir <- paste0(modelDir, "/")
-    cmd <- paste0("python ",
-                  programFile, " ",
-                  inputfile, " ",
-                  modelDir, " ",
-                  outputfile)
+    #cmd <- paste0("python ",
+    #              programFile, " ",
+    #              inputfile, " ",
+    #              modelDir, " ",
+    #              outputfile)
     if (sum(good)>0){
         .dumpToFile(sequences.valid, inputfile)
-        system(cmd)
+        system2("python",
+                c(programFile, inputfile, modelDir, outputfile))
         scores <- read.table(outputfile)[,1]
         #scores <- read.table(outputfile)
         scores <- scores/100

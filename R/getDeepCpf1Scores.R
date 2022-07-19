@@ -39,9 +39,13 @@
 #' @inheritParams getAzimuthScores
 #' @export 
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
+#' @importFrom basilisk.utils activateEnvironment
+#' @importFrom basilisk.utils deactivateEnvironment
 getDeepCpf1Scores <- function(sequences,
                               convertPAM=TRUE,
-                              fork=FALSE){
+                              fork=FALSE
+){
+    
     if (.Platform$OS.type=="windows"){
         stop("DeepCpf1 is not available for Windows at the moment.")
     }
@@ -74,18 +78,21 @@ getDeepCpf1Scores <- function(sequences,
    
     # Ready to get the scores
     env <- basilisk::obtainEnvironmentPath(env_deepcpf1)
-    basilisk.utils::activateEnvironment(env)
+    envls <- basilisk.utils::activateEnvironment(env)
+    on.exit(basilisk.utils::deactivateEnvironment(envls))
     programFile <- system.file("python",
                                "deepcpf1/getDeepCpf1.py",
                                package="crisprScore",
                                mustWork=TRUE)
-    cmd <- paste0("python ",
-                  programFile, " ",
-                  inputfile, " ",
-                  outputfile)
+    #cmd <- paste0("python ",
+    #              programFile, " ",
+    #              inputfile, " ",
+    #              outputfile)
     if (sum(good)>0){
         .dumpToFile(sequences.valid, inputfile)
-        system(cmd)
+        #system(cmd)
+        system2("python",
+                c(programFile, inputfile, outputfile))
         scores <- read.table(outputfile)[,1]
         scores <- scores/100
         df$score[good] <- scores
