@@ -86,7 +86,8 @@ getRuleSet3Scores <- function(sequences,
     
     # Ready to get the scores
     env <- basilisk::obtainEnvironmentPath(env_rs3)
-    basilisk.utils::activateEnvironment(env)
+    envls <- basilisk.utils::activateEnvironment(env)
+    on.exit(basilisk.utils::deactivateEnvironment(envls))
     programFile <- system.file("python",
                                "rs3/getRuleSet3ScoresSequence.py",
                                package="crisprScore",
@@ -94,16 +95,18 @@ getRuleSet3Scores <- function(sequences,
     modelFile <- system.file("rs3",
                              "RuleSet3.pkl",
                              package="crisprScoreData")
-    cmd <- paste0("python ",
-                  programFile, " ",
-                  inputfile, " ",
-                  modelFile, " ",
-                  outputfile, " ",
-                  shQuote(tracrRNA))
+    #cmd <- paste0("python ",
+    #              programFile, " ",
+    #             inputfile, " ",
+    #              modelFile, " ",
+    #              outputfile, " ",
+    #              shQuote(tracrRNA))
     if (sum(good)>0){
         .dumpToFile(sequences.valid,
                     inputfile)
-        system(cmd)
+        system2("python",
+                c(programFile, inputfile, modelFile, 
+                  outputfile,shQuote(tracrRNA)))
         #scores <- readLines(outputfile, sep="\t")[,4]
         scores <- readLines(outputfile)
         df$score[good] <- scores

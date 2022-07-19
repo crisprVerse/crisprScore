@@ -81,7 +81,9 @@ getLindelScores <- function(sequences, fork=FALSE){
                           seq, " ",
                           weights_file, " ",
                           file.full)
-            system(cmd, ignore.stdout=TRUE, ignore.stderr=FALSE)
+            system(cmd,
+                   ignore.stdout=TRUE,
+                   ignore.stderr=FALSE)
             outputs <- list.files(dir)
             outputs <- outputs[grepl(file, outputs)]
             file.remove(file.path(dir,outputs))

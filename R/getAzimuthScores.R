@@ -67,22 +67,24 @@ getAzimuthScores <- function(sequences, fork=FALSE){
 
       # Ready to get the scores
     env <- basilisk::obtainEnvironmentPath(env_azimuth)
-    basilisk.utils::activateEnvironment(env)
+    envls <- basilisk.utils::activateEnvironment(env)
+    on.exit(basilisk.utils::deactivateEnvironment(envls))
     programFile <- system.file("python",
                                "azimuth/getAzimuth.py",
                                package="crisprScore",
                                mustWork=TRUE)
-    cmd <- paste0("python ",
-                  programFile, " ",
-                  inputfile, " ",
-                  outputfile)
+    #cmd <- paste0("python ",
+    #              programFile, " ",
+    #              inputfile, " ",
+    #              outputfile)
 
     if (sum(good)>0){
         if (sum(good)==1){
             sequences.valid <- rep(sequences.valid, 2)
         }
         .dumpToFile(sequences.valid, inputfile)
-        system(cmd)
+        system2("python",
+                c(programFile, inputfile, outputfile))
         scores <- read.table(outputfile)[,1]
         if (sum(good)==1){
             scores <- scores[1]
