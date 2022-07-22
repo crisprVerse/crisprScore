@@ -449,8 +449,8 @@ getCasRxRFScores <- function(mrnaSequence,
   Sys.setenv("PATH" = paste(Sys.getenv('PATH'),
                             bin.RNAhybrid, sep = ':'))  
   
-  bashScript <- system.file(package="Cas13design")
-  bashScript <- file.path(bashScript, "scripts/RNAhyb.sh")
+  bashScript <- system.file(package="crisprScore")
+  bashScript <- file.path(bashScript, "casrxrf/RNAhyb.sh")
   
   # transform to DNAstringSet
   GuideSeq = DNAStringSet(dat[["spacer"]])
