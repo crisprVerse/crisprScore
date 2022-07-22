@@ -438,6 +438,23 @@ mrnaSequence <- Biostrings::readDNAStringSet(filepath=fasta
 results <- getCasRxRFScores(mrnaSequence)
 ```
 
+Note that the function has a default argument `directRepeat` set to
+`aacccctaccaactggtcggggtttgaaac`, specifying the direct repeat used in
+the CasRx construct (see (Wessels et al. 2020).) The function also has
+an argument `binaries` that specifies the file path of the binaries for
+three programs necessary by the CasRxRF algorithm:
+
+-   `RNAfold`: available as part of the ViennaRNA package
+-   `RNAplfold`: available as part of the ViennaRNA package
+-   `RNAhybrid`: available as part of the RNAhybrid package
+
+Those programs can be installed from their respective websites:
+[VienneRNA](https://www.tbi.univie.ac.at/RNA/) and
+[RNAhybrid](https://bibiserv.cebitec.uni-bielefeld.de/rnahybrid/).
+
+If the argument is `NULL`, the binaries are assumed to be available on
+the PATH.
+
 # Off-target specificity scores
 
 For CRISPR knockout systems, off-targeting effects can occur when the
@@ -611,7 +628,7 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] crisprScore_1.1.6     crisprScoreData_1.1.3 ExperimentHub_2.3.5  
+    ## [1] crisprScore_1.1.9     crisprScoreData_1.1.3 ExperimentHub_2.3.5  
     ## [4] AnnotationHub_3.3.9   BiocFileCache_2.3.4   dbplyr_2.1.1         
     ## [7] BiocGenerics_0.41.2  
     ## 
@@ -624,7 +641,7 @@ sessionInfo()
     ## [11] GenomeInfoDb_1.31.6           stats4_4.2.0                 
     ## [13] RSQLite_2.2.12                evaluate_0.15                
     ## [15] highr_0.9                     httr_1.4.2                   
-    ## [17] pillar_1.7.0                  basilisk_1.9.1               
+    ## [17] pillar_1.7.0                  basilisk_1.9.2               
     ## [19] zlibbioc_1.41.0               rlang_1.0.2                  
     ## [21] curl_4.3.2                    rstudioapi_0.13              
     ## [23] blob_1.2.2                    S4Vectors_0.33.11            
@@ -639,7 +656,7 @@ sessionInfo()
     ## [41] interactiveDisplayBase_1.33.0 IRanges_2.29.1               
     ## [43] randomForest_4.7-1            fansi_1.0.2                  
     ## [45] crayon_1.5.0                  dplyr_1.0.8                  
-    ## [47] later_1.3.0                   basilisk.utils_1.5.0         
+    ## [47] later_1.3.0                   basilisk.utils_1.9.1         
     ## [49] bitops_1.0-7                  rappdirs_0.3.3               
     ## [51] grid_4.2.0                    jsonlite_1.8.0               
     ## [53] xtable_1.8-4                  lifecycle_1.0.1              

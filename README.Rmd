@@ -388,6 +388,22 @@ mrnaSequence <- Biostrings::readDNAStringSet(filepath=fasta
 results <- getCasRxRFScores(mrnaSequence)
 ```
 
+Note that the function has a default argument `directRepeat` set to `aacccctaccaactggtcggggtttgaaac`, specifying the direct repeat used in the
+CasRx construct (see [@casrxrf].) The function also has an argument `binaries`
+that specifies the file path of the binaries for three 
+programs necessary by the CasRxRF algorithm:
+
+- `RNAfold`: available as part of the ViennaRNA package
+- `RNAplfold`: available as part of the ViennaRNA package
+- `RNAhybrid`: available as part of the RNAhybrid package
+
+Those programs can be installed from their respective websites: [VienneRNA](https://www.tbi.univie.ac.at/RNA/) and [RNAhybrid](https://bibiserv.cebitec.uni-bielefeld.de/rnahybrid/).
+
+If the argument is `NULL`, the binaries are assumed to be available on
+the PATH. 
+
+
+
 
 # Off-target specificity scores 
 
