@@ -446,8 +446,9 @@ getCasRxRFScores <- function(mrnaSequence,
                                WIDTH=12,
                                bin.RNAhybrid
 ){
+  bin.folder <- gsub("/RNAhybrid", "", bin.RNAhybrid)
   Sys.setenv("PATH" = paste(Sys.getenv('PATH'),
-                            bin.RNAhybrid, sep = ':'))  
+                            bin.folder, sep = ':'))  
   
   bashScript <- system.file(package="crisprScore")
   bashScript <- file.path(bashScript, "casrxrf/RNAhyb.sh")
