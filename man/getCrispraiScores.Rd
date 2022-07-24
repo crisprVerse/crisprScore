@@ -10,8 +10,7 @@ getCrispraiScores(
   verbose = FALSE,
   modality = c("CRISPRa", "CRISPRi"),
   fastaFile = NULL,
-  chromatinFiles = NULL,
-  fork = FALSE
+  chromatinFiles = NULL
 )
 }
 \arguments{
@@ -36,9 +35,6 @@ TRUE by default.}
 
 \item{chromatinFiles}{Named character vector of length 3 specifying
 BigWig files containing chromatin accessibility data.}
-
-\item{fork}{Set to \code{TRUE} to preserve changes to the R
-configuration within the session.}
 }
 \value{
 \strong{getCrispraiScores} returns a \code{data.frame} with

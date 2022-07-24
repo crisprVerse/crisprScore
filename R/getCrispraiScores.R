@@ -34,8 +34,6 @@
 #' @param fastaFile String specifying fasta file of the hg38 genome.
 #' @param chromatinFiles Named character vector of length 3 specifying
 #'     BigWig files containing chromatin accessibility data. 
-#' @param fork Set to \code{TRUE} to preserve changes to the R
-#'     configuration within the session.
 #'     
 #' @details \code{tss_df} details:
 #'     This must be a \code{data.frame} that contains the following columns:
@@ -86,11 +84,8 @@ getCrispraiScores <- function(tss_df,
                               verbose=FALSE,
                               modality=c("CRISPRa", "CRISPRi"),
                               fastaFile=NULL,
-                              chromatinFiles=NULL,
-                              fork=FALSE
+                              chromatinFiles=NULL
 ){
-
-
     .checkChromatinFiles(chromatinFiles)
     .checkFastaFile(fastaFile)
     .checkTssFrame(tss_df)
@@ -101,165 +96,33 @@ getCrispraiScores <- function(tss_df,
                                    sgrna_df,
                                    verbose=verbose)
 
-    #dir <- system.file("crisprai",
-    #                   "temp_data",
-    #                   package="crisprScore",
-    #                   mustWork=TRUE)
-    #dir <- "/Users/fortinj2/crisprScore/inst/crisprai/temp_data"
-    #pickleFile <- paste0(dir, "/", modality, "_model.pkl")
-
     if (modality=="CRISPRa"){
         pickleFile <- crisprScoreData::CRISPRa_model.pkl()
     } else if (modality=="CRISPRi"){
         pickleFile <- crisprScoreData::CRISPRi_model.pkl()
     }
     
-
-    results <- basiliskRun(env=env_crisprai,
-                           shared=FALSE,
-                           fork=fork,
-                           fun=.pyPredictWeissmanScore,
-                           modality=modality,
-                           tssTable=inputList[["tssTable"]],
-                           p1p2Table=inputList[["p1p2Table"]],
-                           sgrnaTable=inputList[["sgrnaTable"]],
-                           libraryTable=inputList[["libraryTable"]],
-                           pickleFile=pickleFile,
-                           fastaFile=fastaFile,
-                           chromatinFiles=chromatinFiles,
-                           verbose=verbose)
-
+    results <- .pyPredictWeissmanScore(modality=modality,
+                                       tssTable=inputList[["tssTable"]],
+                                       p1p2Table=inputList[["p1p2Table"]],
+                                       sgrnaTable=inputList[["sgrnaTable"]],
+                                       libraryTable=inputList[["libraryTable"]],
+                                       pickleFile=pickleFile,
+                                       fastaFile=fastaFile,
+                                       chromatinFiles=chromatinFiles,
+                                       verbose=verbose)
+    rownames(results) <- sgrna_df[["grna_id"]]
     return(results)
 }
 
-
-.checkFastaFile <- function(fasta){
-    if (is.null(fasta)){
-        stop("Argument fasta cannot be NULL.")
-    }
-    if (length(fasta)!=1){
-        stop("fasta must be a character vector of length 1.")
-    }
-     if (!file.exists(fasta)){
-        stop("Fasta file cannot be found.")
-    }
-    invisible(TRUE)
-}
-
-.checkChromatinFiles <- function(chromatinFiles){
-    if (is.null(chromatinFiles)){
-        stop("Argument chromatinFiles cannot be NULL.")
-    }
-    if (length(chromatinFiles)!=3){
-        stop("chromatinFiles must be a character vector of length 3.")
-    }
-    choices <- c("mnase", "faire", "dnase")
-    if (!all(sort(names(chromatinFiles))==sort(names(choices)))){
-        stop("chromatinFiles must be a character vector with the",
-             " following names: mnase, faire, dnase.")
-    }
-    if (!sum(file.exists(chromatinFiles))==3){
-        stop("Some of the chromatin files cannot be found.")
-    }
-    invisible(TRUE)
-}
-
-
-
-
-
-
-.checkTssFrame <- function(tssFrame){
-    cols <- c("tss_id",
-              "gene_symbol",
-              "promoter",
-              "transcripts",
-              "position",
-              "strand",
-              "chr")
-    if (!all(cols %in% colnames(tssFrame))){
-        choices <- setdiff(cols, colnames(tssFrame))
-        stop("The following columns are missing in the tssFrame: \n \t",
-             paste0(choices, collapse=", "),".")
-    }
-    
-    if (sum(is.na(tssFrame$tss_id))>0){
-        stop("tss_id has some missing values.")
-    }
-    if (sum(is.na(tssFrame$gene_symbol))>0){
-        stop("gene_symbol has some missing values.")
-    }
-    if (sum(is.na(tssFrame$promoter))>0){
-        stop("promoter has some missing values.")
-    }
-    #if (sum(is.na(tssFrame$transcripts))>0){
-    #    stop("transcripts has some missing values.")
-    #}
-    if (sum(is.na(tssFrame$position))>0){
-        stop("position has some missing values.")
-    }
-    if (sum(is.na(tssFrame$strand))>0){
-        stop("strand has some missing values.")
-    }
-    if (sum(is.na(tssFrame$chr))>0){
-        stop("chr has some missing values.")
-    }
-
-    # Check promoters:
-    dfs <- split(tssFrame, f=tssFrame$gene_symbol)
-    lens <- vapply(dfs, function(df){
-        length(unique(df$strand))
-    }, FUN.VALUE=1)
-    if (any(lens>1)){
-        stop("Some genes have promoters with different strand directions.")
-    }
-    invisible(TRUE)
-}
-
-.checkGrnaFrame <- function(grnaFrame){
-    cols <- c("grna_id",
-              "tss_id",
-              "pam_site",
-              "strand", 
-              "spacer_19mer")
-    if (!all(cols %in% colnames(grnaFrame))){
-        choices <- setdiff(cols, colnames(grnaFrame))
-        stop("The following columns are missing in the grnaFrame: \n \t",
-             paste0(choices, collapse=", "),".")
-    }
-    if (sum(is.na(grnaFrame$grna_id))>0){
-        stop("grna_id has some missing values.")
-    }
-    if (sum(is.na(grnaFrame$tss_id))>0){
-        stop("tss_id has some missing values.")
-    }
-    if (sum(is.na(grnaFrame$pam_site))>0){
-        stop("pam_site has some missing values.")
-    }
-    if (sum(is.na(grnaFrame$strand))>0){
-        stop("strand has some missing values.")
-    }
-    if (sum(is.na(grnaFrame$spacer_19mer))>0){
-        stop("spacer_19mer has some missing values.")
-    }
-    lens <- unique(nchar(grnaFrame$spacer_19mer))
-    if (length(lens)!=1){
-        stop("Sequences specified in spacer_19mer must",
-             " all be of length 19.")
-    } else {
-        if (lens!=19){
-            stop("Sequences specified in spacer_19mer must",
-                 " all be of length 19.")
-        }
-    }
-    invisible(TRUE)
-}
 
 
 
 #' @importFrom reticulate import_from_path
 #' @importFrom reticulate py_suppress_warnings
 #' @importFrom reticulate r_to_py
+#' @importFrom basilisk.utils activateEnvironment
+#' @importFrom basilisk.utils deactivateEnvironment
 .pyPredictWeissmanScore <- function(modality,
                                     tssTable,
                                     p1p2Table,
@@ -271,38 +134,55 @@ getCrispraiScores <- function(tss_df,
                                     verbose
 
 ){
+    env <- basilisk::obtainEnvironmentPath(env_crisprai)
+    envls <- basilisk.utils::activateEnvironment(env)
+    on.exit(basilisk.utils::deactivateEnvironment(envls))
 
     if (.Platform$OS.type=="windows"){
         stop("CRISPRai is not available for Windows at the moment.")
     }
 
-    tssTable <- r_to_py(tssTable)
-    p1p2Table <- r_to_py(p1p2Table)
-    sgrnaTable <- r_to_py(sgrnaTable)
-    libraryTable <- r_to_py(libraryTable)
-    chromatinFiles <- r_to_py(chromatinFiles)
+    # We are going to save the tables to a temporary directory
+    .dumpToFile <- function(table, file){
+        write.table(table,
+                    sep="\t",
+                    file=file,
+                    quote=FALSE,
+                    col.names=TRUE,
+                    row.names=FALSE)
+    }
+    inputDir <- tempdir()
+    .dumpToFile(tssTable, file=file.path(inputDir, "tssTable.tsv"))
+    .dumpToFile(p1p2Table, file=file.path(inputDir, "p1p2Table.tsv"))
+    .dumpToFile(sgrnaTable, file=file.path(inputDir, "sgrnaTable.tsv"))
+    .dumpToFile(libraryTable, file=file.path(inputDir, "libraryTable.tsv"))
+    
 
-    dir <- system.file("python",
-                       "crisprai",
-                       package="crisprScore",
-                       mustWork=TRUE)
+    # Creating a roster file of all files:
+    roster <- data.frame(path=chromatinFiles)
+    roster$object <- names(chromatinFiles)
+    rownames(roster) <- NULL
+    roster <- roster[, c("object", "path")]
+    roster <- rbind(roster, c("fasta",fastaFile))
+    roster <- rbind(roster, c("pickleFile",pickleFile))
+    roster <- rbind(roster, c("tssTable", file.path(inputDir, "tssTable.tsv")))
+    roster <- rbind(roster, c("p1p2Table", file.path(inputDir, "p1p2Table.tsv")))
+    roster <- rbind(roster, c("sgrnaTable", file.path(inputDir, "sgrnaTable.tsv")))
+    roster <- rbind(roster, c("libraryTable", file.path(inputDir, "libraryTable.tsv")))
+    rosterFile <- file.path(inputDir, "roster.tsv")
+    .dumpToFile(roster, file=rosterFile)
+    outputFile <- file.path(inputDir, "scores.txt")
 
-    pyWeissmanScore <- reticulate::import_from_path("predictWeissmanScores",
-                                                    path=dir)
-    
-    # TO DO: add chromatin file vectors and pickle file path vectors
-    
-    scores <- py_suppress_warnings(
-        pyWeissmanScore$predictWeissmanScore(tssTable=tssTable,
-                                             p1p2Table=p1p2Table,
-                                             sgrnaTable=sgrnaTable,
-                                             libraryTable=libraryTable,
-                                             modality=modality,
-                                             pickleFile=pickleFile,
-                                             fastaFile=fastaFile,
-                                             chromatinFiles=chromatinFiles,
-                                             verbose=verbose))
-    
+    # Ready to call the python to generate the scores:
+    program <- system.file("python",
+                           "crisprai",
+                           "getWeissmanScores.py",
+                           package="crisprScore",
+                           mustWork=TRUE)
+    system2("python",
+            c(program, rosterFile, modality, outputFile, verbose))
+
+    scores <- read.table(outputFile)
     scores <- as.data.frame(scores)
     colnames(scores) <- c("score")
     return(scores)
@@ -618,4 +498,130 @@ getCrispraiScores <- function(tss_df,
     inputList <- lapply(inputList, as.data.frame)
     return(inputList)
 }
+
+
+
+
+.checkFastaFile <- function(fasta){
+    if (is.null(fasta)){
+        stop("Argument fasta cannot be NULL.")
+    }
+    if (length(fasta)!=1){
+        stop("fasta must be a character vector of length 1.")
+    }
+     if (!file.exists(fasta)){
+        stop("Fasta file cannot be found.")
+    }
+    invisible(TRUE)
+}
+
+.checkChromatinFiles <- function(chromatinFiles){
+    if (is.null(chromatinFiles)){
+        stop("Argument chromatinFiles cannot be NULL.")
+    }
+    if (length(chromatinFiles)!=3){
+        stop("chromatinFiles must be a character vector of length 3.")
+    }
+    choices <- c("mnase", "faire", "dnase")
+    if (!all(sort(names(chromatinFiles))==sort(names(choices)))){
+        stop("chromatinFiles must be a character vector with the",
+             " following names: mnase, faire, dnase.")
+    }
+    if (!sum(file.exists(chromatinFiles))==3){
+        stop("Some of the chromatin files cannot be found.")
+    }
+    invisible(TRUE)
+}
+
+
+
+
+
+
+.checkTssFrame <- function(tssFrame){
+    cols <- c("tss_id",
+              "gene_symbol",
+              "promoter",
+              "transcripts",
+              "position",
+              "strand",
+              "chr")
+    if (!all(cols %in% colnames(tssFrame))){
+        choices <- setdiff(cols, colnames(tssFrame))
+        stop("The following columns are missing in the tssFrame: \n \t",
+             paste0(choices, collapse=", "),".")
+    }
+    
+    if (sum(is.na(tssFrame$tss_id))>0){
+        stop("tss_id has some missing values.")
+    }
+    if (sum(is.na(tssFrame$gene_symbol))>0){
+        stop("gene_symbol has some missing values.")
+    }
+    if (sum(is.na(tssFrame$promoter))>0){
+        stop("promoter has some missing values.")
+    }
+    #if (sum(is.na(tssFrame$transcripts))>0){
+    #    stop("transcripts has some missing values.")
+    #}
+    if (sum(is.na(tssFrame$position))>0){
+        stop("position has some missing values.")
+    }
+    if (sum(is.na(tssFrame$strand))>0){
+        stop("strand has some missing values.")
+    }
+    if (sum(is.na(tssFrame$chr))>0){
+        stop("chr has some missing values.")
+    }
+
+    # Check promoters:
+    dfs <- split(tssFrame, f=tssFrame$gene_symbol)
+    lens <- vapply(dfs, function(df){
+        length(unique(df$strand))
+    }, FUN.VALUE=1)
+    if (any(lens>1)){
+        stop("Some genes have promoters with different strand directions.")
+    }
+    invisible(TRUE)
+}
+
+.checkGrnaFrame <- function(grnaFrame){
+    cols <- c("grna_id",
+              "tss_id",
+              "pam_site",
+              "strand", 
+              "spacer_19mer")
+    if (!all(cols %in% colnames(grnaFrame))){
+        choices <- setdiff(cols, colnames(grnaFrame))
+        stop("The following columns are missing in the grnaFrame: \n \t",
+             paste0(choices, collapse=", "),".")
+    }
+    if (sum(is.na(grnaFrame$grna_id))>0){
+        stop("grna_id has some missing values.")
+    }
+    if (sum(is.na(grnaFrame$tss_id))>0){
+        stop("tss_id has some missing values.")
+    }
+    if (sum(is.na(grnaFrame$pam_site))>0){
+        stop("pam_site has some missing values.")
+    }
+    if (sum(is.na(grnaFrame$strand))>0){
+        stop("strand has some missing values.")
+    }
+    if (sum(is.na(grnaFrame$spacer_19mer))>0){
+        stop("spacer_19mer has some missing values.")
+    }
+    lens <- unique(nchar(grnaFrame$spacer_19mer))
+    if (length(lens)!=1){
+        stop("Sequences specified in spacer_19mer must",
+             " all be of length 19.")
+    } else {
+        if (lens!=19){
+            stop("Sequences specified in spacer_19mer must",
+                 " all be of length 19.")
+        }
+    }
+    invisible(TRUE)
+}
+
 
