@@ -1,5 +1,11 @@
+#sys.argv[1] should be the path of the roster file specifying the input files
+#sys.argv[2] should be the modality
+#sys.argv[3] should be the output file
+#sys.argv[4] should be the verbose argument
+
 import cPickle
 from sgRNA_learning import *
+import pandas as pd
 
 
 def predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, pickleFile, fastaFile, chromatinFiles, modality, verbose):
@@ -73,3 +79,29 @@ def getTransformedParams(paramTable, fitTable, estimators, verbose):
     transformedParams_new.columns = pd.MultiIndex.from_tuples(colTups)
 
     return transformedParams_new
+
+
+
+# Ready to load the data from R
+roster_file = sys.argv[1]
+modality = sys.argv[2]
+output_file = sys.argv[3]
+verbose = sys.argv[4]
+
+roster = pd.read_csv(roster_file, sep='\t', header=0)
+roster = dict(zip(roster.object, roster.path))
+tssTable = pd.read_csv(roster["tssTable"],sep='\t', header=0)
+p1p2Table = pd.read_csv(roster["p1p2Table"],sep='\t', header=0)
+sgrnaTable = pd.read_csv(roster["sgrnaTable"],sep='\t', header=0)
+libraryTable = pd.read_csv(roster["libraryTable"],sep='\t', header=0)
+pickleFile = roster["pickleFile"]
+fastaFile = roster["fasta"]
+
+keys = ["dnase", "faire", "mnase"]
+chromatinFiles = [roster.get(key) for key in keys]
+
+
+
+scores = predictWeissmanScore(tssTable, p1p2Table, sgrnaTable, libraryTable, pickleFile, fastaFile, chromatinFiles, modality, verbose)
+np.savetxt(output_file, scores)
+
