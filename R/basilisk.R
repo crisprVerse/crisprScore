@@ -205,7 +205,6 @@ env_crisprai <- BasiliskEnvironment(envname="crisprai_basilisk",
 
 env_deepspcas9 <- BasiliskEnvironment(envname="deepspcas9__basilisk",
                                       pkgname="crisprScore",
-                                      paths="python/deepspcas9",
                                       packages=deepspcas9_dependencies,
                                       channels = c("bioconda", "conda-forge"),
                                       pip=deepspcas9_dependencies_pip)
