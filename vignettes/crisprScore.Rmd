@@ -57,18 +57,27 @@ Packages were developed and tested on R version 4.2.
 
 - crisprScoreData: https://github.com/Jfortin1/crisprScoreData
 
-## Installation
+## Installation from Bioconductor
 
-`crisprScore` and its dependencies can be installed by typing the
-following commands inside of an R session:
+`crisprScore` can be installed from Bioconductor using the following
+commands in a fresh R session:
+
+```{r, eval=FALSE}
+install.packages("BiocManager")
+BiocManager::install("crisprScore")
+```
+
+## Installation from GitHub
+
+Alternatively, the development version of `crisprScore` and its dependencies can be installed by typing the following commands inside of an R session:
+
 
 ```r
 install.packages("devtools")
 library(devtools)
-install_github("Jfortin1/crisprScoreData")
-install_github("Jfortin1/crisprScore")
+install_github("crisprVerse/crisprScoreData")
+install_github("crisprVerse/crisprScore")
 ```
-
 
 When calling one of the scoring methods for the first time after package
 installation, the underlying python module and conda environment will be 

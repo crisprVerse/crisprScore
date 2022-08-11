@@ -7,7 +7,9 @@ crisprScore: on-target and off-target scoring for CRISPR gRNAs
     -   [Software requirements](#software-requirements)
         -   [OS Requirements](#os-requirements)
         -   [R Dependencies](#r-dependencies)
-    -   [Installation](#installation)
+    -   [Installation from
+        Bioconductor](#installation-from-bioconductor)
+    -   [Installation from GitHub](#installation-from-github)
 -   [Getting started](#getting-started)
 -   [On-targeting efficiency scores](#on-targeting-efficiency-scores)
     -   [Cas9 methods](#cas9-methods)
@@ -69,16 +71,27 @@ developed and tested on R version 4.2.
 
 -   crisprScoreData: <https://github.com/Jfortin1/crisprScoreData>
 
-## Installation
+## Installation from Bioconductor
 
-`crisprScore` and its dependencies can be installed by typing the
-following commands inside of an R session:
+`crisprScore` can be installed from Bioconductor using the following
+commands in a fresh R session:
+
+``` r
+install.packages("BiocManager")
+BiocManager::install("crisprScore")
+```
+
+## Installation from GitHub
+
+Alternatively, the development version of `crisprScore` and its
+dependencies can be installed by typing the following commands inside of
+an R session:
 
 ``` r
 install.packages("devtools")
 library(devtools)
-install_github("Jfortin1/crisprScoreData")
-install_github("Jfortin1/crisprScore")
+install_github("crisprVerse/crisprScoreData")
+install_github("crisprVerse/crisprScore")
 ```
 
 When calling one of the scoring methods for the first time after package
@@ -628,24 +641,24 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] crisprScore_1.1.9     crisprScoreData_1.1.3 ExperimentHub_2.3.5  
+    ## [1] crisprScore_1.1.13    crisprScoreData_1.1.3 ExperimentHub_2.3.5  
     ## [4] AnnotationHub_3.3.9   BiocFileCache_2.3.4   dbplyr_2.1.1         
-    ## [7] BiocGenerics_0.41.2  
+    ## [7] BiocGenerics_0.42.0  
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] Rcpp_1.0.8.3                  lattice_0.20-45              
     ##  [3] dir.expiry_1.3.0              png_0.1-7                    
-    ##  [5] Biostrings_2.63.2             assertthat_0.2.1             
+    ##  [5] Biostrings_2.64.0             assertthat_0.2.1             
     ##  [7] digest_0.6.29                 utf8_1.2.2                   
     ##  [9] mime_0.12                     R6_2.5.1                     
-    ## [11] GenomeInfoDb_1.31.6           stats4_4.2.0                 
+    ## [11] GenomeInfoDb_1.32.2           stats4_4.2.0                 
     ## [13] RSQLite_2.2.12                evaluate_0.15                
     ## [15] highr_0.9                     httr_1.4.2                   
     ## [17] pillar_1.7.0                  basilisk_1.9.2               
-    ## [19] zlibbioc_1.41.0               rlang_1.0.2                  
+    ## [19] zlibbioc_1.41.0               rlang_1.0.4                  
     ## [21] curl_4.3.2                    rstudioapi_0.13              
     ## [23] blob_1.2.2                    S4Vectors_0.33.11            
-    ## [25] Matrix_1.4-0                  reticulate_1.24              
+    ## [25] Matrix_1.4-0                  reticulate_1.25              
     ## [27] rmarkdown_2.13                stringr_1.4.0                
     ## [29] RCurl_1.98-1.6                bit_4.0.4                    
     ## [31] shiny_1.7.1                   compiler_4.2.0               
@@ -653,7 +666,7 @@ sessionInfo()
     ## [35] pkgconfig_2.0.3               htmltools_0.5.2              
     ## [37] tidyselect_1.1.2              KEGGREST_1.35.0              
     ## [39] tibble_3.1.6                  GenomeInfoDbData_1.2.7       
-    ## [41] interactiveDisplayBase_1.33.0 IRanges_2.29.1               
+    ## [41] interactiveDisplayBase_1.33.0 IRanges_2.30.0               
     ## [43] randomForest_4.7-1            fansi_1.0.2                  
     ## [45] crayon_1.5.0                  dplyr_1.0.8                  
     ## [47] later_1.3.0                   basilisk.utils_1.9.1         
