@@ -44,6 +44,6 @@ Encoding: UTF-8
 RoxygenNote: 7.2.0
 VignetteBuilder: knitr
 StagedInstall: no
-BugReports: https://github.com/Jfortin1/crisprScore
-URL: https://github.com/Jfortin1/crisprScore/issues
+BugReports: https://github.com/crisprVerse/crisprScore
+URL: https://github.com/crisprVerse/crisprScore/issues
 LazyData: true
