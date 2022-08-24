@@ -38,11 +38,8 @@ Our work is described in a recent bioRxiv preprint:
 
 This package is supported for macOS, Linux and Windows machines.
 Some functionalities are not supported for Windows machines.
-Packages were developed and tested on R version 4.2.
+Packages were developed and tested on R version 4.2.1.
 
-### R Dependencies 
-
-- crisprScoreData: https://github.com/Jfortin1/crisprScoreData
 
 ## Installation from Bioconductor
 

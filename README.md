@@ -1,39 +1,47 @@
 crisprScore: on-target and off-target scoring for CRISPR gRNAs
 ================
 
--   [Overview](#overview)
--   [Installation and getting
-    started](#installation-and-getting-started)
-    -   [Software requirements](#software-requirements)
-        -   [OS Requirements](#os-requirements)
-        -   [R Dependencies](#r-dependencies)
-    -   [Installation from
-        Bioconductor](#installation-from-bioconductor)
-    -   [Installation from GitHub](#installation-from-github)
--   [Getting started](#getting-started)
--   [On-targeting efficiency scores](#on-targeting-efficiency-scores)
-    -   [Cas9 methods](#cas9-methods)
-        -   [Rule Set 1](#rule-set-1)
-        -   [Azimuth](#azimuth)
-        -   [Rule Set 3](#rule-set-3)
-        -   [DeepHF](#deephf)
-        -   [DeepSpCas9](#deepspcas9)
-        -   [CRISPRscan](#crisprscan)
-        -   [CRISPRater](#crisprater)
-        -   [CRISPRai](#crisprai)
-    -   [Cas12a methods](#cas12a-methods)
-        -   [DeepCpf1 score](#deepcpf1-score)
-        -   [enPAM+GB score](#enpamgb-score)
-    -   [Cas13d methods](#cas13d-methods)
-        -   [CasRxRF](#casrxrf)
--   [Off-target specificity scores](#off-target-specificity-scores)
-    -   [MIT score](#mit-score)
-    -   [CFD score](#cfd-score)
--   [Indel prediction score](#indel-prediction-score)
-    -   [Lindel score (Cas9)](#lindel-score-cas9)
--   [License](#license)
--   [Reproducibility](#reproducibility)
--   [References](#references)
+-   <a href="#overview" id="toc-overview">Overview</a>
+-   <a href="#installation-and-getting-started"
+    id="toc-installation-and-getting-started">Installation and getting
+    started</a>
+    -   <a href="#software-requirements" id="toc-software-requirements">Software
+        requirements</a>
+        -   <a href="#os-requirements" id="toc-os-requirements">OS Requirements</a>
+    -   <a href="#installation-from-bioconductor"
+        id="toc-installation-from-bioconductor">Installation from
+        Bioconductor</a>
+    -   <a href="#installation-from-github"
+        id="toc-installation-from-github">Installation from GitHub</a>
+-   <a href="#getting-started" id="toc-getting-started">Getting started</a>
+-   <a href="#on-targeting-efficiency-scores"
+    id="toc-on-targeting-efficiency-scores">On-targeting efficiency
+    scores</a>
+    -   <a href="#cas9-methods" id="toc-cas9-methods">Cas9 methods</a>
+        -   <a href="#rule-set-1" id="toc-rule-set-1">Rule Set 1</a>
+        -   <a href="#azimuth" id="toc-azimuth">Azimuth</a>
+        -   <a href="#rule-set-3" id="toc-rule-set-3">Rule Set 3</a>
+        -   <a href="#deephf" id="toc-deephf">DeepHF</a>
+        -   <a href="#deepspcas9" id="toc-deepspcas9">DeepSpCas9</a>
+        -   <a href="#crisprscan" id="toc-crisprscan">CRISPRscan</a>
+        -   <a href="#crisprater" id="toc-crisprater">CRISPRater</a>
+        -   <a href="#crisprai" id="toc-crisprai">CRISPRai</a>
+    -   <a href="#cas12a-methods" id="toc-cas12a-methods">Cas12a methods</a>
+        -   <a href="#deepcpf1-score" id="toc-deepcpf1-score">DeepCpf1 score</a>
+        -   <a href="#enpamgb-score" id="toc-enpamgb-score">enPAM+GB score</a>
+    -   <a href="#cas13d-methods" id="toc-cas13d-methods">Cas13d methods</a>
+        -   <a href="#casrxrf" id="toc-casrxrf">CasRxRF</a>
+-   <a href="#off-target-specificity-scores"
+    id="toc-off-target-specificity-scores">Off-target specificity scores</a>
+    -   <a href="#mit-score" id="toc-mit-score">MIT score</a>
+    -   <a href="#cfd-score" id="toc-cfd-score">CFD score</a>
+-   <a href="#indel-prediction-score" id="toc-indel-prediction-score">Indel
+    prediction score</a>
+    -   <a href="#lindel-score-cas9" id="toc-lindel-score-cas9">Lindel score
+        (Cas9)</a>
+-   <a href="#license" id="toc-license">License</a>
+-   <a href="#reproducibility" id="toc-reproducibility">Reproducibility</a>
+-   <a href="#references" id="toc-references">References</a>
 
 Authors: Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht
 
@@ -65,11 +73,7 @@ technologies”](https://www.biorxiv.org/content/10.1101/2022.04.21.488824v2)
 
 This package is supported for macOS, Linux and Windows machines. Some
 functionalities are not supported for Windows machines. Packages were
-developed and tested on R version 4.2.
-
-### R Dependencies
-
--   crisprScoreData: <https://github.com/Jfortin1/crisprScoreData>
+developed and tested on R version 4.2.1.
 
 ## Installation from Bioconductor
 
@@ -185,7 +189,7 @@ the same lab.
 ### Azimuth
 
 The Azimuth algorithm is an improved version of the popular Rule Set 2
-score for the Cas9 nuclease (Doench et al. et al. 2016). It generates a
+score for the Cas9 nuclease (Doench et al. 2016). It generates a
 probability (therefore a score between 0 and 1) that a given sgRNA will
 cut at its intended target. 4 nucleotides upstream and 3 nucleotides
 downstream of the PAM sequence are needed for scoring:
@@ -230,11 +234,10 @@ implemented in `crisprScore`.
 ### DeepHF
 
 The DeepHF algorithm is an on-target cutting efficiency prediction
-algorithm for several variants of the Cas9 nuclease (Wang et al. et al.
-2019) using a recurrent neural network (RNN) framework. Similar to the
-Azimuth score, it generates a probability of cutting at the intended
-on-target. The algorithm only needs the protospacer and PAM sequences as
-inputs:
+algorithm for several variants of the Cas9 nuclease (Wang et al. 2019)
+using a recurrent neural network (RNN) framework. Similar to the Azimuth
+score, it generates a probability of cutting at the intended on-target.
+The algorithm only needs the protospacer and PAM sequences as inputs:
 
 ``` r
 spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
@@ -316,9 +319,9 @@ results <- getCRISPRaterScores(spacer)
 ### CRISPRai
 
 The CRISPRai algorithm was developed by the Weissman lab to score SpCas9
-gRNAs for CRISPRa and CRISPRi applications (Horlbeck et al. et al.
-2016), for the human genome. The function `getCrispraiScores` requires
-several inputs.
+gRNAs for CRISPRa and CRISPRi applications (Horlbeck et al. 2016), for
+the human genome. The function `getCrispraiScores` requires several
+inputs.
 
 First, it requires a data.frame specifying the genomic coordinates of
 the transcription starting sites (TSSs). An example of such a data.frame
@@ -409,14 +412,14 @@ results <- getDeepCpf1Scores(input)
 
 The enPAM+GB algorithm is an on-target cutting efficiency prediction
 algorithm for the enhanced Cas12a (enCas12a) nuclease (DeWeirdt et al.
-et al. 2020) using a gradient-booster (GB) model. The enCas12a nuclease
-as an extended set of active PAM sequences in comparison to the wildtype
-Cas12 nuclease (Kleinstiver et al. et al. 2019), and the enPAM+GB
-algorithm takes PAM activity into account in the calculation of the
-final score. It generates a probability (therefore a score between 0 and
-1) of a given sgRNA to cut at the intended target. 3 nucleotides
-upstream of the PAM sequence and 4 nucleotides downstream of the
-protospacer sequence are needed for scoring:
+2020) using a gradient-booster (GB) model. The enCas12a nuclease as an
+extended set of active PAM sequences in comparison to the wildtype Cas12
+nuclease (Kleinstiver et al. 2019), and the enPAM+GB algorithm takes PAM
+activity into account in the calculation of the final score. It
+generates a probability (therefore a score between 0 and 1) of a given
+sgRNA to cut at the intended target. 3 nucleotides upstream of the PAM
+sequence and 4 nucleotides downstream of the protospacer sequence are
+needed for scoring:
 
 ``` r
 flank5 <- "ACC" #3bp
@@ -481,38 +484,31 @@ to predict the likelihood of a nuclease to cut at an unintended
 off-target site given a position-specific set of nucleotide mismatches.
 
 We provide in `crisprScore` two popular off-target specificity scoring
-methods for CRISPR/Cas9 knockout systems: the MIT score (Hsu et al. et
-al. 2013) and the cutting frequency determination (CFD) score (Doench et
-al. et al. 2016).
+methods for CRISPR/Cas9 knockout systems: the MIT score (Hsu et al.
+2013) and the cutting frequency determination (CFD) score (Doench et al.
+2016).
 
 ## MIT score
 
 The MIT score was an early off-target specificity prediction algorithm
-developed for the CRISPR/Cas9 system (Hsu et al. et al. 2013). It
-predicts the likelihood that the Cas9 nuclease will cut at an off-target
-site using position-specific mismatch tolerance weights. It also takes
-into consideration the total number of mismatches, as well as the
-average distance between mismatches. However, it does not take into
-account the nature of the nucleotide substitutions. The exact formula
-used to estimate the cutting likelihood is
+developed for the CRISPR/Cas9 system (Hsu et al. 2013). It predicts the
+likelihood that the Cas9 nuclease will cut at an off-target site using
+position-specific mismatch tolerance weights. It also takes into
+consideration the total number of mismatches, as well as the average
+distance between mismatches. However, it does not take into account the
+nature of the nucleotide substitutions. The exact formula used to
+estimate the cutting likelihood is
 
-![\\text{MIT} = \\biggl(\\prod\_{p \\in
-M}{w_p}\\biggr)\\times\\frac{1}{\\frac{19-d}{19}\\times4+1}\\times\\frac{1}{m^2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BMIT%7D%20%3D%20%5Cbiggl%28%5Cprod_%7Bp%20%5Cin%0AM%7D%7Bw_p%7D%5Cbiggr%29%5Ctimes%5Cfrac%7B1%7D%7B%5Cfrac%7B19-d%7D%7B19%7D%5Ctimes4%2B1%7D%5Ctimes%5Cfrac%7B1%7D%7Bm%5E2%7D "\text{MIT} = \biggl(\prod_{p \in
-M}{w_p}\biggr)\times\frac{1}{\frac{19-d}{19}\times4+1}\times\frac{1}{m^2}")
+$$\text{MIT} = \biggl(\prod_{p \in
+M}{w_p}\biggr)\times\frac{1}{\frac{19-d}{19}\times4+1}\times\frac{1}{m^2}$$
 
-where
-![M](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;M "M")
-is the set of positions for which there is a mismatch between the sgRNA
-spacer sequence and the off-target sequence,
-![w_p](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;w_p "w_p")
-is an experimentally-derived mismatch tolerance weight at position
-![p](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;p "p"),
-![d](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;d "d")
-is the average distance between mismatches, and
-![m](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;m "m")
-is the total number of mismatches. As the number of mismatches
-increases, the cutting likelihood decreases. In addition, off-targets
-with more adjacent mismatches will have a lower cutting likelihood.
+where $M$ is the set of positions for which there is a mismatch between
+the sgRNA spacer sequence and the off-target sequence, $w_p$ is an
+experimentally-derived mismatch tolerance weight at position $p$, $d$ is
+the average distance between mismatches, and $m$ is the total number of
+mismatches. As the number of mismatches increases, the cutting
+likelihood decreases. In addition, off-targets with more adjacent
+mismatches will have a lower cutting likelihood.
 
 The `getMITScores` function takes as argument a character vector of 20bp
 sequences specifying the spacer sequences of sgRNAs (`spacers`
@@ -545,10 +541,10 @@ getMITScores(spacers=spacer,
 
 The CFD off-target specificity prediction algorithm was initially
 developed for the CRISPR/Cas9 system, and was shown to be superior to
-the MIT score (Doench et al. et al. 2016). Unlike the MIT score,
+the MIT score (Doench et al. 2016). Unlike the MIT score,
 position-specific mismatch weights vary according to the nature of the
-nucleotide substitution (e.g. an A->G mismatch at position 15 has a
-different weight than an A->T mismatch at position 15).
+nucleotide substitution (e.g. an A-\>G mismatch at position 15 has a
+different weight than an A-\>T mismatch at position 15).
 
 Similar to the `getMITScores` function, the `getCFDScores` function
 takes as argument a character vector of 20bp sequences specifying the
@@ -626,7 +622,7 @@ code.
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2022-03-21 r81954)
+    ## R version 4.2.1 (2022-06-23)
     ## Platform: x86_64-apple-darwin17.0 (64-bit)
     ## Running under: macOS Catalina 10.15.7
     ## 
@@ -641,50 +637,50 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] crisprScore_1.1.13    crisprScoreData_1.1.3 ExperimentHub_2.3.5  
-    ## [4] AnnotationHub_3.3.9   BiocFileCache_2.3.4   dbplyr_2.1.1         
-    ## [7] BiocGenerics_0.42.0  
+    ## [1] crisprScore_1.1.14    crisprScoreData_1.1.3 ExperimentHub_2.5.0  
+    ## [4] AnnotationHub_3.5.0   BiocFileCache_2.5.0   dbplyr_2.2.1         
+    ## [7] BiocGenerics_0.43.1  
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_1.0.8.3                  lattice_0.20-45              
-    ##  [3] dir.expiry_1.3.0              png_0.1-7                    
-    ##  [5] Biostrings_2.64.0             assertthat_0.2.1             
+    ##  [1] Rcpp_1.0.9                    lattice_0.20-45              
+    ##  [3] dir.expiry_1.5.0              png_0.1-7                    
+    ##  [5] Biostrings_2.65.2             assertthat_0.2.1             
     ##  [7] digest_0.6.29                 utf8_1.2.2                   
     ##  [9] mime_0.12                     R6_2.5.1                     
-    ## [11] GenomeInfoDb_1.32.2           stats4_4.2.0                 
-    ## [13] RSQLite_2.2.12                evaluate_0.15                
-    ## [15] highr_0.9                     httr_1.4.2                   
-    ## [17] pillar_1.7.0                  basilisk_1.9.2               
-    ## [19] zlibbioc_1.41.0               rlang_1.0.4                  
-    ## [21] curl_4.3.2                    rstudioapi_0.13              
-    ## [23] blob_1.2.2                    S4Vectors_0.33.11            
-    ## [25] Matrix_1.4-0                  reticulate_1.25              
-    ## [27] rmarkdown_2.13                stringr_1.4.0                
-    ## [29] RCurl_1.98-1.6                bit_4.0.4                    
-    ## [31] shiny_1.7.1                   compiler_4.2.0               
-    ## [33] httpuv_1.6.5                  xfun_0.30                    
-    ## [35] pkgconfig_2.0.3               htmltools_0.5.2              
-    ## [37] tidyselect_1.1.2              KEGGREST_1.35.0              
-    ## [39] tibble_3.1.6                  GenomeInfoDbData_1.2.7       
-    ## [41] interactiveDisplayBase_1.33.0 IRanges_2.30.0               
-    ## [43] randomForest_4.7-1            fansi_1.0.2                  
-    ## [45] crayon_1.5.0                  dplyr_1.0.8                  
+    ## [11] GenomeInfoDb_1.33.5           stats4_4.2.1                 
+    ## [13] RSQLite_2.2.16                evaluate_0.16                
+    ## [15] highr_0.9                     httr_1.4.4                   
+    ## [17] pillar_1.8.1                  basilisk_1.9.2               
+    ## [19] zlibbioc_1.43.0               rlang_1.0.4                  
+    ## [21] curl_4.3.2                    rstudioapi_0.14              
+    ## [23] blob_1.2.3                    S4Vectors_0.35.1             
+    ## [25] Matrix_1.4-1                  reticulate_1.25              
+    ## [27] rmarkdown_2.15.2              stringr_1.4.1                
+    ## [29] RCurl_1.98-1.8                bit_4.0.4                    
+    ## [31] shiny_1.7.2                   compiler_4.2.1               
+    ## [33] httpuv_1.6.5                  xfun_0.32                    
+    ## [35] pkgconfig_2.0.3               htmltools_0.5.3              
+    ## [37] tidyselect_1.1.2              KEGGREST_1.37.3              
+    ## [39] tibble_3.1.8                  GenomeInfoDbData_1.2.8       
+    ## [41] interactiveDisplayBase_1.35.0 IRanges_2.31.2               
+    ## [43] randomForest_4.7-1.1          fansi_1.0.3                  
+    ## [45] crayon_1.5.1                  dplyr_1.0.9                  
     ## [47] later_1.3.0                   basilisk.utils_1.9.1         
     ## [49] bitops_1.0-7                  rappdirs_0.3.3               
-    ## [51] grid_4.2.0                    jsonlite_1.8.0               
+    ## [51] grid_4.2.1                    jsonlite_1.8.0               
     ## [53] xtable_1.8-4                  lifecycle_1.0.1              
-    ## [55] DBI_1.1.2                     magrittr_2.0.2               
-    ## [57] cli_3.3.0                     stringi_1.7.6                
-    ## [59] cachem_1.0.6                  XVector_0.35.0               
+    ## [55] DBI_1.1.3                     magrittr_2.0.3               
+    ## [57] cli_3.3.0                     stringi_1.7.8                
+    ## [59] cachem_1.0.6                  XVector_0.37.0               
     ## [61] promises_1.2.0.1              ellipsis_0.3.2               
-    ## [63] filelock_1.0.2                generics_0.1.2               
-    ## [65] vctrs_0.3.8                   tools_4.2.0                  
-    ## [67] bit64_4.0.5                   Biobase_2.55.0               
+    ## [63] filelock_1.0.2                generics_0.1.3               
+    ## [65] vctrs_0.4.1                   tools_4.2.1                  
+    ## [67] bit64_4.0.5                   Biobase_2.57.1               
     ## [69] glue_1.6.2                    purrr_0.3.4                  
-    ## [71] BiocVersion_3.15.0            parallel_4.2.0               
+    ## [71] BiocVersion_3.16.0            parallel_4.2.1               
     ## [73] fastmap_1.1.0                 yaml_2.3.5                   
-    ## [75] AnnotationDbi_1.57.1          BiocManager_1.30.16          
-    ## [77] memoise_2.0.1                 knitr_1.37
+    ## [75] AnnotationDbi_1.59.1          BiocManager_1.30.18          
+    ## [77] memoise_2.0.1                 knitr_1.40
 
 # References
 
@@ -712,7 +708,7 @@ Screening.” *bioRxiv*. <https://doi.org/10.1101/2022.06.27.497780>.
 <div id="ref-enpamgb" class="csl-entry">
 
 DeWeirdt, Peter C, Kendall R Sanson, Annabel K Sangree, Mudra Hegde,
-Ruth E Hanna, Marissa N Feeley, Audrey L Griffith, et al., et al. 2020.
+Ruth E Hanna, Marissa N Feeley, Audrey L Griffith, et al. 2020.
 “Optimization of AsCas12a for Combinatorial Genetic Screens in Human
 Cells.” *Nature Biotechnology*, 1–11.
 
@@ -721,9 +717,9 @@ Cells.” *Nature Biotechnology*, 1–11.
 <div id="ref-azimuth" class="csl-entry">
 
 Doench, John G, Nicolo Fusi, Meagan Sullender, Mudra Hegde, Emma W
-Vaimberg, Katherine F Donovan, Ian Smith, et al., et al. 2016.
-“Optimized sgRNA Design to Maximize Activity and Minimize Off-Target
-Effects of CRISPR-Cas9.” *Nature Biotechnology* 34 (2): 184.
+Vaimberg, Katherine F Donovan, Ian Smith, et al. 2016. “Optimized sgRNA
+Design to Maximize Activity and Minimize Off-Target Effects of
+CRISPR-Cas9.” *Nature Biotechnology* 34 (2): 184.
 
 </div>
 
@@ -740,18 +736,18 @@ CRISPR-Cas9–Mediated Gene Inactivation.” *Nature Biotechnology* 32 (12):
 <div id="ref-crisprai" class="csl-entry">
 
 Horlbeck, Max A, Luke A Gilbert, Jacqueline E Villalta, Britt Adamson,
-Ryan A Pak, Yuwen Chen, Alexander P Fields, et al., et al. 2016.
-“Compact and Highly Active Next-Generation Libraries for CRISPR-Mediated
-Gene Repression and Activation.” *Elife* 5.
+Ryan A Pak, Yuwen Chen, Alexander P Fields, et al. 2016. “Compact and
+Highly Active Next-Generation Libraries for CRISPR-Mediated Gene
+Repression and Activation.” *Elife* 5.
 
 </div>
 
 <div id="ref-mit" class="csl-entry">
 
 Hsu, Patrick D, David A Scott, Joshua A Weinstein, F Ann Ran, Silvana
-Konermann, Vineeta Agarwala, Yinqing Li, et al., et al. 2013. “DNA
-Targeting Specificity of RNA-Guided Cas9 Nucleases.” *Nature
-Biotechnology* 31 (9): 827.
+Konermann, Vineeta Agarwala, Yinqing Li, et al. 2013. “DNA Targeting
+Specificity of RNA-Guided Cas9 Nucleases.” *Nature Biotechnology* 31
+(9): 827.
 
 </div>
 
@@ -777,8 +773,8 @@ Younggwang Kim, Sangeun Lee, Sungroh Yoon, and Hyongbum Henry Kim. 2018.
 <div id="ref-encas12a" class="csl-entry">
 
 Kleinstiver, Benjamin P, Alexander A Sousa, Russell T Walton, Y Esther
-Tak, Jonathan Y Hsu, Kendell Clement, Moira M Welch, et al., et al.
-2019. “Engineered CRISPR–Cas12a Variants with Increased Activities and
+Tak, Jonathan Y Hsu, Kendell Clement, Moira M Welch, et al. 2019.
+“Engineered CRISPR–Cas12a Variants with Increased Activities and
 Improved Targeting Ranges for Gene, Epigenetic and Base Editing.”
 *Nature Biotechnology* 37 (3): 276–82.
 
@@ -806,9 +802,9 @@ in Vivo.” *Nature Methods* 12 (10): 982–88.
 <div id="ref-deepcas9" class="csl-entry">
 
 Wang, Daqi, Chengdong Zhang, Bei Wang, Bin Li, Qiang Wang, Dong Liu,
-Hongyan Wang, et al., et al. 2019. “Optimized CRISPR Guide RNA Design
-for Two High-Fidelity Cas9 Variants by Deep Learning.” *Nature
-Communications* 10 (1): 1–14.
+Hongyan Wang, et al. 2019. “Optimized CRISPR Guide RNA Design for Two
+High-Fidelity Cas9 Variants by Deep Learning.” *Nature Communications*
+10 (1): 1–14.
 
 </div>
 
