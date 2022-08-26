@@ -109,7 +109,7 @@ getRuleSet3Scores <- function(sequences,
                   outputfile,shQuote(tracrRNA)))
         #scores <- readLines(outputfile, sep="\t")[,4]
         scores <- readLines(outputfile)
-        df$score[good] <- scores
+        df$score[good] <- as.numeric(scores)
     }
     if (file.exists(inputfile)){
         file.remove(inputfile)
