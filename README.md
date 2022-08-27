@@ -85,6 +85,9 @@ install.packages("BiocManager")
 BiocManager::install("crisprScore")
 ```
 
+The complete documentation for the package can be found
+[here](https://bioconductor.org/packages/devel/bioc/manuals/crisprScore/man/crisprScore.pdf).
+
 ## Installation from GitHub
 
 Alternatively, the development version of `crisprScore` and its
