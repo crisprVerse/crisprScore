@@ -77,11 +77,14 @@ developed and tested on R version 4.2.1.
 
 ## Installation from Bioconductor
 
-`crisprScore` can be installed from Bioconductor using the following
-commands in a fresh R session:
+`crisprScore` can be installed from from the Bioconductor devel branch
+using the following commands in a fresh R session:
 
 ``` r
-install.packages("BiocManager")
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install(version="devel")
 BiocManager::install("crisprScore")
 ```
 
@@ -653,7 +656,7 @@ sessionInfo()
     ## [11] GenomeInfoDb_1.33.5           stats4_4.2.1                 
     ## [13] RSQLite_2.2.16                evaluate_0.16                
     ## [15] highr_0.9                     httr_1.4.4                   
-    ## [17] pillar_1.8.1                  basilisk_1.9.2               
+    ## [17] pillar_1.8.1                  basilisk_1.9.3               
     ## [19] zlibbioc_1.43.0               rlang_1.0.4                  
     ## [21] curl_4.3.2                    rstudioapi_0.14              
     ## [23] blob_1.2.3                    S4Vectors_0.35.1             
