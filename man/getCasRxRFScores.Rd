@@ -54,13 +54,13 @@ The function first extracts all 23mer spacer sequences targeting
 }
 \examples{
 
-\donttest{
-fasta <- file.path(system.file(package="crisprScore"),
-    "casrxrf/test.fa")
-mrnaSequence <- Biostrings::readDNAStringSet(filepath=fasta,
-    format="fasta",
-    use.names=TRUE)
-results <- getCasRxRFScores(mrnaSequence)
+if (interactive()){
+    fasta <- file.path(system.file(package="crisprScore"),
+        "casrxrf/test.fa")
+    mrnaSequence <- Biostrings::readDNAStringSet(filepath=fasta,
+        format="fasta",
+        use.names=TRUE)
+    results <- getCasRxRFScores(mrnaSequence)
 }
 
 }

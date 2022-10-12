@@ -1,6 +1,6 @@
 Package: crisprScore
-Version: 1.1.15
-Date: 2022-07-23
+Version: 1.1.16
+Date: 2022-10-22
 Title: On-Target and Off-Target Scoring Algorithms for CRISPR gRNAs
 Authors@R: c(
     person("Jean-Philippe", "Fortin", email = "fortin946@gmail.com", role = c("aut", "cre", "cph")),
@@ -41,7 +41,7 @@ Description:
     Note that DeepHF, DeepCpf1 and enPAM+GB are not available on Windows machines. 
 License: MIT + file LICENSE
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 StagedInstall: no
 BugReports: https://github.com/crisprVerse/crisprScore
