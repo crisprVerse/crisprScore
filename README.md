@@ -43,27 +43,35 @@ crisprScore: on-target and off-target scoring for CRISPR gRNAs
 -   <a href="#reproducibility" id="toc-reproducibility">Reproducibility</a>
 -   <a href="#references" id="toc-references">References</a>
 
-Authors: Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht
+Authors: Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht, Pirunthan
+Perampalan
 
 Date: July 1, 2022
 
 # Overview
 
-crisprScore provides R wrappers of several on-target and off-target
-scoring methods for CRISPR guide RNAs (gRNAs). The following nucleases
-are supported: SpCas9, AsCas12a, enAsCas12a, and RfxCas13d (CasRx). The
-available on-target cutting efficiency scoring methods are RuleSet1,
-RuleSet3, Azimuth, DeepHF, DeepSpCas9, DeepCpf1, enPAM+GB, CRISPRscan
-and CRISPRater. Both the CFD and MIT scoring methods are available for
-off-target specificity prediction. The package also provides a
-Lindel-derived score to predict the probability of a gRNA to produce
-indels inducing a frameshift for the Cas9 nuclease. Note that DeepHF,
-DeepCpf1 and enPAM+GB are not available on Windows machines.
+The `crisprScore` package provides R wrappers of several on-target and
+off-target scoring methods for CRISPR guide RNAs (gRNAs). The following
+nucleases are supported: SpCas9, AsCas12a, enAsCas12a, and RfxCas13d
+(CasRx). The available on-target cutting efficiency scoring methods are
+RuleSet1, RuleSet3, Azimuth, DeepHF, DeepSpCas9, DeepCpf1, enPAM+GB,
+CRISPRscan and CRISPRater. Both the CFD and MIT scoring methods are
+available for off-target specificity prediction. The package also
+provides a Lindel-derived score to predict the probability of a gRNA to
+produce indels inducing a frameshift for the Cas9 nuclease. Note that
+DeepHF, DeepCpf1 and enPAM+GB are not available on Windows machines.
 
-Our work is described in a recent bioRxiv preprint: [“A comprehensive
-Bioconductor ecosystem for the design of CRISPR guide RNAs across
-nucleases and
-technologies”](https://www.biorxiv.org/content/10.1101/2022.04.21.488824v2)
+Our work is described in a recent bioRxiv preprint: [“The crisprVerse: A
+comprehensive Bioconductor ecosystem for the design of CRISPR guide RNAs
+across nucleases and
+technologies”](https://www.biorxiv.org/content/10.1101/2022.04.21.488824v3)
+
+Our main gRNA design package
+[crisprDesign](https://github.com/crisprVerse/crisprDesign) utilizes the
+`crisprScore` package to add on- and off-target scores to user-designed
+gRNAs; check out our [Cas9 gRNA tutorial
+page](https://github.com/crisprVerse/Tutorials/tree/master/Design_CRISPRko_Cas9)
+to learn how to use `crisprScore` via `crisprDesign`.
 
 # Installation and getting started
 
@@ -643,25 +651,25 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] crisprScore_1.1.14    crisprScoreData_1.1.3 ExperimentHub_2.5.0  
-    ## [4] AnnotationHub_3.5.0   BiocFileCache_2.5.0   dbplyr_2.2.1         
-    ## [7] BiocGenerics_0.43.1  
+    ## [1] crisprScore_1.1.15    crisprScoreData_1.1.3 ExperimentHub_2.5.0  
+    ## [4] AnnotationHub_3.5.1   BiocFileCache_2.5.0   dbplyr_2.2.1         
+    ## [7] BiocGenerics_0.43.4  
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] Rcpp_1.0.9                    lattice_0.20-45              
-    ##  [3] dir.expiry_1.5.0              png_0.1-7                    
-    ##  [5] Biostrings_2.65.2             assertthat_0.2.1             
+    ##  [3] dir.expiry_1.5.1              png_0.1-7                    
+    ##  [5] Biostrings_2.65.3             assertthat_0.2.1             
     ##  [7] digest_0.6.29                 utf8_1.2.2                   
     ##  [9] mime_0.12                     R6_2.5.1                     
-    ## [11] GenomeInfoDb_1.33.5           stats4_4.2.1                 
+    ## [11] GenomeInfoDb_1.33.7           stats4_4.2.1                 
     ## [13] RSQLite_2.2.16                evaluate_0.16                
     ## [15] highr_0.9                     httr_1.4.4                   
-    ## [17] pillar_1.8.1                  basilisk_1.9.3               
-    ## [19] zlibbioc_1.43.0               rlang_1.0.4                  
+    ## [17] pillar_1.8.1                  basilisk_1.9.6               
+    ## [19] zlibbioc_1.43.0               rlang_1.0.5                  
     ## [21] curl_4.3.2                    rstudioapi_0.14              
-    ## [23] blob_1.2.3                    S4Vectors_0.35.1             
-    ## [25] Matrix_1.4-1                  reticulate_1.25              
-    ## [27] rmarkdown_2.15.2              stringr_1.4.1                
+    ## [23] blob_1.2.3                    S4Vectors_0.35.3             
+    ## [25] Matrix_1.4-1                  reticulate_1.26              
+    ## [27] rmarkdown_2.16                stringr_1.4.1                
     ## [29] RCurl_1.98-1.8                bit_4.0.4                    
     ## [31] shiny_1.7.2                   compiler_4.2.1               
     ## [33] httpuv_1.6.5                  xfun_0.32                    
@@ -670,14 +678,14 @@ sessionInfo()
     ## [39] tibble_3.1.8                  GenomeInfoDbData_1.2.8       
     ## [41] interactiveDisplayBase_1.35.0 IRanges_2.31.2               
     ## [43] randomForest_4.7-1.1          fansi_1.0.3                  
-    ## [45] crayon_1.5.1                  dplyr_1.0.9                  
-    ## [47] later_1.3.0                   basilisk.utils_1.9.1         
+    ## [45] crayon_1.5.1                  dplyr_1.0.10                 
+    ## [47] later_1.3.0                   basilisk.utils_1.9.3         
     ## [49] bitops_1.0-7                  rappdirs_0.3.3               
     ## [51] grid_4.2.1                    jsonlite_1.8.0               
     ## [53] xtable_1.8-4                  lifecycle_1.0.1              
     ## [55] DBI_1.1.3                     magrittr_2.0.3               
-    ## [57] cli_3.3.0                     stringi_1.7.8                
-    ## [59] cachem_1.0.6                  XVector_0.37.0               
+    ## [57] cli_3.4.0                     stringi_1.7.8                
+    ## [59] cachem_1.0.6                  XVector_0.37.1               
     ## [61] promises_1.2.0.1              ellipsis_0.3.2               
     ## [63] filelock_1.0.2                generics_0.1.3               
     ## [65] vctrs_0.4.1                   tools_4.2.1                  
