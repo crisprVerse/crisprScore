@@ -98,7 +98,7 @@ getMITScores <- function(spacers,
         } else {
             d <- (max(indices)-min(indices))/(m-1)
         }
-        t1 <- prod(mit.weights[as.character(indices)])
+        t1 <- prod(1-mit.weights[as.character(indices)])
         t2 <- 1/(m^2)
         t3 <- 1/((19-d)/19*4+1)
         if (includeDistance){

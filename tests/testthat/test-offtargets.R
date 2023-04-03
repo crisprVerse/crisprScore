@@ -11,7 +11,7 @@ protospacers_cas9 <- c("ATCGATGCTGATGCTAGATA",
 pam_cas9 <- c("AGG","AAG", "AGA", "AGT", "AGG", "AGG", "AGG")
 #dput(round(getMITScores(spacer, protospacers)$score,3))
 #dput(round(getCFDScores(spacer, protospacers)$score,3))
-mit_scores <- c(1, 0.259, 0.069, 0.016, 0.583, 0, 0)
+mit_scores      <- c(1, 0.259, 0.069, 0.016, 0.417, 0.104, 0.004)
 cfd_scores_cas9 <- c(1, 0.259, 0.069, 0.016, 1, 0.765, 0.301)
 
 
