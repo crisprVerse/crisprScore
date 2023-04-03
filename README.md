@@ -547,8 +547,8 @@ getMITScores(spacers=spacer,
 ```
 
     ##                 spacer          protospacer      score
-    ## 1 ATCGATGCTGATGCTAGATA ACCGATGCTGATGCTAGATA 0.68500000
-    ## 2 ATCGATGCTGATGCTAGATA ATCGATGCTGATGCTAGATT 0.00000000
+    ## 1 ATCGATGCTGATGCTAGATA ACCGATGCTGATGCTAGATA 0.31500000
+    ## 2 ATCGATGCTGATGCTAGATA ATCGATGCTGATGCTAGATT 1.00000000
     ## 3 ATCGATGCTGATGCTAGATA ATCGATGCTGATGCTAGATA 0.06944444
 
 ## CFD score
@@ -651,7 +651,7 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] crisprScore_1.1.15    crisprScoreData_1.1.3 ExperimentHub_2.5.0  
+    ## [1] crisprScore_1.3.2     crisprScoreData_1.3.0 ExperimentHub_2.5.0  
     ## [4] AnnotationHub_3.5.1   BiocFileCache_2.5.0   dbplyr_2.2.1         
     ## [7] BiocGenerics_0.43.4  
     ## 
@@ -665,10 +665,10 @@ sessionInfo()
     ## [13] RSQLite_2.2.16                evaluate_0.16                
     ## [15] highr_0.9                     httr_1.4.4                   
     ## [17] pillar_1.8.1                  basilisk_1.9.6               
-    ## [19] zlibbioc_1.43.0               rlang_1.0.5                  
+    ## [19] zlibbioc_1.43.0               rlang_1.0.6                  
     ## [21] curl_4.3.2                    rstudioapi_0.14              
     ## [23] blob_1.2.3                    S4Vectors_0.35.3             
-    ## [25] Matrix_1.4-1                  reticulate_1.26              
+    ## [25] Matrix_1.5-3                  reticulate_1.26              
     ## [27] rmarkdown_2.16                stringr_1.4.1                
     ## [29] RCurl_1.98-1.8                bit_4.0.4                    
     ## [31] shiny_1.7.2                   compiler_4.2.1               
@@ -682,13 +682,13 @@ sessionInfo()
     ## [47] later_1.3.0                   basilisk.utils_1.9.3         
     ## [49] bitops_1.0-7                  rappdirs_0.3.3               
     ## [51] grid_4.2.1                    jsonlite_1.8.0               
-    ## [53] xtable_1.8-4                  lifecycle_1.0.1              
+    ## [53] xtable_1.8-4                  lifecycle_1.0.3              
     ## [55] DBI_1.1.3                     magrittr_2.0.3               
     ## [57] cli_3.4.0                     stringi_1.7.8                
     ## [59] cachem_1.0.6                  XVector_0.37.1               
     ## [61] promises_1.2.0.1              ellipsis_0.3.2               
     ## [63] filelock_1.0.2                generics_0.1.3               
-    ## [65] vctrs_0.4.1                   tools_4.2.1                  
+    ## [65] vctrs_0.5.1                   tools_4.2.1                  
     ## [67] bit64_4.0.5                   Biobase_2.57.1               
     ## [69] glue_1.6.2                    purrr_0.3.4                  
     ## [71] BiocVersion_3.16.0            parallel_4.2.1               
