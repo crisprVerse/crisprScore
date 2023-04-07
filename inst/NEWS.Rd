@@ -3,6 +3,11 @@
 \encoding{UTF-8}
 
 
+\section{Version 1.3.3}{\itemize{
+\item One more fix to the MIT scoring. Forgot to save sysdata last time.
+}}
+
+
 \section{Version 1.3.1}{\itemize{
 \item Fixed MIT formula. Previous calculations were erroneous. 
 }}
