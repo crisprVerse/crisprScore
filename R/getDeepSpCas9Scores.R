@@ -89,8 +89,13 @@ getDeepSpCas9Scores <- function(sequences,
     #              outputfile)
     if (sum(good)>0){
         .dumpToFile(sequences.valid, inputfile)
-        system2("python",
-                c(programFile, inputfile, modelDir, outputfile))
+        pyBinary <- basilisk.utils:::getPythonBinary(env)
+
+        system2(c(pyBinary,
+                  programFile,
+                  inputfile,
+                  modelDir,
+                  outputfile))
         scores <- read.table(outputfile)[,1]
         #scores <- read.table(outputfile)
         scores <- scores/100

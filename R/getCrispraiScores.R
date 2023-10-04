@@ -179,8 +179,14 @@ getCrispraiScores <- function(tss_df,
                            "getWeissmanScores.py",
                            package="crisprScore",
                            mustWork=TRUE)
-    system2("python",
-            c(program, rosterFile, modality, outputFile, verbose))
+
+    pyBinary <- basilisk.utils:::getPythonBinary(env)
+    system2(c(pyBinary,
+              program,
+              rosterFile,
+              modality,
+              outputFile,
+              verbose))
 
     scores <- read.table(outputFile)
     scores <- as.data.frame(scores)

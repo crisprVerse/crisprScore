@@ -83,8 +83,13 @@ getAzimuthScores <- function(sequences, fork=FALSE){
             sequences.valid <- rep(sequences.valid, 2)
         }
         .dumpToFile(sequences.valid, inputfile)
-        system2("python",
-                c(programFile, inputfile, outputfile))
+
+        pyBinary <- basilisk.utils:::getPythonBinary(env)
+
+        system2(c(pyBinary,
+                  programFile,
+                  inputfile,
+                  outputfile))
         scores <- read.table(outputfile)[,1]
         if (sum(good)==1){
             scores <- scores[1]
