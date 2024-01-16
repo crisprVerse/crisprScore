@@ -70,6 +70,9 @@ getLindelScores <- function(sequences, fork=FALSE){
                      stringsAsFactors=FALSE)
     good <- !grepl("N", sequences)
     sequences.valid <- sequences[good]
+    env <- basilisk::obtainEnvironmentPath(env_lindel)
+    envls <- basilisk.utils::activateEnvironment(env)
+    on.exit(basilisk.utils::deactivateEnvironment(envls))
     if (length(sequences.valid)>0){
         scores <- rep(NA_real_, length(sequences.valid))
         for (i in seq_along(sequences.valid)){
@@ -78,6 +81,7 @@ getLindelScores <- function(sequences, fork=FALSE){
             file.full <- file.path(dir, file)
             seq <- sequences.valid[i]
             
+
             pyBinary <- basilisk.utils:::getPythonBinary(env)
 
         
