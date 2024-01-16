@@ -84,15 +84,14 @@ getDeepCpf1Scores <- function(sequences,
                                "deepcpf1/getDeepCpf1.py",
                                package="crisprScore",
                                mustWork=TRUE)
-    #cmd <- paste0("python ",
-    #              programFile, " ",
-    #              inputfile, " ",
-    #              outputfile)
     if (sum(good)>0){
         .dumpToFile(sequences.valid, inputfile)
-        #system(cmd)
-        system2("python",
-                c(programFile, inputfile, outputfile))
+        
+        pyBinary <- basilisk.utils:::getPythonBinary(env)
+        system2(c(pyBinary,
+                  programFile,
+                  inputfile,
+                  outputfile))
         scores <- read.table(outputfile)[,1]
         scores <- scores/100
         df$score[good] <- scores

@@ -77,13 +77,22 @@ getLindelScores <- function(sequences, fork=FALSE){
             file <- basename(tempfile())
             file.full <- file.path(dir, file)
             seq <- sequences.valid[i]
-            cmd <- paste0("python ", program, " ",
-                          seq, " ",
-                          weights_file, " ",
-                          file.full)
-            system(cmd,
-                   ignore.stdout=TRUE,
-                   ignore.stderr=FALSE)
+            
+            pyBinary <- basilisk.utils:::getPythonBinary(env)
+
+        
+            system2(c(pyBinary,
+                      program,
+                      seq,
+                      weights_file,
+                      file.full))
+            #cmd <- paste0("python ", program, " ",
+            #              seq, " ",
+            #              weights_file, " ",
+            #              file.full)
+            #system(cmd,
+            #       ignore.stdout=TRUE,
+            #       ignore.stderr=FALSE)
             outputs <- list.files(dir)
             outputs <- outputs[grepl(file, outputs)]
             file.remove(file.path(dir,outputs))

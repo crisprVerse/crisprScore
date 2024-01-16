@@ -95,19 +95,17 @@ getRuleSet3Scores <- function(sequences,
     modelFile <- system.file("rs3",
                              "RuleSet3.pkl",
                              package="crisprScoreData")
-    #cmd <- paste0("python ",
-    #              programFile, " ",
-    #             inputfile, " ",
-    #              modelFile, " ",
-    #              outputfile, " ",
-    #              shQuote(tracrRNA))
+
     if (sum(good)>0){
         .dumpToFile(sequences.valid,
                     inputfile)
-        system2("python",
-                c(programFile, inputfile, modelFile, 
+        pyBinary <- basilisk.utils:::getPythonBinary(env)
+        system2(c(pyBinary,
+                  programFile,
+                  inputfile,
+                  modelFile, 
                   outputfile,shQuote(tracrRNA)))
-        #scores <- readLines(outputfile, sep="\t")[,4]
+        
         scores <- readLines(outputfile)
         df$score[good] <- as.numeric(scores)
     }
