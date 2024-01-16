@@ -73,10 +73,6 @@ getAzimuthScores <- function(sequences, fork=FALSE){
                                "azimuth/getAzimuth.py",
                                package="crisprScore",
                                mustWork=TRUE)
-    #cmd <- paste0("python ",
-    #              programFile, " ",
-    #              inputfile, " ",
-    #              outputfile)
 
     if (sum(good)>0){
         if (sum(good)==1){
