@@ -198,7 +198,6 @@ env_crisprai <- BasiliskEnvironment(envname="crisprai_basilisk",
                                     pkgname="crisprScore",
                                     packages=crisprai_dependencies,
                                     channels = c("main",
-                                                 "anaconda",
                                                  "bioconda",
                                                  "conda-forge"),
                                     pip=crisprai_dependencies_pip)
