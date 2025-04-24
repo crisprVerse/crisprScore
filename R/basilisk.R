@@ -109,7 +109,7 @@ env_deepspcas9 <- BasiliskEnvironment(envname="deepspcas9__basilisk",
 env_rs3 <- BasiliskEnvironment(envname="rs3__basilisk",
                                pkgname="crisprScore",
                                packages=rs3_dependencies,
-                               channels = c("bioconda", "conda-forge"),
+                               channels = c("conda-forge","bioconda"),
                                pip=rs3_dependencies_pip)
 
 if (.Platform$OS.type!="windows"){
