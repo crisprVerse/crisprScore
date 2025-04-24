@@ -84,7 +84,7 @@ env_azimuth <- BasiliskEnvironment(envname="azimuth_basilisk",
                                    pkgname="crisprScore",
                                    paths="python/azimuth",
                                    packages=azimuth_dependencies,
-                                   channels = c("bioconda", "conda-forge"),
+                                   channels = c("conda-forge", "bioconda"),
                                    pip=azimuth_dependencies_pip)
 
 env_lindel <- BasiliskEnvironment(envname="lindel_basilisk",
