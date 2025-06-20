@@ -39,8 +39,6 @@
 #' @inheritParams getAzimuthScores
 #' @export 
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
-#' @importFrom basilisk.utils activateEnvironment
-#' @importFrom basilisk.utils deactivateEnvironment
 getDeepCpf1Scores <- function(sequences,
                               convertPAM=TRUE,
                               fork=FALSE
@@ -78,8 +76,10 @@ getDeepCpf1Scores <- function(sequences,
    
     # Ready to get the scores
     env <- basilisk::obtainEnvironmentPath(env_deepcpf1)
-    envls <- basilisk.utils::activateEnvironment(env)
-    on.exit(basilisk.utils::deactivateEnvironment(envls))
+    #envls <- basilisk.utils::activateEnvironment(env)
+    #on.exit(basilisk.utils::deactivateEnvironment(envls))
+    envls <- basiliskStart(env)
+    on.exit(basiliskStop(envls))
     programFile <- system.file("python",
                                "deepcpf1/getDeepCpf1.py",
                                package="crisprScore",
@@ -87,7 +87,7 @@ getDeepCpf1Scores <- function(sequences,
     if (sum(good)>0){
         .dumpToFile(sequences.valid, inputfile)
         
-        pyBinary <- basilisk.utils:::getPythonBinary(env)
+        pyBinary <- basilisk::getPythonBinary(env)
         system2(c(pyBinary,
                   programFile,
                   inputfile,

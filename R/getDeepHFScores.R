@@ -90,6 +90,11 @@ getDeepHFScores <- function(sequences,
         stop("Positions 22 and 23 of the sequences must be G nucleotides",
              " (canonical PAM sequences).")
     }
+
+    env <- basilisk::obtainEnvironmentPath(env_deephf)
+    envls <- basiliskStart(env)
+    on.exit(basiliskStop(envls))
+
     results <- basiliskRun(env=env_deephf,
                            shared=FALSE,
                            fork=fork,

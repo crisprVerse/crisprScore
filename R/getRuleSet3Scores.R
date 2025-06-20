@@ -86,8 +86,10 @@ getRuleSet3Scores <- function(sequences,
     
     # Ready to get the scores
     env <- basilisk::obtainEnvironmentPath(env_rs3)
-    envls <- basilisk.utils::activateEnvironment(env)
-    on.exit(basilisk.utils::deactivateEnvironment(envls))
+    envls <- basiliskStart(env)
+    on.exit(basiliskStop(envls))
+    #envls <- basilisk.utils::activateEnvironment(env)
+    #on.exit(basilisk.utils::deactivateEnvironment(envls))
     programFile <- system.file("python",
                                "rs3/getRuleSet3ScoresSequence.py",
                                package="crisprScore",
@@ -99,7 +101,7 @@ getRuleSet3Scores <- function(sequences,
     if (sum(good)>0){
         .dumpToFile(sequences.valid,
                     inputfile)
-        pyBinary <- basilisk.utils:::getPythonBinary(env)
+        pyBinary <- basilisk::getPythonBinary(env)
         system2(c(pyBinary,
                   programFile,
                   inputfile,

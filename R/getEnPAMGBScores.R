@@ -44,6 +44,10 @@ getEnPAMGBScores <- function(sequences, fork=FALSE){
         stop("Provided sequences must have length 34nt",
              " ([4nt][TTTV][23mer][3nt]).")
     }
+
+    env <- basilisk::obtainEnvironmentPath(env_enpamgb)
+    envls <- basiliskStart(env)
+    on.exit(basiliskStop(envls))
     results <- basiliskRun(env=env_enpamgb,
                            shared=FALSE,
                            fork=fork,

@@ -39,8 +39,7 @@
 #' 
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
-#' @importFrom basilisk obtainEnvironmentPath
-#' @importFrom basilisk.utils activateEnvironment
+#' @importFrom basilisk obtainEnvironmentPath getPythonBinary
 getAzimuthScores <- function(sequences, fork=FALSE){
 
     .dumpToFile <- function(sequences, file){
@@ -77,8 +76,11 @@ getAzimuthScores <- function(sequences, fork=FALSE){
 
       # Ready to get the scores
     env <- basilisk::obtainEnvironmentPath(env_azimuth)
-    envls <- basilisk.utils::activateEnvironment(env)
-    on.exit(basilisk.utils::deactivateEnvironment(envls))
+    #envls <- basilisk.utils::activateEnvironment(env)
+    #on.exit(basilisk.utils::deactivateEnvironment(envls))
+    envls <- basiliskStart(env)
+    on.exit(basiliskStop(envls))
+
     programFile <- system.file("python",
                                "azimuth/getAzimuth.py",
                                package="crisprScore",
@@ -90,7 +92,7 @@ getAzimuthScores <- function(sequences, fork=FALSE){
         }
         .dumpToFile(sequences.valid, inputfile)
 
-        pyBinary <- basilisk.utils:::getPythonBinary(env)
+        pyBinary <- basilisk::getPythonBinary(env)
 
         system2(c(pyBinary,
                   programFile,

@@ -121,8 +121,6 @@ getCrispraiScores <- function(tss_df,
 #' @importFrom reticulate import_from_path
 #' @importFrom reticulate py_suppress_warnings
 #' @importFrom reticulate r_to_py
-#' @importFrom basilisk.utils activateEnvironment
-#' @importFrom basilisk.utils deactivateEnvironment
 .pyPredictWeissmanScore <- function(modality,
                                     tssTable,
                                     p1p2Table,
@@ -135,8 +133,10 @@ getCrispraiScores <- function(tss_df,
 
 ){
     env <- basilisk::obtainEnvironmentPath(env_crisprai)
-    envls <- basilisk.utils::activateEnvironment(env)
-    on.exit(basilisk.utils::deactivateEnvironment(envls))
+    #envls <- basilisk.utils::activateEnvironment(env)
+    #on.exit(basilisk.utils::deactivateEnvironment(envls))
+    envls <- basiliskStart(env)
+    on.exit(basiliskStop(envls))
 
     if (.Platform$OS.type=="windows"){
         stop("CRISPRai is not available for Windows at the moment.")
@@ -180,7 +180,7 @@ getCrispraiScores <- function(tss_df,
                            package="crisprScore",
                            mustWork=TRUE)
 
-    pyBinary <- basilisk.utils:::getPythonBinary(env)
+    pyBinary <- basilisk::getPythonBinary(env)
     system2(c(pyBinary,
               program,
               rosterFile,

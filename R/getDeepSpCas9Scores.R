@@ -72,8 +72,10 @@ getDeepSpCas9Scores <- function(sequences,
    
     # Ready to get the scores
     env <- basilisk::obtainEnvironmentPath(env_deepspcas9)
-    envls <- basilisk.utils::activateEnvironment(env)
-    on.exit(basilisk.utils::deactivateEnvironment(envls))
+    #envls <- basilisk.utils::activateEnvironment(env)
+    #on.exit(basilisk.utils::deactivateEnvironment(envls))
+    envls <- basiliskStart(env)
+    on.exit(basiliskStop(envls))
     programFile <- system.file("python",
                                "deepspcas9/getDeepSpCas9Scores.py",
                                package="crisprScore",
@@ -89,7 +91,7 @@ getDeepSpCas9Scores <- function(sequences,
     #              outputfile)
     if (sum(good)>0){
         .dumpToFile(sequences.valid, inputfile)
-        pyBinary <- basilisk.utils:::getPythonBinary(env)
+        pyBinary <- basilisk::getPythonBinary(env)
 
         system2(c(pyBinary,
                   programFile,
