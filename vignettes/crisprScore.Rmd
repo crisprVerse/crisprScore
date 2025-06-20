@@ -246,14 +246,6 @@ input  <- paste0(flank5, spacer, pam, flank3)
 results <- getDeepSpCas9Scores(input)
 ```
 
-
-```{r, eval=FALSE}
-spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
-pam     <- "AGG" #3bp 
-input   <- paste0(spacer, pam) 
-results <- getDeepHFScores(input)
-```
-
 Users can specify for which Cas9 they wish to score sgRNAs by using the argument
 `enzyme`: "WT" for Wildtype Cas9 (WT-SpCas9), "HF" for high-fidelity Cas9 
 (SpCas9-HF), or "ESP" for enhancedCas9 (eSpCas9). For wildtype Cas9, users can
@@ -335,7 +327,7 @@ results <- getCrispraiScores(tss_df=tssExampleCrispri,
                              sgrna_df=sgrnaExampleCrispri,
                              modality="CRISPRi",
                              fastaFile="your/path/hg38.fa",
-                             chromatinFiles=list(mnase="path/to/mnaseFile.bw",
+                             chromatinFiles=c(mnase="path/to/mnaseFile.bw",
                                                  dnase="path/to/dnaseFile.bw",
                                                  faire="oath/to/faireFile.bw"))
 ```
