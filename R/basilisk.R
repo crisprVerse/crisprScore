@@ -1,3 +1,27 @@
+deepspcas9_dependencies <- c("python==2.7",
+                             "scipy==1.1.0",
+                             "numpy==1.14.5")
+deepspcas9_dependencies_pip <- c("tensorflow==1.4.1")
+
+
+# #' @importFrom basilisk BasiliskEnvironment
+# env_deepspcas9 <- basilisk.utils::createEnvironment(name="deepspcas9_basilisk",
+#   pkg="crisprScore",
+#   version="1.0.0",
+#   packages=deepspcas9_dependencies,
+#   channels = c("bioconda", "conda-forge")
+# )
+
+
+
+#' @importFrom basilisk BasiliskEnvironment
+env_deepspcas9 <- BasiliskEnvironment(envname="deepspcas9__basilisk",
+                                      pkgname="crisprScore",
+                                      packages=deepspcas9_dependencies,
+                                      channels = c("bioconda", "conda-forge"),
+                                      pip=deepspcas9_dependencies_pip)
+
+
 azimuth_dependencies <- c("python==2.7",
                           "biopython==1.74",
                           "matplotlib==2.2.3",
@@ -27,10 +51,7 @@ enpamgb_dependencies <- c("python==3.6",
 enpamgb_dependencies_pip <- c("tensorflow==2.4.1")
 
 
-deepspcas9_dependencies <- c("python==2.7",
-                             "scipy==1.1.0",
-                             "numpy==1.14.5")
-deepspcas9_dependencies_pip <- c("tensorflow==1.4.1")
+
 
 
 #3.7.7
@@ -100,11 +121,7 @@ env_crisprai <- BasiliskEnvironment(envname="crisprai_basilisk",
                                                  "conda-forge"),
                                     pip=crisprai_dependencies_pip)
 
-env_deepspcas9 <- BasiliskEnvironment(envname="deepspcas9__basilisk",
-                                      pkgname="crisprScore",
-                                      packages=deepspcas9_dependencies,
-                                      channels = c("bioconda", "conda-forge"),
-                                      pip=deepspcas9_dependencies_pip)
+
 
 env_rs3 <- BasiliskEnvironment(envname="rs3__basilisk",
                                pkgname="crisprScore",
