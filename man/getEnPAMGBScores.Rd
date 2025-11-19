@@ -4,14 +4,11 @@
 \alias{getEnPAMGBScores}
 \title{Calculate on-target sgRNA activity scores for enCas12a using enPAM+GB}
 \usage{
-getEnPAMGBScores(sequences, fork = FALSE)
+getEnPAMGBScores(sequences)
 }
 \arguments{
 \item{sequences}{Character vector of 34bp sequences needed for enPAM+GB
 scoring, see details below.}
-
-\item{fork}{Set to \code{TRUE} to preserve changes to the R
-configuration within the session.}
 }
 \value{
 \strong{getEnPAMGBScores} returns a data.frame with \code{sequence}

@@ -35,17 +35,15 @@
 #' input <- paste0(flank5, spacer, pam, flank3)
 #' results <- getLindelScores(input)
 #' }
-#' @inheritParams getAzimuthScores
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
-getLindelScores <- function(sequences, fork=FALSE){
+getLindelScores <- function(sequences){
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=65){
         stop("Sequences must have length 65nt ([33nt][NGG][29nt]).")
     }
     results <- basiliskRun(env=env_lindel,
                            shared=FALSE,
-                           fork=fork,
                            fun=.lindel_python,
                            sequences=sequences)
     return(results)

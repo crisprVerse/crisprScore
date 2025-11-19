@@ -5,14 +5,11 @@
 \title{Predict frameshift ratios from CRISPR/Cas9 indel prediction using
     Lindel}
 \usage{
-getLindelScores(sequences, fork = FALSE)
+getLindelScores(sequences)
 }
 \arguments{
 \item{sequences}{Character vector of 65bp sequences needed for Lindel
 scoring, see details below.}
-
-\item{fork}{Set to \code{TRUE} to preserve changes to the R
-configuration within the session.}
 }
 \value{
 A data.frame with predicted frameshift ratio (between 0 and 1).

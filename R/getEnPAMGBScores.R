@@ -32,10 +32,9 @@
 #' input  <- paste0(flank5, pam, spacer, flank3) 
 #' results <- getEnPAMGBScores(input)
 #' }
-#' @inheritParams getAzimuthScores
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
-getEnPAMGBScores <- function(sequences, fork=FALSE){
+getEnPAMGBScores <- function(sequences){
     if (.Platform$OS.type=="windows"){
         stop("EnPAMGB is not available for Windows at the moment.")
     }
@@ -50,7 +49,6 @@ getEnPAMGBScores <- function(sequences, fork=FALSE){
     on.exit(basiliskStop(envls))
     results <- basiliskRun(env=env_enpamgb,
                            shared=FALSE,
-                           fork=fork,
                            fun=.enpamgb_python, 
                            sequences=sequences)
     return(results)

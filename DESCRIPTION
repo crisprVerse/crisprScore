@@ -1,6 +1,6 @@
 Package: crisprScore
-Version: 1.15.0
-Date: 2025-06-20
+Version: 1.15.1
+Date: 2025-11-19
 Title: On-Target and Off-Target Scoring Algorithms for CRISPR gRNAs
 Authors@R: c(
     person("Jean-Philippe", "Fortin", email = "fortin946@gmail.com", role = c("aut", "cre", "cph")),
@@ -33,14 +33,14 @@ biocViews:
 Description:
     Provides R wrappers of several on-target and off-target scoring methods for CRISPR guide RNAs (gRNAs).
     The following nucleases are supported: SpCas9, AsCas12a, enAsCas12a, and RfxCas13d (CasRx).
-    The available on-target cutting efficiency scoring methods are RuleSet1, Azimuth, DeepHF, DeepCpf1, 
+    The available on-target cutting efficiency scoring methods are RuleSet1, RuleSet3, DeepHF, 
     enPAM+GB, and CRISPRscan. Both the CFD and MIT scoring methods are available for off-target
     specificity prediction. The package also provides a Lindel-derived score to predict the probability
     of a gRNA to produce indels inducing a frameshift for the Cas9 nuclease.
-    Note that DeepHF, DeepCpf1 and enPAM+GB are not available on Windows machines. 
+    Note that DeepHF and enPAM+GB are not available on Windows machines. 
 License: MIT + file LICENSE
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 StagedInstall: no
 BugReports: https://github.com/crisprVerse/crisprScore

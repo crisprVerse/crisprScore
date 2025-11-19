@@ -2,6 +2,10 @@
 \title{crisprScore News}
 \encoding{UTF-8}
 
+\section{Version 1.15.1}{\itemize{
+\item The scores developed in Python 2 are no longer available: DeepSpCas9, DeepCpf1, Azimuth, and the crisprai scores. 
+}}
+
 
 \section{Version 1.9.3}{\itemize{
 \item Fixed documentation for enPamGB and DeepCpf1 algorithms. 

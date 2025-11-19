@@ -54,14 +54,13 @@
 #' results <- getDeepHFScores(input, enzyme="ESP")
 #' }
 #' 
-#' @inheritParams getAzimuthScores
 #' @export
 #' @importFrom basilisk basiliskStart basiliskStop basiliskRun
 #' @import crisprScoreData
 getDeepHFScores <- function(sequences,
                             enzyme=c("WT", "ESP", "HF"),
-                            promoter=c("U6", "T7"),
-                            fork=FALSE){
+                            promoter=c("U6", "T7")
+){
 	if (.Platform$OS.type=="windows"){
 		stop("DeepHF is not available for Windows at the moment.")
 	}
@@ -97,7 +96,6 @@ getDeepHFScores <- function(sequences,
 
     results <- basiliskRun(env=env_deephf,
                            shared=FALSE,
-                           fork=fork,
                            fun=.deephf_python, 
                            sequences=sequences,
                            model_type=model_type,

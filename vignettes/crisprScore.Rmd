@@ -32,12 +32,12 @@ options("knitr.graphics.auto_pdf"=TRUE)
 The `crisprScore` package provides R wrappers of several on-target and off-target scoring
 methods for CRISPR guide RNAs (gRNAs). The following nucleases are supported:
 SpCas9, AsCas12a, enAsCas12a, and RfxCas13d (CasRx). The available on-target
-cutting efficiency scoring methods are RuleSet1, RuleSet3, Azimuth, DeepHF, 
-DeepSpCas9, DeepCpf1, enPAM+GB, CRISPRscan and CRISPRater. Both the CFD and MIT
+cutting efficiency scoring methods are RuleSet1, RuleSet3, DeepHF, 
+enPAM+GB, CRISPRscan and CRISPRater. Both the CFD and MIT
 scoring methods are available for off-target specificity prediction. The
 package also provides a Lindel-derived score to predict the probability
 of a gRNA to produce indels inducing a frameshift for the Cas9 nuclease.
-Note that DeepHF, DeepCpf1 and enPAM+GB are not available on Windows machines. 
+Note that DeepHF and enPAM+GB are not available on Windows machines. 
 
 Our work is described in a recent bioRxiv preprint:
 ["The crisprVerse: A comprehensive Bioconductor ecosystem for the design of CRISPR guide RNAs across nucleases and technologies"](https://www.biorxiv.org/content/10.1101/2022.04.21.488824v3)
@@ -155,25 +155,6 @@ results <- getRuleSet1Scores(input)
 The Azimuth score described below is an improvement over Rule Set 1 
 from the same lab.
 
-### Azimuth
-
-The Azimuth algorithm is an improved version of the popular Rule Set 2 score for
-the Cas9 nuclease [@azimuth]. It generates a probability (therefore a score 
-between 0 and 1) that a given sgRNA will cut at its intended target.
-4 nucleotides upstream and 3 nucleotides downstream of the PAM 
-sequence are needed for scoring:
-
-```{r, eval=FALSE}
-flank5 <- "ACCT" #4bp
-spacer <- "ATCGATGCTGATGCTAGATA" #20bp
-pam    <- "AGG" #3bp 
-flank3 <- "TTG" #3bp
-input  <- paste0(flank5, spacer, pam, flank3) 
-results <- getAzimuthScores(input)
-```
-
-
-
 ### Rule Set 3 
 
 The Rule Set 3 is an improvement over Rule Set 1 and Rule Set 2/Azimuth
@@ -228,30 +209,6 @@ also specify the promoter used for expressing sgRNAs using the argument
 `promoter` ("U6" by default). See `?getDeepHFScores` for more details.
 
 
-### DeepSpCas9 
-
-The DeepSpCas9 algorithm is an on-target cutting efficiency prediction
-algorithm for the SpCas9 nuclease [@deepspcas9]. Similar to the Azimuth score,
-it generates a  probability of cutting at the intended on-target.
-4 nucleotides upstream of the protospacer sequence, and 3 nucleotides
-downstream of the PAM  sequence are needed in top of the protospacer
-sequence for scoring:
-
-```{r, eval=FALSE}
-flank5 <- "ACCT" #4bp
-spacer <- "ATCGATGCTGATGCTAGATA" #20bp
-pam    <- "AGG" #3bp 
-flank3 <- "TTG" #3bp
-input  <- paste0(flank5, spacer, pam, flank3) 
-results <- getDeepSpCas9Scores(input)
-```
-
-Users can specify for which Cas9 they wish to score sgRNAs by using the argument
-`enzyme`: "WT" for Wildtype Cas9 (WT-SpCas9), "HF" for high-fidelity Cas9 
-(SpCas9-HF), or "ESP" for enhancedCas9 (eSpCas9). For wildtype Cas9, users can
-also specify the promoter used for expressing sgRNAs using the argument 
-`promoter` ("U6" by default). See `?getDeepHFScores` for more details.
-
 
 ### CRISPRscan
 
@@ -285,55 +242,7 @@ spacer <- "ATCGATGCTGATGCTAGATA" #20bp
 results <- getCRISPRaterScores(spacer)
 ```
 
-### CRISPRai
 
-The CRISPRai algorithm was developed by the Weissman lab to score SpCas9 
-gRNAs for CRISPRa and CRISPRi applications [@crisprai], for the human genome.
-The function `getCrispraiScores` requires several inputs. 
-
-First, it requires a data.frame specifying the genomic coordinates of 
-the transcription starting sites (TSSs). An example of such a data.frame
-is provided in the crisprScore package:
-
-```{r, eval=TRUE}
-head(tssExampleCrispri)
-```
-
-It also requires a data.frame specifying the genomic coordinates of the
-gRNA sequences to score. An example of such a data.frame 
-is provided in the crisprScore package:
-
-```{r, eval=TRUE}
-head(sgrnaExampleCrispri)
-```
-
-All columns  present in `tssExampleCrispri` and `sgrnaExampleCrispri` are 
-mandatory for `getCrispraiScores` to work. 
-
-Two additional arguments are required: `fastaFile`, to specify the path of 
-the fasta file of the human reference genome, and `chromatinFiles`, which is 
-a list of length 3 specifying the path of files containing the chromatin
-accessibility data needed for the algorithm in hg38 coordinates.
-The chromatin files can be downloaded from Zenodo 
-[here](https://zenodo.org/record/6716721#.YrzCfS-cY4d).
-The fasta file for the human genome (hg38) can be downloaded directly from here:
-https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz
-
-
-One can obtain the CRISPRai scores using the following command:
-
-```{r, eval=FALSE}
-results <- getCrispraiScores(tss_df=tssExampleCrispri,
-                             sgrna_df=sgrnaExampleCrispri,
-                             modality="CRISPRi",
-                             fastaFile="your/path/hg38.fa",
-                             chromatinFiles=c(mnase="path/to/mnaseFile.bw",
-                                                 dnase="path/to/dnaseFile.bw",
-                                                 faire="oath/to/faireFile.bw"))
-```
-
-The function works identically for CRISPRa applications, with modality replaced
-by `CRISPRa`. 
 
 ## Cas12a methods
 
@@ -342,24 +251,6 @@ sequences to predict cutting efficiency as illustrated in the figure below.
 
 ```{r, echo=FALSE, fig.cap="Sequence inputs for Cas12a scoring methods"}
 knitr::include_graphics("./figures/sequences_cas12a.svg")
-```
-
-### DeepCpf1 score 
-
-The DeepCpf1 algorithm is an on-target cutting efficiency prediction algorithm 
-for the Cas12a nuclease [@deepcpf1] using a convolutional neural network (CNN) 
-framework. It generates a score between 0 and 1 to quantify the likelihood of 
-Cas12a to cut for a given sgRNA. 4 nucleotides upstream of the PAM sequence, and 3 nucleotides 
-downstream of the protospacer sequence are needed for scoring:
-
-
-```{r, eval=FALSE}
-flank5 <- "ACCA" #4bp
-pam    <- "TTTT" #4bp
-spacer <- "AATCGATGCTGATGCTAGATATT" #23bp
-flank3 <- "AAG" #3bp
-input  <- paste0(flank5, pam, spacer, flank3) 
-results <- getDeepCpf1Scores(input)
 ```
 
 ### enPAM+GB score 
