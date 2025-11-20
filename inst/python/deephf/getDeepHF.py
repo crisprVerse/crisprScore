@@ -1,7 +1,7 @@
 import sys
 import os
 from os.path import dirname, abspath, join
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from deephf.training_util import *
 from deephf.prediction_util import *
 
@@ -12,4 +12,6 @@ def getDeepHF(sequences, enzyme='wt_u6', model_file=''):
 
 #sequences = np.array(["ACGTGTGACTACCGGCGGCGCGG",
 #	"GGAAGTCTGGAGTCTCCAGGTGG"])
-#results = getDeepWt(sequences)
+#results = getDeepWt(sequences, model_file)
+
+model_file='/Users/fortin946/Library/Caches/org.R-project.R/R/ExperimentHub/b2e92466c89d_6168'

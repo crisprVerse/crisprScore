@@ -8,6 +8,7 @@
 #'     Must be either "Hsu2013" (default) or "Chen2013".
 #' @param mode String specifying which prediction mode is used.
 #'     Must be either "sequence" (default) or "target".
+#' @param condaEnv Path the conda environment for the RuleSet1 score. 
 #' 
 #' @details The input sequences for Rule Set 3 scoring require 4 nucleotides
 #'     upstream of the protospacer sequence, the protospacer sequence
@@ -35,27 +36,33 @@
 #' }
 #' 
 #' @export 
-#' @importFrom basilisk basiliskStart basiliskStop basiliskRun
+#' @importFrom basilisk getPythonBinary
 getRuleSet3Scores <- function(sequences,
                               tracrRNA=c("Hsu2013","Chen2013"),
-                              mode=c("sequence", "target")
+                              mode=c("sequence", "target"),
+                              condaEnv
 ){
 
     tracrRNA <- match.arg(tracrRNA)
     mode <- match.arg(mode)
     if (mode=="sequence"){
         results <- .getRuleSet3Scores_sequence(sequences=sequences,
-                                               tracrRNA=tracrRNA)
+                                               tracrRNA=tracrRNA,
+                                               condaEnv)
     } else if (mode=="target"){
         results <- .getRuleSet3Scores_target(sequences=sequences,
-                                             tracrRNA=tracrRNA)
+                                             tracrRNA=tracrRNA,
+                                             condaEnv)
     }
     return(results)
 }
 
 .getRuleSet3Scores_sequence <- function(sequences,
-                                        tracrRNA=c("Hsu2013","Chen2013")
+                                        tracrRNA=c("Hsu2013","Chen2013"),
+                                        condaEnv
 ){
+
+    condaEnv <- "/Users/fortin946/miniforge3/envs/rs3-env"
     tracrRNA <- match.arg(tracrRNA)
     .dumpToFile <- function(sequences,
                             file){
@@ -84,12 +91,6 @@ getRuleSet3Scores <- function(sequences,
     inputfile  <- file.path(dir, "input.txt")
     outputfile <- file.path(dir, "output.txt")
     
-    # Ready to get the scores
-    env <- basilisk::obtainEnvironmentPath(env_rs3)
-    envls <- basiliskStart(env)
-    on.exit(basiliskStop(envls))
-    #envls <- basilisk.utils::activateEnvironment(env)
-    #on.exit(basilisk.utils::deactivateEnvironment(envls))
     programFile <- system.file("python",
                                "rs3/getRuleSet3ScoresSequence.py",
                                package="crisprScore",
@@ -101,7 +102,8 @@ getRuleSet3Scores <- function(sequences,
     if (sum(good)>0){
         .dumpToFile(sequences.valid,
                     inputfile)
-        pyBinary <- basilisk::getPythonBinary(env)
+
+        pyBinary <- basilisk::getPythonBinary(condaEnv)
         system2(c(pyBinary,
                   programFile,
                   inputfile,
@@ -122,11 +124,13 @@ getRuleSet3Scores <- function(sequences,
 
 
 .getRuleSet3Scores_target <- function(sequences,
-                                      tracrRNA=c("Hsu2013","Chen2013")
+                                      tracrRNA=c("Hsu2013","Chen2013"),
+                                      condaEnv
 ){
     tracrRNA <- match.arg(tracrRNA)
     stop("Target mode is not yet implemented.")
 }
+
 
 
 

@@ -7,7 +7,8 @@
 getRuleSet3Scores(
   sequences,
   tracrRNA = c("Hsu2013", "Chen2013"),
-  mode = c("sequence", "target")
+  mode = c("sequence", "target"),
+  condaEnv
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ Must be either "Hsu2013" (default) or "Chen2013".}
 
 \item{mode}{String specifying which prediction mode is used.
 Must be either "sequence" (default) or "target".}
+
+\item{condaEnv}{Path the conda environment for the RuleSet1 score.}
 }
 \value{
 \strong{getRuleSet3Scores} returns a data.frame with

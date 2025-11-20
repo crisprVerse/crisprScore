@@ -1,14 +1,18 @@
 import os
 import sys
+import numpy as np
 import pandas as pd
-stderr = sys.stderr
-sys.stderr = open(os.devnull, 'w')
-import keras
-sys.stderr = stderr
+import tensorflow as tf
+from tensorflow.keras.preprocessing import text, sequence
+from tensorflow.keras.models import load_model
+#stderr = sys.stderr
+#sys.stderr = open(os.devnull, 'w')
+#import keras
+#sys.stderr = stderr
 import warnings
-from keras.preprocessing import text
-from keras.preprocessing import sequence
-from keras.models import *
+#from keras.preprocessing import text
+#from keras.preprocessing import sequence
+#from keras.models import *
 from deephf.feature_util import *
 
 
@@ -70,7 +74,7 @@ def get_embedding_data(data, feature_options):
     return X_1, X_biofeat
 def output_prediction_old(inputs, df, model_type='esp'):
     import os
-    from sklearn.externals import joblib
+    import joblib
     from sklearn.linear_model import LinearRegression
     model = load_model(model_file_path) 
     Efficiency = model.predict( inputs )
@@ -82,7 +86,7 @@ def output_prediction_old(inputs, df, model_type='esp'):
 
 def output_prediction(inputs, df, model_type='esp', model_file=''):
     import os
-    from sklearn.externals import joblib
+    import joblib
     from sklearn.linear_model import LinearRegression
     #dir_path = os.path.dirname( os.path.realpath( __file__ ) )
     #model_file = model_type + '_rnn.hd5'
@@ -132,8 +136,8 @@ def effciency_predict(sequence, model_type='esp'):
         Cut_Pos.append( i - 4 )
         PAM.append( sequence_complement[i - 1:i + 2] )
 
-    pandas.set_option( 'Precision', 5 )
-    df = pandas.DataFrame( {'Cut_Pos': Cut_Pos,
+    pd.set_option( 'display.precision', 5 )
+    df = pd.DataFrame( {'Cut_Pos': Cut_Pos,
                             'Strand': Strand,
                             '21mer': gRNA,
                             'PAM': PAM}, columns=['Strand', 'Cut_Pos', '21mer', 'PAM'] )
@@ -148,8 +152,8 @@ def get_scores(sequences, model_type='wt_u6', model_file=''):
     Cut_Pos = np.resize(17, n)
     Strand = np.resize("+",n)
 
-    pandas.set_option( 'Precision', 5 )
-    df = pandas.DataFrame( {'Cut_Pos': Cut_Pos,
+    pd.set_option( 'display.precision', 5 )
+    df = pd.DataFrame( {'Cut_Pos': Cut_Pos,
                             'Strand': Strand,
                             '21mer': gRNA,
                             'PAM': PAM}, columns=['Strand', 'Cut_Pos', '21mer', 'PAM'] )

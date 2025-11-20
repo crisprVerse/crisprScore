@@ -7,7 +7,8 @@
 getDeepHFScores(
   sequences,
   enzyme = c("WT", "ESP", "HF"),
-  promoter = c("U6", "T7")
+  promoter = c("U6", "T7"),
+  condaEnv
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ Wildtype Cas9 (WT) by default, see details below.}
 \item{promoter}{Character string speciyfing promoter used for expressing 
 sgRNAs for wildtype Cas9 (must be either "U6" or "T7").
 "U6" by default.}
+
+\item{condaEnv}{Path the conda environment for the DeepHF score.}
 }
 \value{
 \strong{getDeepHFScores} returns a data.frame with \code{sequence}

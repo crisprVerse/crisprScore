@@ -12,6 +12,7 @@
 #' @param promoter Character string speciyfing promoter used for expressing 
 #'     sgRNAs for wildtype Cas9 (must be either "U6" or "T7").
 #'     "U6" by default. 
+#' @param condaEnv Path the conda environment for the DeepHF score. 
 #' 
 #' @details Input sequences for DeepHF scoring must be 23bpprotospacer
 #'     sequences (20bp spacer sequences + 3bp PAM sequences).
@@ -55,12 +56,15 @@
 #' }
 #' 
 #' @export
-#' @importFrom basilisk basiliskStart basiliskStop basiliskRun
+#' @importFrom reticulate import_from_path np_array use_condaenv
 #' @import crisprScoreData
 getDeepHFScores <- function(sequences,
                             enzyme=c("WT", "ESP", "HF"),
-                            promoter=c("U6", "T7")
+                            promoter=c("U6", "T7"),
+                            condaEnv
 ){
+
+    condaEnv <- "/Users/fortin946/miniforge3/envs/deephf-env"
 	if (.Platform$OS.type=="windows"){
 		stop("DeepHF is not available for Windows at the moment.")
 	}
@@ -90,36 +94,19 @@ getDeepHFScores <- function(sequences,
              " (canonical PAM sequences).")
     }
 
-    env <- basilisk::obtainEnvironmentPath(env_deephf)
-    envls <- basiliskStart(env)
-    on.exit(basiliskStop(envls))
-
-    results <- basiliskRun(env=env_deephf,
-                           shared=FALSE,
-                           fun=.deephf_python, 
-                           sequences=sequences,
-                           model_type=model_type,
-                           model_file=model_file)
-    return(results)
-}
-
-
-#' @importFrom reticulate import_from_path np_array
-.deephf_python <- function(sequences,
-                           model_type,
-                           model_file){ 
-
     dir <- system.file("python",
                        "deephf",
                        package="crisprScore",
                        mustWork=TRUE)
-    deephf <- import_from_path("getDeepHF", path=dir, delay_load=TRUE)
 
     df <- data.frame(sequence=sequences,
                      score=NA_real_,
                      stringsAsFactors=FALSE)
     good <- !grepl("N", sequences)
     sequences.valid <- sequences[good]
+
+    reticulate::use_condaenv(condaEnv)
+    deephf <- import_from_path("getDeepHF", path=dir, delay_load=FALSE)
     if (length(sequences.valid)>0){
         scores <- deephf$getDeepHF(np_array(sequences.valid),
                                    model_type,
@@ -134,3 +121,8 @@ getDeepHFScores <- function(sequences,
     }
     return(df)
 }
+
+
+
+
+

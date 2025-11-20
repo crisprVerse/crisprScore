@@ -1,27 +1,51 @@
 import collections
 import os
 import sys
-import argparse, sys
+import argparse
 import numpy as np
 import pandas as pd
 import scipy as sp
 import pickle
-
-stderr = sys.stderr
-sys.stderr = open(os.devnull, 'w')
-import keras
-sys.stderr = stderr
-from keras.preprocessing import text
-from keras.preprocessing import sequence
-from keras.layers import merge, Embedding, Bidirectional
-from keras.layers.core import *
-from keras.models import *
-from keras.layers.recurrent import LSTM
-from keras.callbacks import ModelCheckpoint, EarlyStopping
-from keras.optimizers import *
+import warnings
 from sklearn.metrics import  mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-import scipy as sp
+
+
+import tensorflow as tf
+from tensorflow.keras.preprocessing import text, sequence
+from tensorflow.keras.layers import (
+    Embedding,
+    Bidirectional,
+    SpatialDropout1D,
+    Dense,
+    Dropout,
+    Flatten,
+    Input,
+    LSTM,
+)
+from tensorflow.keras.models import Model
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, Callback
+from tensorflow.keras.optimizers import (
+    SGD,
+    RMSprop,
+    Adagrad,
+    Adadelta,
+    Adam,
+    Adamax,
+    Nadam,
+)
+
+# import keras
+# from keras.preprocessing import text
+# from keras.preprocessing import sequence
+# from keras.layers import merge, Embedding, Bidirectional
+# from keras.layers.core import *
+# from keras.models import *
+# from keras.layers.recurrent import LSTM
+# from keras.callbacks import ModelCheckpoint, EarlyStopping
+# from keras.optimizers import *
+
+
 
 dir_path = os.path.dirname( os.path.realpath( __file__ ) )
 file1 = os.path.join( dir_path, 'data/esp_seq_data_array.pkl')
@@ -83,7 +107,8 @@ def lstm_model(model_type='esp', batch_size=90, epochs=50, initializer='0',em_di
 
     #biological featues
     biological_input = Input(name = 'bio_input', shape = (X_train_biofeat.shape[1],))
-    x = keras.layers.concatenate([x, biological_input])
+    #x = keras.layers.concatenate([x, biological_input])
+    x = tf.keras.layers.concatenate([x, biological_input])
 
 
     for l in range(fc_num_hidden_layers):
@@ -114,9 +139,7 @@ fc_activation_dict = {'1':'relu','2':'tanh', '3':'sigmoid', '4':'hard_sigmoid', 
 initializer_dict = {'1':'lecun_uniform','2':'normal', '3':'he_normal', '0':'he_uniform'}
 optimizer_dict = {'1':SGD,'2':RMSprop, '3':Adagrad, '4':Adadelta,'5':Adam,'6':Adamax,'0':Nadam}
 
-import numpy as np
-from keras.callbacks import Callback
-from sklearn.model_selection import train_test_split
+
             
 class GetBest(Callback):
     def __init__(self,filepath=None, monitor='val_loss', save_best=False,verbose=0,
