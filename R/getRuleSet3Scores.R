@@ -8,7 +8,9 @@
 #'     Must be either "Hsu2013" (default) or "Chen2013".
 #' @param mode String specifying which prediction mode is used.
 #'     Must be either "sequence" (default) or "target".
-#' @param condaEnv Path to the conda environment
+#' @param condaEnv String specifying the path of the conda environment needed 
+#'     to run the DeepHF calculations. See the crisprScore vignette for
+#'     instructions on how to build the environment. 
 #' 
 #' @details The input sequences for Rule Set 3 scoring require 4 nucleotides
 #'     upstream of the protospacer sequence, the protospacer sequence
@@ -32,11 +34,11 @@
 #' pam    <- "AGG" #3bp
 #' flank3 <- "AAT" #3bp
 #' input  <- paste0(flank5, spacer, pam, flank3) 
-#' results <- getRuleSet3Scores(input)
+#' condaEnv <- "/Users/fortin946/miniforge3/envs/rs3-env"
+#' results <- getRuleSet3Scores(input, condaEnv=condaEnv)
 #' }
 #' 
 #' @export 
-#' @importFrom basilisk getPythonBinary
 getRuleSet3Scores <- function(sequences,
                               tracrRNA=c("Hsu2013","Chen2013"),
                               mode=c("sequence", "target"),
@@ -62,7 +64,6 @@ getRuleSet3Scores <- function(sequences,
                                         condaEnv
 ){
 
-    condaEnv <- "/Users/fortin946/miniforge3/envs/rs3-env"
     tracrRNA <- match.arg(tracrRNA)
     .dumpToFile <- function(sequences,
                             file){
@@ -103,7 +104,7 @@ getRuleSet3Scores <- function(sequences,
         .dumpToFile(sequences.valid,
                     inputfile)
 
-        pyBinary <- basilisk::getPythonBinary(condaEnv)
+        pyBinary <- getPythonBinary(condaEnv)
         system2(c(pyBinary,
                   programFile,
                   inputfile,

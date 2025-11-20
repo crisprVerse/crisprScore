@@ -21,7 +21,9 @@ Must be either "Hsu2013" (default) or "Chen2013".}
 \item{mode}{String specifying which prediction mode is used.
 Must be either "sequence" (default) or "target".}
 
-\item{condaEnv}{Path the conda environment for the RuleSet1 score.}
+\item{condaEnv}{String specifying the path of the conda environment needed 
+to run the DeepHF calculations. See the crisprScore vignette for
+instructions on how to build the environment.}
 }
 \value{
 \strong{getRuleSet3Scores} returns a data.frame with
@@ -47,7 +49,8 @@ spacer <- "AATCGATGCTGATGCTAGAT" #20bp
 pam    <- "AGG" #3bp
 flank3 <- "AAT" #3bp
 input  <- paste0(flank5, spacer, pam, flank3) 
-results <- getRuleSet3Scores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/rs3-env"
+results <- getRuleSet3Scores(input, condaEnv=condaEnv)
 }
 
 }

@@ -21,7 +21,9 @@ Wildtype Cas9 (WT) by default, see details below.}
 sgRNAs for wildtype Cas9 (must be either "U6" or "T7").
 "U6" by default.}
 
-\item{condaEnv}{Path the conda environment for the DeepHF score.}
+\item{condaEnv}{String specifying the path of the conda environment needed 
+to run the DeepHF calculations. See the crisprScore vignette for
+instructions on how to build the environment.}
 }
 \value{
 \strong{getDeepHFScores} returns a data.frame with \code{sequence}
@@ -52,18 +54,19 @@ if (interactive()){
 spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
 pam     <- "AGG" #3bp 
 input   <- paste0(spacer, pam) 
+condaEnv <- "/Users/fortin946/miniforge3/envs/deephf-env"
 
 # Wiltype Cas9 using U6 promoter:
-results <- getDeepHFScores(input)
+results <- getDeepHFScores(input, condaEnv=condaEnv)
 
 # Wiltype Cas9 using T7 promoter:
-results <- getDeepHFScores(input, promoter="T7")
+results <- getDeepHFScores(input, promoter="T7", condaEnv=condaEnv)
 
 #' High-fidelity Cas9:
-results <- getDeepHFScores(input, enzyme="HF")
+results <- getDeepHFScores(input, enzyme="HF",condaEnv=condaEnv)
 
 #' Enhanced Cas9:
-results <- getDeepHFScores(input, enzyme="ESP")
+results <- getDeepHFScores(input, enzyme="ESP",condaEnv=condaEnv)
 }
 
 }

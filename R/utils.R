@@ -15,3 +15,11 @@
 
 #' @import utils
 NULL
+
+
+getPythonBinary <- function(envpath){
+    suffix <- if (.Platform$OS.type == "windows") 
+        "Scripts/python.exe"
+    else "bin/python"
+    file.path(envpath, suffix)
+}

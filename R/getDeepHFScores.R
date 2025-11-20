@@ -12,7 +12,9 @@
 #' @param promoter Character string speciyfing promoter used for expressing 
 #'     sgRNAs for wildtype Cas9 (must be either "U6" or "T7").
 #'     "U6" by default. 
-#' @param condaEnv Path to the conda environment
+#' @param condaEnv String specifying the path of the conda environment needed 
+#'     to run the DeepHF calculations. See the crisprScore vignette for
+#'     instructions on how to build the environment. 
 #' 
 #' @details Input sequences for DeepHF scoring must be 23bpprotospacer
 #'     sequences (20bp spacer sequences + 3bp PAM sequences).
@@ -41,18 +43,19 @@
 #' spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
 #' pam     <- "AGG" #3bp 
 #' input   <- paste0(spacer, pam) 
+#' condaEnv <- "/Users/fortin946/miniforge3/envs/deephf-env"
 #' 
 #' # Wiltype Cas9 using U6 promoter:
-#' results <- getDeepHFScores(input)
+#' results <- getDeepHFScores(input, condaEnv=condaEnv)
 #' 
 #' # Wiltype Cas9 using T7 promoter:
-#' results <- getDeepHFScores(input, promoter="T7")
+#' results <- getDeepHFScores(input, promoter="T7", condaEnv=condaEnv)
 #' 
 #' #' High-fidelity Cas9:
-#' results <- getDeepHFScores(input, enzyme="HF")
+#' results <- getDeepHFScores(input, enzyme="HF",condaEnv=condaEnv)
 #' 
 #' #' Enhanced Cas9:
-#' results <- getDeepHFScores(input, enzyme="ESP")
+#' results <- getDeepHFScores(input, enzyme="ESP",condaEnv=condaEnv)
 #' }
 #' 
 #' @export
@@ -64,7 +67,7 @@ getDeepHFScores <- function(sequences,
                             condaEnv
 ){
 
-    condaEnv <- "/Users/fortin946/miniforge3/envs/deephf-env"
+    
 	if (.Platform$OS.type=="windows"){
 		stop("DeepHF is not available for Windows at the moment.")
 	}

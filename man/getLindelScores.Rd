@@ -5,11 +5,15 @@
 \title{Predict frameshift ratios from CRISPR/Cas9 indel prediction using
     Lindel}
 \usage{
-getLindelScores(sequences)
+getLindelScores(sequences, condaEnv)
 }
 \arguments{
 \item{sequences}{Character vector of 65bp sequences needed for Lindel
 scoring, see details below.}
+
+\item{condaEnv}{String specifying the path of the conda environment needed 
+to run the DeepHF calculations. See the crisprScore vignette for
+instructions on how to build the environment.}
 }
 \value{
 A data.frame with predicted frameshift ratio (between 0 and 1).
@@ -34,7 +38,8 @@ spacer <- "TGCTGATGCTAGATATTAAG" #20bp
 pam    <- "TGG" #3bp
 flank3 <- "CTTTTAATCGATGCTGATGCTAGATATTA" #29bp
 input <- paste0(flank5, spacer, pam, flank3)
-results <- getLindelScores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/deephf-env"
+results <- getLindelScores(input, condaEnv=condaEnv)
 }
 }
 \references{

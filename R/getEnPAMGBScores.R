@@ -6,11 +6,13 @@
 #' @param sequences Character vector of 34bp sequences needed for enPAM+GB
 #'     scoring, see details below.
 #'
-#' @param condaEnv Path to the conda environment
+#' @param condaEnv String specifying the path of the conda environment needed 
+#'     to run the enPAM+GB calculations. See the crisprScore vignette for
+#'     instructions on how to build the environment. 
 #'
 #' @details The input sequences for enPAM+GB scoring require 4 nucleotides
 #'     upstream of the protospacer sequence, the protospacer sequence
-#'     itself (4bp PAM sequence + 23bp spacer sequence) and 3 nucleootides 
+#'     itself (4bp PAM sequence + 23bp spacer sequence) and 3 nucleotides 
 #'     downstream of the protospacer sequence, for a total of 34 nucleotides.
 #'     Both canonical and non-canonical PAM sequences can be provided.
 #' 
@@ -32,19 +34,19 @@
 #' spacer <- "TTTGGGAACCAATCGATAATCAC" #23bp
 #' flank3 <- "ATT" #3bp
 #' input  <- paste0(flank5, pam, spacer, flank3) 
-#' results <- getEnPAMGBScores(input)
+#' condaEnv <- "/Users/fortin946/miniforge3/envs/enpamgb-env"
+#' results <- getEnPAMGBScores(input, condaEnv)
 #' }
 #' @export
 #' @importFrom reticulate import_from_path use_condaenv
 #' @importFrom reticulate np_array
-getEnPAMGBScores <- function(sequences){
-    condaEnv <- "/Users/fortin946/miniforge3/envs/enpamgb-env"
+getEnPAMGBScores <- function(sequences, condaEnv){
 
     if (.Platform$OS.type=="windows"){
         stop("EnPAMGB is not available for Windows at the moment.")
     }
     sequences <- .checkSequenceInputs(sequences)
-    if (unique(nchar(sequences))!=34){
+    if (!all(nchar(sequences) == 34L)){
         stop("Provided sequences must have length 34nt",
              " ([4nt][TTTV][23mer][3nt]).")
     }

@@ -4,7 +4,11 @@
 #'     using the Lindel prediction algorithm.
 #' 
 #' @param sequences Character vector of 65bp sequences needed for Lindel
-#'     scoring, see details below. 
+#'     scoring, see details below.
+#'
+#' @param condaEnv String specifying the path of the conda environment needed 
+#'     to run the DeepHF calculations. See the crisprScore vignette for
+#'     instructions on how to build the environment. 
 #' 
 #' @details The input sequences for Lindel scoring require 13 nucleotides
 #'     upstream of the protospacer sequence, the protospacer sequence
@@ -33,30 +37,19 @@
 #' pam    <- "TGG" #3bp
 #' flank3 <- "CTTTTAATCGATGCTGATGCTAGATATTA" #29bp
 #' input <- paste0(flank5, spacer, pam, flank3)
-#' results <- getLindelScores(input)
+#' condaEnv <- "/Users/fortin946/miniforge3/envs/deephf-env"
+#' results <- getLindelScores(input, condaEnv=condaEnv)
 #' }
 #' @export
-#' @importFrom basilisk basiliskStart basiliskStop basiliskRun
-getLindelScores <- function(sequences){
+#' @importFrom stringr str_extract
+#' @import crisprScoreData
+getLindelScores <- function(sequences,condaEnv){
+
     sequences <- .checkSequenceInputs(sequences)
     if (unique(nchar(sequences))!=65){
         stop("Sequences must have length 65nt ([33nt][NGG][29nt]).")
     }
-    results <- basiliskRun(env=env_lindel,
-                           shared=FALSE,
-                           fun=.lindel_python,
-                           sequences=sequences)
-    return(results)
-}
 
-
-
-
-
-
-#' @importFrom stringr str_extract
-#' @import crisprScoreData
-.lindel_python <- function(sequences){
     program <- system.file("python",
                            "lindel",
                            "Lindel_prediction.py",
@@ -69,11 +62,6 @@ getLindelScores <- function(sequences){
     good <- !grepl("N", sequences)
     sequences.valid <- sequences[good]
     
-    
-    env <- basilisk::obtainEnvironmentPath(env_lindel)
-    envls <- basiliskStart(env)
-    on.exit(basiliskStop(envls))
-
 
     if (length(sequences.valid)>0){
         scores <- rep(NA_real_, length(sequences.valid))
@@ -84,7 +72,7 @@ getLindelScores <- function(sequences){
             seq <- sequences.valid[i]
             
 
-            pyBinary <- basilisk::getPythonBinary(env)
+            pyBinary <- getPythonBinary(condaEnv)
 
         
             system2(c(pyBinary,
@@ -92,13 +80,6 @@ getLindelScores <- function(sequences){
                       seq,
                       weights_file,
                       file.full))
-            #cmd <- paste0("python ", program, " ",
-            #              seq, " ",
-            #              weights_file, " ",
-            #              file.full)
-            #system(cmd,
-            #       ignore.stdout=TRUE,
-            #       ignore.stderr=FALSE)
             outputs <- list.files(dir)
             outputs <- outputs[grepl(file, outputs)]
             file.remove(file.path(dir,outputs))

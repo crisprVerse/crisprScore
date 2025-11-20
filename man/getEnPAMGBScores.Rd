@@ -4,11 +4,15 @@
 \alias{getEnPAMGBScores}
 \title{Calculate on-target sgRNA activity scores for enCas12a using enPAM+GB}
 \usage{
-getEnPAMGBScores(sequences)
+getEnPAMGBScores(sequences, condaEnv)
 }
 \arguments{
 \item{sequences}{Character vector of 34bp sequences needed for enPAM+GB
 scoring, see details below.}
+
+\item{condaEnv}{String specifying the path of the conda environment needed 
+to run the enPAM+GB calculations. See the crisprScore vignette for
+instructions on how to build the environment.}
 }
 \value{
 \strong{getEnPAMGBScores} returns a data.frame with \code{sequence}
@@ -22,7 +26,7 @@ Calculate on-target sgRNA activity scores for
 \details{
 The input sequences for enPAM+GB scoring require 4 nucleotides
     upstream of the protospacer sequence, the protospacer sequence
-    itself (4bp PAM sequence + 23bp spacer sequence) and 3 nucleootides 
+    itself (4bp PAM sequence + 23bp spacer sequence) and 3 nucleotides 
     downstream of the protospacer sequence, for a total of 34 nucleotides.
     Both canonical and non-canonical PAM sequences can be provided.
 }
@@ -33,7 +37,8 @@ pam    <- "TTTT" #4bp
 spacer <- "TTTGGGAACCAATCGATAATCAC" #23bp
 flank3 <- "ATT" #3bp
 input  <- paste0(flank5, pam, spacer, flank3) 
-results <- getEnPAMGBScores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/enpamgb-env"
+results <- getEnPAMGBScores(input, condaEnv)
 }
 }
 \references{
