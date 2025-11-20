@@ -12,25 +12,24 @@ options("knitr.graphics.auto_pdf"=TRUE)
 
 Authors: Jean-Philippe Fortin, Aaron Lun, Luke Hoberecht, Pirunthan Perampalan
 
-Date: July 25, 2024
+Date: Nov 20, 2025
 
 # Overview
 
 The `crisprScore` package provides R wrappers of several on-target and off-target scoring
 methods for CRISPR guide RNAs (gRNAs). The following nucleases are supported:
 SpCas9, AsCas12a, enAsCas12a, and RfxCas13d (CasRx). The available on-target
-cutting efficiency scoring methods are RuleSet1, RuleSet3, Azimuth, DeepHF, 
-DeepSpCas9, DeepCpf1, enPAM+GB, CRISPRscan and CRISPRater. Both the CFD and MIT
+cutting efficiency scoring methods are RuleSet1, RuleSet3, DeepHF, 
+enPAM+GB, CRISPRscan and CRISPRater. Both the CFD and MIT
 scoring methods are available for off-target specificity prediction. The
 package also provides a Lindel-derived score to predict the probability
 of a gRNA to produce indels inducing a frameshift for the Cas9 nuclease.
-Note that DeepHF, DeepCpf1 and enPAM+GB are not available on Windows machines. 
+Note that DeepHF and enPAM+GB are not available on Windows machines. 
 
-Our work is described in our recent papera recent bioRxiv preprint:
-["A comprehensive Bioconductor ecosystem for the design of CRISPR guide RNAs across nucleases and technologies"](https://www.nature.com/articles/s41467-022-34320-7)
+Our work is described in a recent bioRxiv preprint:
+["The crisprVerse: A comprehensive Bioconductor ecosystem for the design of CRISPR guide RNAs across nucleases and technologies"](https://www.biorxiv.org/content/10.1101/2022.04.21.488824v3)
 
 Our main gRNA design package [crisprDesign](https://github.com/crisprVerse/crisprDesign) utilizes the `crisprScore` package to add on- and off-target scores to user-designed gRNAs; check out our [Cas9 gRNA tutorial page](https://github.com/crisprVerse/Tutorials/tree/master/Design_CRISPRko_Cas9) to learn how to use `crisprScore` via `crisprDesign`. 
-
 
 # Installation and getting started
 
@@ -40,12 +39,13 @@ Our main gRNA design package [crisprDesign](https://github.com/crisprVerse/crisp
 
 This package is supported for macOS, Linux and Windows machines.
 Some functionalities are not supported for Windows machines.
-Packages require R version 4.4 or higher. 
+Packages were developed and tested on R version 4.2.
 
 
-## Installation 
+## Installation from Bioconductor
 
-`crisprScore` can be installed from Bioconductor using the following commands in a fresh R session:
+`crisprScore` can be installed from from the Bioconductor devel branch
+using the following commands in a fresh R session:
 
 ```{r, eval=FALSE}
 if (!require("BiocManager", quietly = TRUE))
@@ -55,25 +55,17 @@ BiocManager::install(version="devel")
 BiocManager::install("crisprScore")
 ```
 
-To install the release version, use this instead:
+## Installation from GitHub
 
-```{r, eval=FALSE}
-BiocManager::install(version="release")
+Alternatively, the development version of `crisprScore` and its dependencies can be installed by typing the following commands inside of an R session:
+
+
+```r
+install.packages("devtools")
+library(devtools)
+install_github("crisprVerse/crisprScoreData")
+install_github("crisprVerse/crisprScore")
 ```
-
-Under the hood, `crisprScore` uses the `basilisk` package to install Python
-environments needed to run some of the prediction algorithms. When calling
-one of the scoring methods for the first time after package
-installation, the underlying python module and conda environments will be 
-automatically downloaded and installed without the need for user intervention.
-This may take several minutes, but this is a one-time installation. 
-
-We made recent changes to install Python packages only from the public 
-Bioconda and conda-forge channels to be compliant with the latest
-Anaconda licensing policies. Setting the environment variable `BASILISK_USE_MINIFORGE=1` will ensure that crisprScore will use miniforge
-to install the Python packages. See the documentation of the `basilisk` package
-[(link here)](https://www.bioconductor.org/packages/release/bioc/html/basilisk.html) for more information re. different settings for the installation of the
-underlying Python packages
 
 Note that RStudio users will need to add the following line to their `.Rprofile`
 file in order for `crisprScore` to work properly:
@@ -81,6 +73,52 @@ file in order for `crisprScore` to work properly:
 ```{r, eval=FALSE}
 options(reticulate.useImportHook=FALSE)
 ```
+
+# Python scoring algorithms 
+
+`crisprScore` used to rely on the `basilisk` Bioconductor package to maintain
+and install the conda environments necessary to run the different scoring
+algorithms written in Python. However, due to recent changes to `basilisk` and
+the `reticulate` package, the changes in the conda licensing, the deprecation of 
+Python 2, and the arrival of Apple Silicon, it has become increasingly difficult
+for us to resolve those environments automatically across machines and scoring
+algorithms.
+
+As a result, we have made the following two decisions: 
+
+(1) scoring algorithms written in Python 2
+are no longer supported by `crisprScore`; this includes Azimuth, DeepCpf1, 
+DeepSpCas9, and CRISPRai. The more recent and more performant RuleSet3 and 
+DeepHF scoring algorithms can be used instead of Azimuth, and the enPam+GB 
+algorithm can be used instead of DeepCpf1. While `crisprScore` does not 
+implement any CRISPRa or CRISPRi-specific scoring algorithms, we have found
+that the DeepHF algorithm works well at predicting CRISPRa and CRISPRi gRNAs. 
+
+(2) users now have to build the conda environments themselves prior to using
+`crisprScore`, and pass the conda environment path to the different scoring
+algorithms. See next section. 
+
+# Installing conda environments
+
+For each of the Python scoring algorithms implemented in `crisprScore`,
+we provide in the crisprScore/inst/python folder a script to install
+the conda environments: `buildingCondaEnvironments.sh`.
+
+The script assumes that a conda instance is available on path.
+We recommend using miniforge: https://github.com/conda-forge/miniforge to 
+install and manage conda environments. 
+
+We use the following conda channel specifications in the .condarc file:
+
+```
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+channel_priority: strict
+```
+
+
 
 # Getting started
 
@@ -118,9 +156,8 @@ Different algorithms require different input nucleotide
 sequences to predict cutting efficiency as illustrated in the figure below.
 
 ```{r, echo=FALSE,fig.cap="Sequence inputs for Cas9 scoring methods"}
-knitr::include_graphics("vignettes/figures/sequences_cas9.svg")
+knitr::include_graphics("vignettes/figures/sequences_cas9_v2.svg")
 ```
-
 
 
 
@@ -140,27 +177,6 @@ flank3 <- "TTG" #3bp
 input  <- paste0(flank5, spacer, pam, flank3) 
 results <- getRuleSet1Scores(input)
 ```
-
-The Azimuth score described below is an improvement over Rule Set 1 
-from the same lab.
-
-### Azimuth
-
-The Azimuth algorithm is an improved version of the popular Rule Set 2 score for
-the Cas9 nuclease [@azimuth]. It generates a probability (therefore a score 
-between 0 and 1) that a given sgRNA will cut at its intended target.
-4 nucleotides upstream and 3 nucleotides downstream of the PAM 
-sequence are needed for scoring:
-
-```{r, eval=FALSE}
-flank5 <- "ACCT" #4bp
-spacer <- "ATCGATGCTGATGCTAGATA" #20bp
-pam    <- "AGG" #3bp 
-flank3 <- "TTG" #3bp
-input  <- paste0(flank5, spacer, pam, flank3) 
-results <- getAzimuthScores(input)
-```
-
 
 
 ### Rule Set 3 
@@ -185,7 +201,14 @@ spacer <- "ATCGATGCTGATGCTAGATA" #20bp
 pam    <- "AGG" #3bp 
 flank3 <- "TTG" #3bp
 input  <- paste0(flank5, spacer, pam, flank3) 
-results <- getRuleSet3Scores(input, tracrRNA="Hsu2013")
+```
+
+We specify the path of the conda environment necessary to run the python
+code and run the results:
+
+```{r, eval=FALSE}
+condaEnv <- "/Users/fortin946/miniforge3/envs/rs3-env"
+results <- getRuleSet3Scores(input, tracrRNA="Hsu2013", condaEnv=condaEnv)
 ```
 
 
@@ -207,7 +230,8 @@ the protospacer and PAM sequences as inputs:
 spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
 pam     <- "AGG" #3bp 
 input   <- paste0(spacer, pam) 
-results <- getDeepHFScores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/deephf-env"
+results <- getDeepHFScores(input, condaEnv=condaEnv)
 ```
 
 Users can specify for which Cas9 they wish to score sgRNAs by using the argument
@@ -216,38 +240,6 @@ Users can specify for which Cas9 they wish to score sgRNAs by using the argument
 also specify the promoter used for expressing sgRNAs using the argument 
 `promoter` ("U6" by default). See `?getDeepHFScores` for more details.
 
-
-### DeepSpCas9 
-
-The DeepSpCas9 algorithm is an on-target cutting efficiency prediction
-algorithm for the SpCas9 nuclease [@deepspcas9]. Similar to the Azimuth score,
-it generates a  probability of cutting at the intended on-target.
-4 nucleotides upstream of the protospacer sequence, and 3 nucleotides
-downstream of the PAM  sequence are needed in top of the protospacer
-sequence for scoring:
-
-```{r, eval=FALSE}
-flank5 <- "ACCT" #4bp
-spacer <- "ATCGATGCTGATGCTAGATA" #20bp
-pam    <- "AGG" #3bp 
-flank3 <- "TTG" #3bp
-input  <- paste0(flank5, spacer, pam, flank3) 
-results <- getDeepSpCas9Scores(input)
-```
-
-
-```{r, eval=FALSE}
-spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
-pam     <- "AGG" #3bp 
-input   <- paste0(spacer, pam) 
-results <- getDeepHFScores(input)
-```
-
-Users can specify for which Cas9 they wish to score sgRNAs by using the argument
-`enzyme`: "WT" for Wildtype Cas9 (WT-SpCas9), "HF" for high-fidelity Cas9 
-(SpCas9-HF), or "ESP" for enhancedCas9 (eSpCas9). For wildtype Cas9, users can
-also specify the promoter used for expressing sgRNAs using the argument 
-`promoter` ("U6" by default). See `?getDeepHFScores` for more details.
 
 
 ### CRISPRscan
@@ -282,55 +274,7 @@ spacer <- "ATCGATGCTGATGCTAGATA" #20bp
 results <- getCRISPRaterScores(spacer)
 ```
 
-### CRISPRai
 
-The CRISPRai algorithm was developed by the Weissman lab to score SpCas9 
-gRNAs for CRISPRa and CRISPRi applications [@crisprai], for the human genome.
-The function `getCrispraiScores` requires several inputs. 
-
-First, it requires a data.frame specifying the genomic coordinates of 
-the transcription starting sites (TSSs). An example of such a data.frame
-is provided in the crisprScore package:
-
-```{r, eval=TRUE}
-head(tssExampleCrispri)
-```
-
-It also requires a data.frame specifying the genomic coordinates of the
-gRNA sequences to score. An example of such a data.frame 
-is provided in the crisprScore package:
-
-```{r, eval=TRUE}
-head(sgrnaExampleCrispri)
-```
-
-All columns  present in `tssExampleCrispri` and `sgrnaExampleCrispri` are 
-mandatory for `getCrispraiScores` to work. 
-
-Two additional arguments are required: `fastaFile`, to specify the path of 
-the fasta file of the human reference genome, and `chromatinFiles`, which is 
-a list of length 3 specifying the path of files containing the chromatin
-accessibility data needed for the algorithm in hg38 coordinates.
-The chromatin files can be downloaded from Zenodo 
-[here](https://zenodo.org/record/6716721#.YrzCfS-cY4d).
-The fasta file for the human genome (hg38) can be downloaded directly from here:
-https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz
-
-
-One can obtain the CRISPRai scores using the following command:
-
-```{r, eval=FALSE}
-results <- getCrispraiScores(tss_df=tssExampleCrispri,
-                             sgrna_df=sgrnaExampleCrispri,
-                             modality="CRISPRi",
-                             fastaFile="your/path/hg38.fa",
-                             chromatinFiles=list(mnase="path/to/mnaseFile.bw",
-                                                 dnase="path/to/dnaseFile.bw",
-                                                 faire="oath/to/faireFile.bw"))
-```
-
-The function works identically for CRISPRa applications, with modality replaced
-by `CRISPRa`. 
 
 ## Cas12a methods
 
@@ -338,25 +282,7 @@ Different algorithms require different input nucleotide
 sequences to predict cutting efficiency as illustrated in the figure below.
 
 ```{r, echo=FALSE, fig.cap="Sequence inputs for Cas12a scoring methods"}
-knitr::include_graphics("vignettes/figures/sequences_cas12a.svg")
-```
-
-### DeepCpf1 score 
-
-The DeepCpf1 algorithm is an on-target cutting efficiency prediction algorithm 
-for the Cas12a nuclease [@deepcpf1] using a convolutional neural network (CNN) 
-framework. It generates a score between 0 and 1 to quantify the likelihood of 
-Cas12a to cut for a given sgRNA. 3 nucleotides upstream and 4 nucleotides 
-downstream of the PAM sequence are needed for scoring:
-
-
-```{r, eval=FALSE}
-flank5 <- "ACC" #3bp
-pam    <- "TTTT" #4bp
-spacer <- "AATCGATGCTGATGCTAGATATT" #23bp
-flank3 <- "AAGT" #4bp
-input  <- paste0(flank5, pam, spacer, flank3) 
-results <- getDeepCpf1Scores(input)
+knitr::include_graphics("vignettes/figures/sequences_cas12a_v2.svg")
 ```
 
 ### enPAM+GB score 
@@ -367,16 +293,19 @@ for the enhanced Cas12a (enCas12a) nuclease [@enpamgb] using a gradient-booster
 comparison to the wildtype Cas12 nuclease [@encas12a], and the enPAM+GB 
 algorithm takes PAM activity into account in the calculation of the final score.
 It generates a probability (therefore a score between 0 and 1) of a given sgRNA 
-to cut at the intended target. 3 nucleotides upstream of the PAM sequence and 4 nucleotides downstream of the protospacer sequence are needed for scoring:
+to cut at the intended target. 4 nucleotides upstream of the PAM
+sequence, and 3 nucleotides downstream of the protospacer
+sequence are needed for scoring:
 
 
 ```{r, eval=FALSE}
-flank5 <- "ACC" #3bp
+flank5 <- "ACCG" #4bp
 pam    <- "TTTT" #4bp
 spacer <- "AATCGATGCTGATGCTAGATATT" #23bp
-flank3 <- "AAGT" #4bp
+flank3 <- "AAG" #3bp
 input  <- paste0(flank5, pam, spacer, flank3) 
-results <- getEnPAMGBScores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/enpamgb-env"
+results <- getEnPAMGBScores(input, condaEnv=condaEnv)
 ```
 
 
@@ -400,6 +329,7 @@ mrnaSequence <- Biostrings::readDNAStringSet(filepath=fasta
 results <- getCasRxRFScores(mrnaSequence)
 ```
 
+
 Note that the function has a default argument `directRepeat` set to `aacccctaccaactggtcggggtttgaaac`, specifying the direct repeat used in the
 CasRx construct (see [@casrxrf].) The function also has an argument `binaries`
 that specifies the file path of the binaries for three 
@@ -413,8 +343,6 @@ Those programs can be installed from their respective websites: [VienneRNA](http
 
 If the argument is `NULL`, the binaries are assumed to be available on
 the PATH. 
-
-
 
 
 # Off-target specificity scores 
@@ -539,8 +467,10 @@ spacer <- "TGCTGATGCTAGATATTAAG" #20bp
 pam    <- "TGG" #3bp
 flank3 <- "CTTTTAATCGATGCTGATGCTAGATATTA" #29bp
 input <- paste0(flank5, spacer, pam, flank3)
-results <- getLindelScores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/lindel-env"
+results <- getLindelScores(input, condaEnv=condaEnv)
 ```
+
 
 # License
 
@@ -554,7 +484,6 @@ license and to indicate changes that we have made to the original code.
 ```{r}
 sessionInfo()
 ```
-
 
 
 # References

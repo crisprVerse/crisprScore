@@ -2,6 +2,13 @@
 \title{crisprScore News}
 \encoding{UTF-8}
 
+
+\section{Version 1.15.2}{\itemize{
+\item Conda environment now have to be built outside of crisprScore.
+}}
+
+
+
 \section{Version 1.15.1}{\itemize{
 \item The scores developed in Python 2 are no longer available: DeepSpCas9, DeepCpf1, Azimuth, and the crisprai scores. 
 }}

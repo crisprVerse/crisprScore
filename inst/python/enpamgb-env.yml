@@ -1,0 +1,13 @@
+name: enpamgb-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - pandas
+  - scikit-learn<=0.24
+  - biopython=1.78
+  - h5py
+  - pip
+  - pip:
+      - tensorflow
+      - ./enpamgb

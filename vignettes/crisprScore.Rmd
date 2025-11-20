@@ -80,18 +80,58 @@ install_github("crisprVerse/crisprScoreData")
 install_github("crisprVerse/crisprScore")
 ```
 
-When calling one of the scoring methods for the first time after package
-installation, the underlying python module and conda environment will be 
-automatically downloaded and installed without the need for user intervention.
-This may take several minutes, but this is a one-time installation. 
-the first time after package installation.
-
 Note that RStudio users will need to add the following line to their `.Rprofile`
 file in order for `crisprScore` to work properly:
 
 ```{r, eval=FALSE}
 options(reticulate.useImportHook=FALSE)
 ```
+
+# Python scoring algorithms 
+
+`crisprScore` used to rely on the `basilisk` Bioconductor package to maintain
+and install the conda environments necessary to run the different scoring
+algorithms written in Python. However, due to recent changes to `basilisk` and
+the `reticulate` package, the changes in the conda licensing, the deprecation of 
+Python 2, and the arrival of Apple Silicon, it has become increasingly difficult
+for us to resolve those environments automatically across machines and scoring
+algorithms.
+
+As a result, we have made the following two decisions: 
+
+(1) scoring algorithms written in Python 2
+are no longer supported by `crisprScore`; this includes Azimuth, DeepCpf1, 
+DeepSpCas9, and CRISPRai. The more recent and more performant RuleSet3 and 
+DeepHF scoring algorithms can be used instead of Azimuth, and the enPam+GB 
+algorithm can be used instead of DeepCpf1. While `crisprScore` does not 
+implement any CRISPRa or CRISPRi-specific scoring algorithms, we have found
+that the DeepHF algorithm works well at predicting CRISPRa and CRISPRi gRNAs. 
+
+(2) users now have to build the conda environments themselves prior to using
+`crisprScore`, and pass the conda environment path to the different scoring
+algorithms. See next section. 
+
+# Installing conda environments
+
+For each of the Python scoring algorithms implemented in `crisprScore`,
+we provide in the crisprScore/inst/python folder a script to install
+the conda environments: `buildingCondaEnvironments.sh`.
+
+The script assumes that a conda instance is available on path.
+We recommend using miniforge: https://github.com/conda-forge/miniforge to 
+install and manage conda environments. 
+
+We use the following conda channel specifications in the .condarc file:
+
+```
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+channel_priority: strict
+```
+
+
 
 # Getting started
 
@@ -129,9 +169,8 @@ Different algorithms require different input nucleotide
 sequences to predict cutting efficiency as illustrated in the figure below.
 
 ```{r, echo=FALSE,fig.cap="Sequence inputs for Cas9 scoring methods"}
-knitr::include_graphics("./figures/sequences_cas9.svg")
+knitr::include_graphics("./figures/sequences_cas9_v2.svg")
 ```
-
 
 
 
@@ -152,8 +191,6 @@ input  <- paste0(flank5, spacer, pam, flank3)
 results <- getRuleSet1Scores(input)
 ```
 
-The Azimuth score described below is an improvement over Rule Set 1 
-from the same lab.
 
 ### Rule Set 3 
 
@@ -177,7 +214,14 @@ spacer <- "ATCGATGCTGATGCTAGATA" #20bp
 pam    <- "AGG" #3bp 
 flank3 <- "TTG" #3bp
 input  <- paste0(flank5, spacer, pam, flank3) 
-results <- getRuleSet3Scores(input, tracrRNA="Hsu2013")
+```
+
+We specify the path of the conda environment necessary to run the python
+code and run the results:
+
+```{r, eval=FALSE}
+condaEnv <- "/Users/fortin946/miniforge3/envs/rs3-env"
+results <- getRuleSet3Scores(input, tracrRNA="Hsu2013", condaEnv=condaEnv)
 ```
 
 
@@ -199,7 +243,8 @@ the protospacer and PAM sequences as inputs:
 spacer  <- "ATCGATGCTGATGCTAGATA" #20bp
 pam     <- "AGG" #3bp 
 input   <- paste0(spacer, pam) 
-results <- getDeepHFScores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/deephf-env"
+results <- getDeepHFScores(input, condaEnv=condaEnv)
 ```
 
 Users can specify for which Cas9 they wish to score sgRNAs by using the argument
@@ -250,7 +295,7 @@ Different algorithms require different input nucleotide
 sequences to predict cutting efficiency as illustrated in the figure below.
 
 ```{r, echo=FALSE, fig.cap="Sequence inputs for Cas12a scoring methods"}
-knitr::include_graphics("./figures/sequences_cas12a.svg")
+knitr::include_graphics("./figures/sequences_cas12a_v2.svg")
 ```
 
 ### enPAM+GB score 
@@ -272,7 +317,8 @@ pam    <- "TTTT" #4bp
 spacer <- "AATCGATGCTGATGCTAGATATT" #23bp
 flank3 <- "AAG" #3bp
 input  <- paste0(flank5, pam, spacer, flank3) 
-results <- getEnPAMGBScores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/enpamgb-env"
+results <- getEnPAMGBScores(input, condaEnv=condaEnv)
 ```
 
 
@@ -434,7 +480,8 @@ spacer <- "TGCTGATGCTAGATATTAAG" #20bp
 pam    <- "TGG" #3bp
 flank3 <- "CTTTTAATCGATGCTGATGCTAGATATTA" #29bp
 input <- paste0(flank5, spacer, pam, flank3)
-results <- getLindelScores(input)
+condaEnv <- "/Users/fortin946/miniforge3/envs/lindel-env"
+results <- getLindelScores(input, condaEnv=condaEnv)
 ```
 
 
