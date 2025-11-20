@@ -35,7 +35,7 @@
 #' flank3 <- "AAT" #3bp
 #' input  <- paste0(flank5, spacer, pam, flank3) 
 #' condaEnv <- "/Users/fortin946/miniforge3/envs/rs3-env"
-#' results <- getRuleSet3Scores(input, condaEnv=condaEnv)
+#' results <- getRuleSet3Scores(input, condaEnv=condaEnv, tracrRNA="Chen2013")
 #' }
 #' 
 #' @export 
@@ -109,7 +109,8 @@ getRuleSet3Scores <- function(sequences,
                   programFile,
                   inputfile,
                   modelFile, 
-                  outputfile,shQuote(tracrRNA)))
+                  outputfile,
+                  tracrRNA))
         
         scores <- readLines(outputfile)
         df$score[good] <- as.numeric(scores)
