@@ -8,7 +8,7 @@
 #'     Must be either "Hsu2013" (default) or "Chen2013".
 #' @param mode String specifying which prediction mode is used.
 #'     Must be either "sequence" (default) or "target".
-#' @param condaEnv Path the conda environment for the RuleSet1 score. 
+#' @param condaEnv Path to the conda environment
 #' 
 #' @details The input sequences for Rule Set 3 scoring require 4 nucleotides
 #'     upstream of the protospacer sequence, the protospacer sequence

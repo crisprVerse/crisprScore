@@ -12,7 +12,7 @@
 #' @param promoter Character string speciyfing promoter used for expressing 
 #'     sgRNAs for wildtype Cas9 (must be either "U6" or "T7").
 #'     "U6" by default. 
-#' @param condaEnv Path the conda environment for the DeepHF score. 
+#' @param condaEnv Path to the conda environment
 #' 
 #' @details Input sequences for DeepHF scoring must be 23bpprotospacer
 #'     sequences (20bp spacer sequences + 3bp PAM sequences).

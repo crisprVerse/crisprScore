@@ -11,8 +11,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['biopython>=1.74', 'joblib>=0.13.2', 'numpy>=1.16.4', 'pandas>=0.24.2',
-                'scikit-learn==0.21.2', 'scipy>=1.3.0', 'tensorflow>=1.14.0']
+#requirements = ['biopython>=1.74', 'joblib>=0.13.2', 'numpy>=1.16.4', 'pandas>=0.24.2',
+#                'scikit-learn==0.21.2', 'scipy>=1.3.0', 'tensorflow>=1.14.0']
 
 setup_requirements = ['pytest-runner', ]
 
@@ -33,7 +33,7 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     description="On target modeling for CRISPR guides",
-    install_requires=requirements,
+#    install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
     include_package_data=True,

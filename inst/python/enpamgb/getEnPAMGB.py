@@ -2,9 +2,13 @@ from sgrna_modeler import datasets as da
 from sgrna_modeler import models as sg
 from sgrna_modeler import enzymes as en
 
+
 def getEnPAMGB(sequences):	
+	import warnings
+
 	model = sg.SklearnSgrnaModel()
 	model_weights = sg.get_enpam_gb()
+	warnings.filterwarnings("ignore", category=UserWarning, module="sklearn.base")
 	model.load_model(model_weights, en.cas12a, 'enPAM_GB')
 	results = model.predict_seqs(sequences)
 	return results

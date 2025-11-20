@@ -5,7 +5,9 @@
 #' 
 #' @param sequences Character vector of 34bp sequences needed for enPAM+GB
 #'     scoring, see details below.
-#' 
+#'
+#' @param condaEnv Path to the conda environment
+#'
 #' @details The input sequences for enPAM+GB scoring require 4 nucleotides
 #'     upstream of the protospacer sequence, the protospacer sequence
 #'     itself (4bp PAM sequence + 23bp spacer sequence) and 3 nucleootides 
@@ -33,8 +35,11 @@
 #' results <- getEnPAMGBScores(input)
 #' }
 #' @export
-#' @importFrom basilisk basiliskStart basiliskStop basiliskRun
+#' @importFrom reticulate import_from_path use_condaenv
+#' @importFrom reticulate np_array
 getEnPAMGBScores <- function(sequences){
+    condaEnv <- "/Users/fortin946/miniforge3/envs/enpamgb-env"
+
     if (.Platform$OS.type=="windows"){
         stop("EnPAMGB is not available for Windows at the moment.")
     }
@@ -44,20 +49,8 @@ getEnPAMGBScores <- function(sequences){
              " ([4nt][TTTV][23mer][3nt]).")
     }
 
-    env <- basilisk::obtainEnvironmentPath(env_enpamgb)
-    envls <- basiliskStart(env)
-    on.exit(basiliskStop(envls))
-    results <- basiliskRun(env=env_enpamgb,
-                           shared=FALSE,
-                           fun=.enpamgb_python, 
-                           sequences=sequences)
-    return(results)
-}
 
-#' @importFrom reticulate import_from_path
-#' @importFrom reticulate np_array
-.enpamgb_python <- function(sequences){
-
+    reticulate::use_condaenv(condaEnv)
     dir <- system.file("python",
                        "enpamgb",
                        package="crisprScore",
@@ -77,4 +70,5 @@ getEnPAMGBScores <- function(sequences){
     }
     return(df)
 }
+
 

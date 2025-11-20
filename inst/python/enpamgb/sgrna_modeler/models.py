@@ -4,8 +4,119 @@ from sklearn import ensemble
 from tensorflow import keras as k
 import pandas as pd
 import os
-from joblib import load
+import joblib
 import sgrna_modeler.enzymes as en
+import types
+import re
+import sys
+
+def patch_sklearn_gradient_boosting():
+    """
+    Recreate the old sklearn.ensemble.gradient_boosting module
+    so that old pickles using that path can still load.
+    """
+    from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+    import sys as _sys
+    import types as _types
+
+    mod_name = "sklearn.ensemble.gradient_boosting"
+    module = _types.ModuleType(mod_name)
+    module.GradientBoostingClassifier = GradientBoostingClassifier
+    module.GradientBoostingRegressor = GradientBoostingRegressor
+
+    _sys.modules[mod_name] = module
+
+def patch_sklearn_tree_tree():
+    """
+    Recreate the old sklearn.tree.tree module so that old pickles
+    using that path can still load.
+    """
+    try:
+        from sklearn.tree import (
+            DecisionTreeClassifier,
+            DecisionTreeRegressor,
+            ExtraTreeClassifier,
+            ExtraTreeRegressor,
+        )
+    except ImportError as e:
+        raise ImportError(
+            "Could not import tree classes from sklearn.tree. "
+            "Check that scikit-learn is installed."
+        ) from e
+
+    import sys as _sys
+    import types as _types
+
+    mod_name = "sklearn.tree.tree"
+    module = _types.ModuleType(mod_name)
+
+    # Expose common tree classes that old pickles are likely to reference
+    module.DecisionTreeClassifier = DecisionTreeClassifier
+    module.DecisionTreeRegressor = DecisionTreeRegressor
+    module.ExtraTreeClassifier = ExtraTreeClassifier
+    module.ExtraTreeRegressor = ExtraTreeRegressor
+
+    _sys.modules[mod_name] = module
+
+
+LEGACY_PATCHES = {
+    "sklearn.ensemble.gradient_boosting": patch_sklearn_gradient_boosting,
+    "sklearn.tree.tree": patch_sklearn_tree_tree,
+}
+
+
+def load_with_autopatch(path, verbose=True):
+    """
+    Load a joblib/pickle file, automatically patching known legacy module paths
+    when ModuleNotFoundError occurs.
+
+    Parameters
+    ----------
+    path : str
+        Path to the .pkl/.joblib file.
+    verbose : bool
+        If True, print what is being patched.
+
+    Returns
+    -------
+    obj :
+        Loaded object.
+    """
+    tried_modules = set()
+
+    while True:
+        try:
+            return joblib.load(path)
+        except ModuleNotFoundError as e:
+            msg = str(e)
+            m = re.search(r"No module named '([^']+)'", msg)
+            if not m:
+                # Some other weird ModuleNotFoundError format – just re-raise
+                raise
+
+            missing_module = m.group(1)
+
+            if missing_module in tried_modules:
+                # We already tried patching this one and failed
+                raise
+
+            tried_modules.add(missing_module)
+
+            patch_fn = LEGACY_PATCHES.get(missing_module)
+            if patch_fn is None:
+                if verbose:
+                    print(f"[autopatch] No patch registered for {missing_module!r}, re-raising.")
+                raise
+
+            if verbose:
+                print(f"[autopatch] Detected missing module {missing_module!r}, applying patch...")
+
+            patch_fn()
+
+            if verbose:
+                print(f"[autopatch] Patched {missing_module!r}, retrying load...")
+
+
 
 def curr_path():
     return os.path.dirname(__file__)
@@ -223,7 +334,8 @@ class SklearnSgrnaModel(object):
         :type name:str
         """
         self.enzyme = enzyme
-        self.model = load(model)
+        #self.model = load(model)
+        self.model = load_with_autopatch(model)
         self.train_name = name
         return self
 
