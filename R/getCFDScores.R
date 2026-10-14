@@ -11,7 +11,7 @@
 #' @param pams Character vector of PAM sequences.
 #' @param nuclease String specifying the nuclease. Either "SpCas9" (default)
 #'     or "CasRx".
-#' @param version String specifying the version of the score. 
+#' @param version String specifying the version of the score for SpCas9. 
 #'    "2016" (default) refers to the CFD score described in the Nat Biotech paper in 2016.
 #'    "2026" refers to the CFD score restricted to the 4-20 spacer region described in 
 #'    the 2026 Cell Genomics paper. See references below.
@@ -73,6 +73,9 @@ getCFDScores <- function(spacers,
         sdr <- 1:20
     } else if (version=="2026"){
         sdr <- 4:20
+    }
+    if (nuclease=="CasRx"){
+        sdr <- 1:27
     }
 
     if (nuclease=="SpCas9"){

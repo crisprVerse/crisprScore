@@ -26,7 +26,7 @@ For CasRx, must be at most of length 27bp.}
 \item{nuclease}{String specifying the nuclease. Either "SpCas9" (default)
 or "CasRx".}
 
-\item{version}{String specifying the version of the score. 
+\item{version}{String specifying the version of the score for SpCas9. 
 "2016" (default) refers to the CFD score described in the Nat Biotech paper in 2016.
 "2026" refers to the CFD score restricted to the 4-20 spacer region described in 
 the 2026 Cell Genomics paper. See references below.}
