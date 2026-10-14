@@ -4,7 +4,13 @@
 \alias{getCFDScores}
 \title{Calculate CFD off-target specificity scores}
 \usage{
-getCFDScores(spacers, protospacers, pams, nuclease = c("SpCas9", "CasRx"))
+getCFDScores(
+  spacers,
+  protospacers,
+  pams,
+  nuclease = c("SpCas9", "CasRx"),
+  version = c("2016", "2026")
+)
 }
 \arguments{
 \item{spacers}{Character vector of 20bp spacer sequences.
@@ -19,6 +25,11 @@ For CasRx, must be at most of length 27bp.}
 
 \item{nuclease}{String specifying the nuclease. Either "SpCas9" (default)
 or "CasRx".}
+
+\item{version}{String specifying the version of the score. 
+"2016" (default) refers to the CFD score described in the Nat Biotech paper in 2016.
+"2026" refers to the CFD score restricted to the 4-20 spacer region described in 
+the 2026 Cell Genomics paper. See references below.}
 }
 \value{
 \strong{getCFDScores} returns a data.frame with \code{spacer},
@@ -49,6 +60,11 @@ Doench, J., Fusi, N., Sullender, M. et al. Optimized sgRNA design to
     maximize activity and minimize off-target effects of CRISPR-Cas9.
     Nat Biotechnol 34, 184–191 (2016).
     \url{https://doi.org/10.1038/nbt.3437}.
+
+Drepanos, L. M., Srikanth, S., Kaplan, E. G. et al.
+    Balancing off-target and on-target considerations for optimized
+    CRISPR-Cas9 knockout library design. Cell Genomics (2026).
+    \url{https://doi.org/10.1016/j.xgen.2026.101190}.
 }
 \author{
 Jean-Philippe Fortin

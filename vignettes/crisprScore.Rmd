@@ -449,6 +449,12 @@ getCFDScores(spacers=spacer,
 ```
 
 
+A more recent version of the CFD score algorithm was developed by the same
+authors in 2026 to only consider positions 4 to 20 in the spacer sequence [@drepanos].
+This can be specified using the argument `version="2026"`.
+
+
+
 # Indel prediction score 
 
 ## Lindel score (Cas9)

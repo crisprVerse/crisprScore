@@ -3,6 +3,11 @@
 \encoding{UTF-8}
 
 
+\section{Version 1.17.1}{\itemize{
+\item Implemented 2026 version of the CFD score.
+}}
+
+
 \section{Version 1.15.2}{\itemize{
 \item Conda environment now have to be built outside of crisprScore. 
 \item The tracer argument for RuleSet3 is now fixed; the previous version of crisprScore was now taking into account the tracer, and the Chen2013 tracer was always used. 
